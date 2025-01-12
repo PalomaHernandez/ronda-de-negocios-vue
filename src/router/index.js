@@ -2,23 +2,39 @@ import { createRouter, createWebHistory } from 'vue-router';
 import TestConnection from '@/views/TestConnection.vue';
 import LandingPage from '@/views/LandingPage.vue';
 import EventDetail from '@/views/EventDetail.vue';
-const routes = [
-  { path: '/', 
-    name: 'LandingPage', 
-    component: LandingPage },
+import Login from '@/views/LoginPage.vue';
+import RegisterPage from '@/views/RegisterPage.vue';
 
-  { path: '/test-connection', 
-    name: 'TestConnection', 
-    component: TestConnection },
-  
+const routes = [
+  {
+    path: '/',
+    name: 'LandingPage',
+    component: LandingPage
+  },
+
+  {
+    path: '/test-connection',
+    name: 'TestConnection',
+    component: TestConnection
+  },
+
   {
     path: '/events/:name', // Ahora la URL utilizará el nombre del evento
     name: 'event-detail',
     component: EventDetail,
     props: true, // Esto permite pasar el `name` como prop
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterPage
+  },
 
-      
 ];
 
 const router = createRouter({
