@@ -34,7 +34,7 @@ import {useAuthStore} from '@/stores/auth'
 //import LabeledObject from '@/components/LabeledObject.vue'
 
 export default {
-	name: "LandingPage",
+	name: "RegisterPage",
 	components: {
 		//Layout,
 		RouterLink,
@@ -81,7 +81,7 @@ export default {
 	},
 	mounted(){
 		if(this.isAuthenticated){
-			router.push({name: 'home'})
+			router.push({name: 'LandingPage'})
 		}
 	}
 }

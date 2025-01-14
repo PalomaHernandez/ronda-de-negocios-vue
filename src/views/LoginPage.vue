@@ -27,17 +27,20 @@
 
 <script lang="js">
 import {ref} from 'vue'
-import router from '@/router'
+//import router from '@/router'
 //import Layout from '@/Layout.vue'
-import {RouterLink} from 'vue-router'
+//import {RouterLink} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
 //import LabeledObject from '@/components/LabeledObject.vue'
 
+
+
+
 export default {
-	name: "LandingPage",
+	name: "LoginPage",
 	components: {
 		//Layout,
-		RouterLink,
+		//RouterLink,
 		//LabeledObject,
 	},
 	computed: {
@@ -79,10 +82,10 @@ export default {
 			}
 		}
 	},
-	mounted(){
-		if(this.isAuthenticated){
-			router.push({name: 'home'})
+	/*mounted(){
+		if(this.authenticated){
+			router.push({name: 'LandingPage'})
 		}
-	}
+	}*/
 }
 </script>

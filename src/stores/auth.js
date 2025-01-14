@@ -91,9 +91,9 @@ export const useAuthStore = defineStore('auth', {
               this.clearMessages()
               if (data.res) {
                 this.authenticated = true
-                this.loggingIn = false
                 this.user = data.user
-                router.push({ name: 'home' })
+                console.log
+                router.push({ name: 'LandingPage' })
               } else {
                 this.error = data.text
               }
