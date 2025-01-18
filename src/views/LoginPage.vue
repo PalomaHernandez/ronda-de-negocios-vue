@@ -23,15 +23,15 @@
 			<RouterLink :to="{name: 'register'}" class="font-medium text-sky-700">Don't have an account? Register here.</RouterLink>
 		</form>
 	</Layout>
-</template>
+  </template>
 
 <script lang="js">
 import {ref} from 'vue'
-//import router from '@/router'
-//import Layout from '@/Layout.vue'
-//import {RouterLink} from 'vue-router'
+import router from '@/router'
+import Layout from '@/Layout.vue'
+import {RouterLink} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
-//import LabeledObject from '@/components/LabeledObject.vue'
+import LabeledObject from '@/components/LabeledObject.vue'
 
 
 
@@ -39,9 +39,9 @@ import {useAuthStore} from '@/stores/auth'
 export default {
 	name: "LoginPage",
 	components: {
-		//Layout,
-		//RouterLink,
-		//LabeledObject,
+		Layout,
+		RouterLink,
+		LabeledObject,
 	},
 	computed: {
 		success() {
@@ -82,10 +82,10 @@ export default {
 			}
 		}
 	},
-	/*mounted(){
-		if(this.authenticated){
+	mounted(){
+		if(this.isAuthenticated){
 			router.push({name: 'LandingPage'})
 		}
-	}*/
+	}
 }
 </script>

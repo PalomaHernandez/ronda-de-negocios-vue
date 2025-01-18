@@ -32,13 +32,14 @@ export const useAuthStore = defineStore('auth', {
         this.registering = true
         this.clearMessages()
         this.info = 'Registering your new account...'
+        console.log(account)
         return axiosLoginInstance.get('sanctum/csrf-cookie')
           .then(() => {
             return axiosApiInstance.post('register', account).then(() => {
               this.authenticated = false
               this.registering = false
               this.clearMessages()
-              this.success = 'Your account has been created successfully!'
+              this.success = 'La cuenta se creo exitosamente, por favor inicie sesión.'
               router.push({ name: 'login' })
             }).catch((error) => {
               throw error
@@ -89,10 +90,9 @@ export const useAuthStore = defineStore('auth', {
           .then(() => {
             return axiosApiInstance.post('login', credentials).then(({ data }) => {
               this.clearMessages()
-              if (data.res) {
+              if (data.user) {
                 this.authenticated = true
                 this.user = data.user
-                console.log
                 router.push({ name: 'LandingPage' })
               } else {
                 this.error = data.text
