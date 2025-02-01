@@ -1,28 +1,36 @@
 <template>
-	<Layout>
-		<template #title>Log in</template>
-		<template #status>
-			<div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
-			<div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
-			<div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
-		</template>
-		<template #tools></template>
+	<div class="bg-blue-500 min-h-screen flex items-center justify-center">
+	  <!-- Contenedor principal del rectángulo -->
+	  <div class="absolute top-2 left-2 bg-yellow-300 px-4 py-2 rounded-tr-lg rounded-bl-lg text-sm font-bold text-gray-800">
+		Rondas UNS
+	  </div>
+	  <!-- Contenedor blanco (ajustado para ocupar más espacio) -->
+	  <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10">
+		<!-- Encabezado "Log in" -->
+		<h1 class="text-2xl font-bold text-center mb-4">Log in</h1>
+  
+		<!-- Mensajes de estado -->
+		<div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
+		<div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
+		<div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
+  
+		<!-- Formulario de login -->
 		<form class="flex flex-col gap-3 p-4" ref="form" @submit.prevent="login">
-			<LabeledObject>
-				<template #label>E-mail address</template>
-				<input type="email" v-model="credentials.email" required>
-			</LabeledObject>
-			<LabeledObject>
-				<template #label>Password</template>
-				<input type="password" v-model="credentials.password" required>
-			</LabeledObject>
-			<button type="submit" class="btn btn-primary">
-				<i class="fa-solid fa-key"></i>
-				Log in
-			</button>
-			<RouterLink :to="{name: 'register'}" class="font-medium text-sky-700">Don't have an account? Register here.</RouterLink>
+		  <LabeledObject>
+			<template #label>E-mail address</template>
+			<input type="email" v-model="credentials.email" required>
+		  </LabeledObject>
+		  <LabeledObject>
+			<template #label>Password</template>
+			<input type="password" v-model="credentials.password" required>
+		  </LabeledObject>
+		  <button type="submit" class="btn btn-primary">
+			<i class="fa-solid fa-key"></i> Log in
+		  </button>
+		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">Don't have an account? Register here.</RouterLink>
 		</form>
-	</Layout>
+	  </div>
+	</div>
   </template>
 
 <script lang="js">
@@ -82,10 +90,12 @@ export default {
 			}
 		}
 	},
+	/*
 	mounted(){
 		if(this.isAuthenticated){
 			router.push({name: 'LandingPage'})
 		}
 	}
+		*/
 }
 </script>
