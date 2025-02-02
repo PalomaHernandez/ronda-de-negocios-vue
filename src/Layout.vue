@@ -23,10 +23,12 @@
   const route = useRoute();
   
   // Redirigir a EventDetail si el usuario no está autenticado
+  /*
   onMounted(() => {
 	if (!authStore.authenticated && route.name !== "EventDetail") {
 	  router.push({ name: "EventDetail" });
 	}
   });
+  */
   </script>
   

@@ -11,40 +11,8 @@
         <!-- Información del Evento -->
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Fecha del Evento</h3>
+            <h3 class="text-lg font-semibold text-gray-800">Fecha del aaaaaa</h3>
             <p class="text-gray-600">{{ new Date(evento.date).toLocaleDateString() || "No disponible" }}</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Horario</h3>
-            <p class="text-gray-600">
-              {{ formatTime(evento.starts_at) }} - {{ formatTime(evento.ends_at) }}
-            </p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Duración de las reuniones</h3>
-            <p class="text-gray-600">{{ evento.meeting_duration || "No disponible" }} </p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Tiempo entre reuniones</h3>
-            <p class="text-gray-600">{{ evento.time_between_meetings || "No disponible" }} min</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Inscripción hasta</h3>
-            <p class="text-gray-600">{{ evento.inscription_end_date || "No disponible" }}</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Matching hasta</h3>
-            <p class="text-gray-600">{{ evento.matching_end_date || "No disponible" }}</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Estado</h3>
-            <p class="text-gray-600">{{ evento.status || "No disponible" }}</p>
           </div>
 
           <div class="bg-white p-4 rounded-lg shadow-lg">

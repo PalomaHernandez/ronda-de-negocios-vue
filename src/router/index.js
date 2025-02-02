@@ -5,6 +5,7 @@ import EventDetail from '@/views/EventDetail.vue';
 import Login from '@/views/LoginPage.vue';
 import RegisterPage from '@/views/RegisterPage.vue';
 import EventEdit from '@/views/EventEdit.vue';
+import InscriptionPage from '@/views/InscriptionPage.vue';
 
 const routes = [
   {
@@ -20,10 +21,18 @@ const routes = [
   },
 
   {
-    path: '/events/:name', // Ahora la URL utilizará el nombre del evento
+    path: '/events/:name',  // Ruta para el detalle del evento
     name: 'event-detail',
     component: EventDetail,
     props: true, // Esto permite pasar el `name` como prop
+    children: [
+      {
+        path: 'inscription',  // Ruta hija de /events/:name
+        name: 'event-inscription',
+        component: InscriptionPage, // Asegúrate de crear esta vista
+        props: true, // Esto permite pasar el parámetro `name` a la inscripción
+      }
+    ]
   },
   {
     path: '/events/:name/edit', // Ahora la URL utilizará el nombre del evento
