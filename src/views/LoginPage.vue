@@ -7,7 +7,7 @@
 	  <!-- Contenedor blanco (ajustado para ocupar más espacio) -->
 	  <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10">
 		<!-- Encabezado "Log in" -->
-		<h1 class="text-2xl font-bold text-center mb-4">Log in</h1>
+		<h1 class="text-2xl font-bold text-center mb-4">Iniciar sesión</h1>
   
 		<!-- Mensajes de estado -->
 		<div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
@@ -17,17 +17,17 @@
 		<!-- Formulario de login -->
 		<form class="flex flex-col gap-3 p-4" ref="form" @submit.prevent="login">
 		  <LabeledObject>
-			<template #label>E-mail address</template>
+			<template #label>Email</template>
 			<input type="email" v-model="credentials.email" required>
 		  </LabeledObject>
 		  <LabeledObject>
-			<template #label>Password</template>
+			<template #label>Contraseña</template>
 			<input type="password" v-model="credentials.password" required>
 		  </LabeledObject>
 		  <button type="submit" class="btn btn-primary">
 			<i class="fa-solid fa-key"></i> Log in
 		  </button>
-		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">Don't have an account? Register here.</RouterLink>
+		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">No tenés cuenta? Registrate haciendo click acá.</RouterLink>
 		</form>
 	  </div>
 	</div>
