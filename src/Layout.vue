@@ -1,63 +1,32 @@
 <template>
-	<slot name="modals"/>
-	<header class="flex items-center gap-4 px-3 py-2 border-b shadow z-10">
-		<div class="flex-grow font-semibold">
-			<slot name="title"/>
-		</div>
-		<div class="fixed lg:relative left-0 bottom-28 lg:left-auto lg:bottom-auto z-20 w-full lg:w-auto">
-			<div class="relative w-full lg:w-auto">
-				<div class="absolute lg:relative w-full lg:w-auto">
-					<slot name="status"/>
-				</div>
-			</div>
-		</div>
-		<slot name="tools"/>
-	</header>
-	<main class="flex-grow flex flex-col gap-3 overflow-y-auto bg-gray-50">
-		<slot/>
-	</main>
-	<footer v-if="isAuthenticated" class="bg-sky-900">
-		<nav class="main-nav flex">
-			<RouterLink :to="{name: 'login'}">
-				<i class="fa-solid fa-sign-in"></i>
-			</RouterLink>
-		</nav>
-	</footer>
-</template>
-
-<script lang="js">
-import router from '@/router'
-import {RouterLink} from 'vue-router'
-import {useAuthStore} from '@/stores/auth'
-
-export default {
-	name: "LayoutPage",
-	components: {
-		RouterLink
-	},
-	computed: {
-		isAuthenticated() {
-			return this.authStore.authenticated
-		},
-		isNotAuthenticated(){
-			return !this.isAuthenticated
-		}
-	},
-	setup(){
-		const authStore = useAuthStore()
-		return {
-			authStore,
-		}
-	},
-	methods: {
-		logout() {
-			this.authStore.logout()
-		}
-	},
-	beforeMount(){
-		if(this.isNotAuthenticated && router.currentRoute.value.name !== 'login' && router.currentRoute.value.name !== 'register'){
-			this.authStore.logout()
-		}
+	<div class="bg-blue-500 min-h-screen flex items-center justify-center">
+	  <!-- Contenedor principal del rectángulo -->
+	  <div class="absolute top-2 left-2 bg-yellow-300 px-4 py-2 rounded-tr-lg rounded-bl-lg text-sm font-bold text-gray-800">
+		Rondas UNS
+	  </div>
+  
+	  <!-- Contenedor blanco (ajustado para ocupar más espacio) -->
+	  <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10">
+		<slot />
+	  </div>
+	</div>
+  </template>
+  
+  <script setup>
+  import { useAuthStore } from "@/stores/auth";
+  import { useRouter, useRoute } from "vue-router";
+  import { onMounted } from "vue";
+  
+  // Accedemos al store de autenticación
+  const authStore = useAuthStore();
+  const router = useRouter();
+  const route = useRoute();
+  
+  // Redirigir a EventDetail si el usuario no está autenticado
+  onMounted(() => {
+	if (!authStore.authenticated && route.name !== "EventDetail") {
+	  router.push({ name: "EventDetail" });
 	}
-}
-</script>
+  });
+  </script>
+  

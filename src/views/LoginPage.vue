@@ -1,11 +1,6 @@
 <template>
-	<div class="bg-blue-500 min-h-screen flex items-center justify-center">
-	  <!-- Contenedor principal del rectángulo -->
-	  <div class="absolute top-2 left-2 bg-yellow-300 px-4 py-2 rounded-tr-lg rounded-bl-lg text-sm font-bold text-gray-800">
-		Rondas UNS
-	  </div>
-	  <!-- Contenedor blanco (ajustado para ocupar más espacio) -->
-	  <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10">
+	<LayoutPage>
+	  <template #default>
 		<!-- Encabezado "Log in" -->
 		<h1 class="text-2xl font-bold text-center mb-4">Iniciar sesión</h1>
   
@@ -27,75 +22,41 @@
 		  <button type="submit" class="btn btn-primary">
 			<i class="fa-solid fa-key"></i> Log in
 		  </button>
-		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">No tenés cuenta? Registrate haciendo click acá.</RouterLink>
+		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">
+			No tenés cuenta? Registrate haciendo click acá.
+		  </RouterLink>
 		</form>
-	  </div>
-	</div>
+	  </template>
+	</LayoutPage>
   </template>
-
-<script lang="js">
-import {ref} from 'vue'
-import router from '@/router'
-import Layout from '@/Layout.vue'
-import {RouterLink} from 'vue-router'
-import {useAuthStore} from '@/stores/auth'
-import LabeledObject from '@/components/LabeledObject.vue'
-
-
-
-
-export default {
-	name: "LoginPage",
-	components: {
-		Layout,
-		RouterLink,
-		LabeledObject,
-	},
-	computed: {
-		success() {
-			return this.authStore.success
-		},
-		error(){
-			return this.authStore.error
-		},
-		info(){
-			return this.authStore.info
-		},
-		isAuthenticated(){
-			return this.authStore.authenticated
-		}
-	},
-	setup(){
-		const authStore = useAuthStore()
-		const credentials = ref({
-			email: '',
-			password: '',
-		})
-		return {
-			authStore,
-			credentials,
-		}
-	},
-	methods: {
-		login(){
-			if(this.$refs && this.$refs.form){
-				const form = this.$refs.form 
-				if(!form.checkValidity()){
-					form.reportValidity()
-				} else {
-					this.authStore.login(this.credentials)
-				}
-			} else {
-				this.authStore.showError('Oops, something went wrong! Please try again later.')
-			}
-		}
-	},
-	/*
-	mounted(){
-		if(this.isAuthenticated){
-			router.push({name: 'LandingPage'})
-		}
+  
+  <script setup>
+  import { ref } from 'vue'
+  import { useAuthStore } from '@/stores/auth'
+  import { RouterLink } from 'vue-router'
+  import LabeledObject from '@/components/LabeledObject.vue'
+  import LayoutPage from '@/Layout.vue'
+  
+  // Estado y store
+  const authStore = useAuthStore()
+  const credentials = ref({
+	email: '',
+	password: '',
+  })
+  
+  // Métodos
+  const login = () => {
+	const form = document.querySelector("form")
+	if (!form.checkValidity()) {
+	  form.reportValidity()
+	} else {
+	  authStore.login(credentials.value)
 	}
-		*/
-}
-</script>
+  }
+  
+  // Computed properties
+  const success = authStore.success
+  const error = authStore.error
+  const info = authStore.info
+  </script>
+  
