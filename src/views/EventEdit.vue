@@ -16,8 +16,9 @@
 
         <div class="text-center">
           <!--img v-if="event.logo_path" :src="event.logo_path" alt="Event Logo" class="mx-auto h-32 w-32 object-cover rounded-full mb-4" /-->
-          <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
-          <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
+          <input type="text" class="text-4xl font-extrabold text-gray-900" id="name" name="title"
+            v-model="evento.title">
+          <input type="text" id="description" name="description" v-model="evento.description">
         </div>
 
         <!-- Información del Evento -->
@@ -25,34 +26,36 @@
 
           <div class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Fecha del Evento</h3>
-            <p class="text-gray-600">{{ new Date(evento.date).toLocaleDateString() || "No disponible" }}</p>
+            <input type="date" id="date" name="date" v-model="evento.date">
           </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-lg">
+          <div class="row bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Horario</h3>
-            <p class="text-gray-600">
-              {{ formatTime(evento.starts_at) }} - {{ formatTime(evento.starts_at) }}
-            </p>
+            <input type="time" id="starts_at" name="starts_at" v-model="evento.starts_at">
+            <p class="text-gray-600"> - </p>
+            <input type="time" id="ends_at" name="ends_at" v-model="evento.ends_at">
           </div>
 
           <div class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Duración de las reuniones</h3>
-            <p class="text-gray-600">{{ evento.meeting_duration || "No disponible" }} </p>
+            <input type="text" id="meeting_duration" name="meeting_duration" v-model="evento.meeting_duration">
           </div>
 
           <div class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Tiempo entre reuniones</h3>
-            <p class="text-gray-600">{{ evento.time_between_meetings || "No disponible" }} </p>
+            <input type="text" id="time_between_meetings" name="time_between_meetings"
+              v-model="evento.time_between_meetings">
           </div>
 
           <div class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Inscripción hasta</h3>
-            <p class="text-gray-600">{{ evento.inscription_end_date || "No disponible" }}</p>
+            <input type="date" id="inscription_end_date" name="inscription_end_date"
+              v-model="evento.inscription_end_date">
           </div>
 
           <div class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Matching hasta</h3>
-            <p class="text-gray-600">{{ evento.matching_end_date || "No disponible" }}</p>
+            <input type="date" id="matching_end_date" name="matching_end_date" v-model="evento.matching_end_date">
           </div>
 
           <div class="bg-white p-4 rounded-lg shadow-lg">
@@ -62,43 +65,13 @@
         </div>
 
         <div class="mt-8 flex justify-end space-x-4">
-          <button @click="abrirModal"
-            class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
-            Inscribirse al Evento
-          </button>
-          <button @click="irALogin"
+          <button @click="update"
             class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-gray-700 focus:outline-none">
-            Acceder
+            Guardar cambios
           </button>
         </div>
       </div>
       <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
-      <!-- Modal -->
-      <div v-if="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
-
-          <!-- Título -->
-          <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
-
-          <!-- Botones centrados -->
-          <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
-            <button @click="irALogin" class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 w-2/3">
-              Sí, iniciar sesión
-            </button>
-            <button @click="irARegister"
-              class="bg-yellow-600 text-white py-3 px-6 rounded-lg hover:bg-yellow-700 w-2/3">
-              No, crear cuenta
-            </button>
-          </div>
-
-          <!-- Botón "Cancelar" en la esquina inferior derecha -->
-          <div class="absolute bottom-2 right-4">
-            <button @click="cerrarModal" class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
-              Cancelar
-            </button>
-          </div>
-        </div>
-      </div>
 
 
     </div>
@@ -119,23 +92,22 @@ export default {
     },
     evento() {
       return this.eventStore.evento
-    },
+    }
   },
   setup() {
     const eventStore = useEventStore();
-    const { evento } = storeToRefs(eventStore);
+    //const { evento } = storeToRefs(eventStore);
     // Obtener parámetros de la ruta
     const route = useRoute();
     const eventName = route.params.name;
     const router = useRouter();
-    const mostrarModal = ref(false);
     onMounted(() => {
       eventStore.fetch(eventName);
     });
     return {
       eventStore,
-      mostrarModal,
       router,
+      //evento,
     };
   },
   methods: {
@@ -150,20 +122,13 @@ export default {
       const date = new Date(timestamp);
       return date.toLocaleString();
     },
-    abrirModal() {
-      this.mostrarModal = true;
-    },
-    cerrarModal() {
-      this.mostrarModal = false;
-    },
-    irALogin() {
-      this.cerrarModal();
-      this.router.push({ name: "login" });
-    },
-    irARegister() {
-      this.cerrarModal();
-      this.router.push({ name: "register" });
+    update() {
+      if (!this.evento.title ) {
+        alert("El título es obligatorio.");
+        return;
+      }
+      this.eventStore.update()
     }
-  }
+  },
 };
 </script>
