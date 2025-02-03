@@ -30,7 +30,7 @@
       <div class="preview-container flex flex-row gap-2 mt-2">
         <div v-for="(img, index) in preview" :key="index" class="relative w-28 h-28">
           <img :src="img" alt="Vista previa" class="w-full h-full object-cover rounded-lg" />
-          <button @click="removeImage(index)" class="remove-btn">
+          <button @click="removeImage(index)" type="button" class="remove-btn">
             &times;
           </button>
         </div>

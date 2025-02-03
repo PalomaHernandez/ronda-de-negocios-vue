@@ -25,19 +25,17 @@ const routes = [
     name: 'event-detail',
     component: EventDetail,
     props: true, // Esto permite pasar el `name` como prop
-    children: [
-      {
-        path: 'inscription',  // Ruta hija de /events/:name
-        name: 'event-inscription',
-        component: InscriptionPage, // Asegúrate de crear esta vista
-        props: true, // Esto permite pasar el parámetro `name` a la inscripción
-      }
-    ]
   },
   {
     path: '/events/:name/edit', // Ahora la URL utilizará el nombre del evento
     name: 'event-edit',
     component: EventEdit,
+    props: true, // Esto permite pasar el `name` como prop
+  },
+  {
+    path: '/events/:name/inscription', // Ahora la URL utilizará el nombre del evento
+    name: 'event-inscription',
+    component: InscriptionPage,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
