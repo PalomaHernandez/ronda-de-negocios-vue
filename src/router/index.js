@@ -6,6 +6,8 @@ import Login from '@/views/LoginPage.vue';
 import RegisterPage from '@/views/RegisterPage.vue';
 import EventEdit from '@/views/EventEdit.vue';
 import InscriptionPage from '@/views/InscriptionPage.vue';
+import NotificationsPage from '@/views/NotificationsPage.vue';
+import MeetingsPage from '@/views/MeetingsPage.vue';
 
 const routes = [
   {
@@ -36,6 +38,18 @@ const routes = [
     path: '/events/:name/inscription', // Ahora la URL utilizará el nombre del evento
     name: 'event-inscription',
     component: InscriptionPage,
+    props: true, // Esto permite pasar el `name` como prop
+  },
+  {
+    path: '/events/:name/notifications', // Ahora la URL utilizará el nombre del evento
+    name: 'event-notifications',
+    component: NotificationsPage,
+    props: true, // Esto permite pasar el `name` como prop
+  },
+  {
+    path: '/events/:name/meetings', // Ahora la URL utilizará el nombre del evento
+    name: 'event-meetings',
+    component: MeetingsPage,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
