@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
               if (data.user) {
                 this.authenticated = true
                 this.user = data.user
-                router.push({ name: 'LandingPage' })
+                router.push({ name: "event-detail" })
               } else {
                 this.error = data.text
               }
@@ -112,6 +112,10 @@ export const useAuthStore = defineStore('auth', {
             this.loggingIn = false
           })
       }
+    },
+    async logout() {
+      this.authenticated = false;
+      this.user = null;
     },
     /*async logout() {
       //clearValidationErrors()
