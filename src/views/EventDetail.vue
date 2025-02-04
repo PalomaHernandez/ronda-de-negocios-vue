@@ -46,15 +46,20 @@
             <h3 class="text-lg font-semibold text-gray-800">Estado</h3>
             <p class="text-gray-600">{{ evento.status || "No disponible" }}</p>
           </div>
-
+          
           <div class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Ubicacion</h3>
             <p class="text-gray-600">{{ evento.location || "No disponible" }}</p>
           </div>
 
+          <div v-if="authStore.authenticated" class="bg-white p-4 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800">Imagenes</h3>
+            <p class="text-gray-600">{{ "aca esto nos falta"}}</p>
+          </div>
+
         </div>
 
-        <div class="mt-8 flex justify-end space-x-4">
+        <div v-if="!authStore.authenticated" class="mt-8 flex justify-end space-x-4">
           <button @click="abrirModal"
             class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
             Inscribirse al Evento
@@ -99,6 +104,7 @@ import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useRoute, useRouter } from "vue-router";
 import LayoutPage from "@/Layout.vue";
+import { useAuthStore } from "@/stores/auth";
 
 // Estado y store
 const eventStore = useEventStore();
@@ -106,6 +112,7 @@ const { evento, loading, error } = storeToRefs(eventStore);
 const route = useRoute();
 const router = useRouter();
 const mostrarModal = ref(false);
+const authStore = useAuthStore();
 
 // Cargar evento al montar
 onMounted(() => {

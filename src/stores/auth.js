@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
               if (data.user) {
                 this.authenticated = true
                 this.user = data.user
-                router.push({ name: "event-detail" })
+                router.go(-1)
               } else {
                 this.error = data.text
               }

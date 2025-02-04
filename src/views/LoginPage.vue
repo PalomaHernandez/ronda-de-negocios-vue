@@ -20,7 +20,7 @@
 			<input type="password" v-model="credentials.password" required>
 		  </LabeledObject>
 		  <button type="submit" class="btn btn-primary">
-			<i class="fa-solid fa-key"></i> Log in
+			Log in
 		  </button>
 		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">
 			No tenés cuenta? Registrate haciendo click acá.
