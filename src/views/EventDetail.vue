@@ -3,60 +3,44 @@
     <template #default>
       <p v-if="loading">Cargando...</p>
       <div v-else-if="evento">
-        <div class="text-center">
-          <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
-          <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
+        <div class="text-center relative">
+          <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
+            class="mx-auto h-32 w-32 object-cover rounded-full mb-4 absolute left-1/2 transform -translate-x-1/2 -translate-y-12" />
+
+          <template v-if="editMode">
+            <input type="text" class="text-4xl font-extrabold text-gray-900" v-model="evento.title">
+            <textarea class="mt-2 text-lg text-gray-600" v-model="evento.description"
+              placeholder="Descripción"></textarea>
+          </template>
+          <template v-else>
+            <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
+            <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
+          </template>
         </div>
 
         <!-- Información del Evento -->
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Fecha del Evento</h3>
-            <p class="text-gray-600">{{ new Date(evento.date).toLocaleDateString() || "No disponible" }}</p>
-          </div>
+            <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
+              <template v-if="editMode">
+                <input v-if="field.type === 'text'" type="text" v-model="evento[key]">
+                <input v-if="field.type === 'date'" type="date" v-model="evento[key]">
+                <input v-if="field.type === 'time'" type="time" v-model="evento[key]">
+              </template>
+              <template v-else>
+                <p class="text-gray-600">{{ evento[key] || 'No disponible' }}</p>
+              </template>
+            </div>
+        </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Horario</h3>
-            <p class="text-gray-600">
-              {{ formatTime(evento.starts_at) }} - {{ formatTime(evento.ends_at) }}
-            </p>
-          </div>
+        <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+          <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
+          <input v-if="editMode" type="file" multiple>
+        </div>
 
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Duración de las reuniones</h3>
-            <p class="text-gray-600">{{ evento.meeting_duration || "No disponible" }} </p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Tiempo entre reuniones</h3>
-            <p class="text-gray-600">{{ evento.time_between_meetings || "No disponible" }} min</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Inscripción hasta</h3>
-            <p class="text-gray-600">{{ evento.inscription_end_date || "No disponible" }}</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Matching hasta</h3>
-            <p class="text-gray-600">{{ evento.matching_end_date || "No disponible" }}</p>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Estado</h3>
-            <p class="text-gray-600">{{ evento.status || "No disponible" }}</p>
-          </div>
-          
-          <div class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Ubicacion</h3>
-            <p class="text-gray-600">{{ evento.location || "No disponible" }}</p>
-          </div>
-
-          <div v-if="authStore.authenticated" class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Imagenes</h3>
-            <p class="text-gray-600">{{ "aca esto nos falta"}}</p>
-          </div>
-
+        <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+          <h3 class="text-lg font-semibold text-gray-800">Logo</h3>
+          <input v-if="editMode" type="file">
         </div>
 
         <div v-if="!authStore.authenticated" class="mt-8 flex justify-end space-x-4">
@@ -67,6 +51,17 @@
           <button @click="irALogin"
             class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-gray-700 focus:outline-none">
             Acceder
+          </button>
+        </div>
+
+        <!--div v-if="authStore.user?.role === 'responsable'" class="mt-8 flex justify-end space-x-4"-->
+        <div class="mt-8 flex justify-end space-x-4">
+          <button @click="toggleEditMode" class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg">
+            {{ editMode ? 'Cancelar' : 'Editar' }}
+          </button>
+          <button v-if="editMode" @click="update"
+            class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg">
+            Guardar cambios
           </button>
         </div>
       </div>
@@ -113,6 +108,18 @@ const route = useRoute();
 const router = useRouter();
 const mostrarModal = ref(false);
 const authStore = useAuthStore();
+const editMode = ref(false);
+
+const fields = {
+  date: { label: "Fecha del Evento", type: "date" },
+  starts_at: { label: "Horario de inicio", type: "time" },
+  ends_at: { label: "Horario de fin", type: "time" },
+  meeting_duration: { label: "Duración de reuniones", type: "text" },
+  time_between_meetings: { label: "Tiempo entre reuniones", type: "text" },
+  inscription_end_date: { label: "Inscripción hasta", type: "date" },
+  matching_end_date: { label: "Matching hasta", type: "date" },
+  location: { label: "Ubicación", type: "text" }
+};
 
 // Cargar evento al montar
 onMounted(() => {
@@ -136,6 +143,19 @@ const irALogin = () => {
 const irARegister = () => {
   cerrarModal();
   router.push({ name: "register" });
+};
+
+const toggleEditMode = () => {
+  editMode.value = !editMode.value;
+};
+
+const update = () => {
+  if (!evento.value.title) {
+    alert("El título es obligatorio.");
+    return;
+  }
+  eventStore.update();
+  editMode.value = false;
 };
 
 const formatTime = (time) => {

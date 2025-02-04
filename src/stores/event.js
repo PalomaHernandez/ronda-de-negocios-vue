@@ -23,11 +23,12 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async update(name) {
+    async update() {
       this.error = null;
 
       try {
-        const response = await axiosApiInstance.patch(`/events/${this.evento.id}`);
+        console.log(this.evento);
+        const response = await axiosApiInstance.patch(`/events/${this.evento.id}`, this.evento);
         console.log(response);
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al editar el evento.';
