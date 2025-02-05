@@ -23,19 +23,29 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async update() {
+    async update(formData) {
       this.error = null;
-
+  
       try {
-        console.log(this.evento);
-        const response = await axiosApiInstance.patch(`/events/${this.evento.id}`, this.evento);
-        console.log(response);
+          // 🔹 Asegúrate de agregar `_method: PATCH`
+          formData.append('_method', 'PATCH');
+  
+          console.log(Array.from(formData.entries()));  // 👀 Verifica qué se está enviando
+  
+          const response = await axiosApiInstance.post(`/events/${this.evento.id}`, formData, {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          });
+  
+          console.log(response);
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al editar el evento.';
-        console.error("Error updating event:", this.error);
+          this.error = err.response?.data?.message || 'Error al editar el evento.';
+          console.error("Error updating event:", this.error);
       } finally {
-        this.loading = false;
+          this.loading = false;
       }
-    },
   },
+  },
+  
 });

@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('auth', {
     success: null,
     error: null,
     info: null,
+    role: useStorage('role', {}),
   }),
   actions: {
     clearMessages() {
@@ -32,7 +33,6 @@ export const useAuthStore = defineStore('auth', {
         this.registering = true
         this.clearMessages()
         this.info = 'Registering your new account...'
-        console.log(account)
         return axiosLoginInstance.get('sanctum/csrf-cookie')
           .then(() => {
             return axiosApiInstance.post('register', account).then(() => {
@@ -93,6 +93,7 @@ export const useAuthStore = defineStore('auth', {
               if (data.user) {
                 this.authenticated = true
                 this.user = data.user
+                this.role = data.role
                 router.go(-1)
               } else {
                 this.error = data.text
@@ -143,4 +144,8 @@ export const useAuthStore = defineStore('auth', {
       }
     },*/
   },
+  getters: {
+    isAuthenticated: (state) => !!state.user,
+    hasRole: (state) => (role) => state.role.includes(role),
+  }
 })

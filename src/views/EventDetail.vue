@@ -20,27 +20,27 @@
 
         <!-- Información del Evento -->
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
-              <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
-              <template v-if="editMode">
-                <input v-if="field.type === 'text'" type="text" v-model="evento[key]">
-                <input v-if="field.type === 'date'" type="date" v-model="evento[key]">
-                <input v-if="field.type === 'time'" type="time" v-model="evento[key]">
-              </template>
-              <template v-else>
-                <p class="text-gray-600">{{ evento[key] || 'No disponible' }}</p>
-              </template>
-            </div>
+          <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
+            <template v-if="editMode">
+              <input v-if="field.type === 'text'" type="text" v-model="evento[key]">
+              <input v-if="field.type === 'date'" type="date" v-model="evento[key]">
+              <input v-if="field.type === 'time'" type="time" v-model="evento[key]">
+            </template>
+            <template v-else>
+              <p class="text-gray-600">{{ evento[key] || 'No disponible' }}</p>
+            </template>
+          </div>
         </div>
 
         <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
-          <input v-if="editMode" type="file" multiple>
+          <FileUploader v-if="editMode" @updateFiles="handleDocumentsUpdate" />
         </div>
 
         <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Logo</h3>
-          <input v-if="editMode" type="file">
+          <ImageUploader v-if="editMode" type="logo" @updateFiles="handleLogoUpdate" />
         </div>
 
         <div v-if="!authStore.authenticated" class="mt-8 flex justify-end space-x-4">
@@ -54,8 +54,7 @@
           </button>
         </div>
 
-        <!--div v-if="authStore.user?.role === 'responsable'" class="mt-8 flex justify-end space-x-4"-->
-        <div class="mt-8 flex justify-end space-x-4">
+        <div v-if="isResponsible" class="mt-8 flex justify-end space-x-4">
           <button @click="toggleEditMode" class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg">
             {{ editMode ? 'Cancelar' : 'Editar' }}
           </button>
@@ -94,12 +93,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useRoute, useRouter } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import { useAuthStore } from "@/stores/auth";
+import ImageUploader from "@/components/ImageUploader.vue";
+import FileUploader from "@/components/FileUploader.vue";
 
 // Estado y store
 const eventStore = useEventStore();
@@ -121,9 +122,24 @@ const fields = {
   location: { label: "Ubicación", type: "text" }
 };
 
+const isResponsible = computed(() => authStore.hasRole("responsible"));
+
+const logoFile = ref(null);
+const documentFiles = ref([]);
+
+const handleLogoUpdate = (files) => {
+  logoFile.value = files.length > 0 ? files[0] : null;
+};
+
+const handleDocumentsUpdate = (files) => {
+  documentFiles.value = files;
+};
+
+
 // Cargar evento al montar
 onMounted(() => {
   eventStore.fetch(route.params.name);
+  console.log(authStore.role);
 });
 
 // Métodos
@@ -149,14 +165,45 @@ const toggleEditMode = () => {
   editMode.value = !editMode.value;
 };
 
-const update = () => {
+const update = async () => {
   if (!evento.value.title) {
     alert("El título es obligatorio.");
     return;
   }
-  eventStore.update();
-  editMode.value = false;
+
+  const formData = new FormData();
+
+  formData.append("title", evento.value.title);
+  formData.append("description", evento.value.description || "");
+formData.append("date", evento.value.date || "");
+formData.append("starts_at",  evento.value.starts_at || "");
+formData.append("ends_at",  evento.value.ends_at || "");
+formData.append("meeting_duration", evento.value.meeting_duration || "");
+formData.append("time_between_meetings", evento.value.time_between_meetings || "");
+formData.append("inscription_end_date", evento.value.inscription_end_date ? evento.value.inscription_end_date : "");
+formData.append("matching_end_date", evento.value.matching_end_date ? evento.value.matching_end_date : "");
+formData.append("location", evento.value.location || "");
+
+  // Agregar logo si hay uno nuevo
+  if (logoFile.value) {
+    formData.append("logo", logoFile.value);
+  }
+
+  if (documentFiles.value.length > 0) {
+    documentFiles.value.forEach((file, index) => {
+      formData.append(`documents[${index}]`, file);
+    });
+  }
+
+  try {
+    console.log([...formData.entries()]);
+    await eventStore.update(formData);
+    editMode.value = false;
+  } catch (error) {
+    console.error("Error actualizando evento:", error);
+  }
 };
+
 
 const formatTime = (time) => {
   if (!time) return "No disponible";
