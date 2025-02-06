@@ -4,6 +4,7 @@ import { axiosApiInstance } from '@/api';
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
     evento: null,
+    participants: [], 
     loading: false,
     error: null,
   }),
@@ -23,6 +24,22 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
+
+    async fetchParticipants(eventId) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await axiosApiInstance.get(`/events/${eventId}/participants`);
+        this.participants = response.data; // 🔹 Guardamos los participantes en el store
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener los participantes.';
+        console.error("Error fetching participants:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async update(formData) {
       this.error = null;
   
