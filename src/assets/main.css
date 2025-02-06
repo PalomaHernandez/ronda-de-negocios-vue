@@ -231,18 +231,33 @@ select {
   }
 
   .remove-btn {
-	position: absolute;
+	@apply absolute text-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition px-1 py-1;
 	top: 0;
 	right: 0;
-	background-color: #f87171; 
-	color: white;
-	border-radius: 100%;
-	padding: 0.25rem;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
   }
   
   .remove-btn:hover {
-	background-color: #f43f5e; 
+	@apply text-white;
   }
   
+  .rmv-file-btn {
+	@apply text-red-500 rounded-full cursor-pointer flex items-center justify-center hover:bg-red-600 transition px-1 py-1;
+  }
+
+  .rmv-file-btn:hover {
+	@apply text-white;
+  }
+
+  .file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f3f3f3;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }

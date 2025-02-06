@@ -117,6 +117,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       this.authenticated = false;
       this.user = null;
+      this.role = null;
     },
     /*async logout() {
       //clearValidationErrors()
@@ -146,6 +147,6 @@ export const useAuthStore = defineStore('auth', {
   },
   getters: {
     isAuthenticated: (state) => !!state.user,
-    hasRole: (state) => (role) => state.role.includes(role),
+    hasRole: (state) => (role) => state.role?.includes(role),
   }
 })

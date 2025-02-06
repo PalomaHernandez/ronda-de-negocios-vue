@@ -3,17 +3,30 @@
     <template #default>
       <p v-if="loading">Cargando...</p>
       <div v-else-if="evento">
-        <div class="text-center relative">
-          <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
-            class="mx-auto h-32 w-32 object-cover rounded-full mb-4 absolute left-1/2 transform -translate-x-1/2 -translate-y-12" />
+        <div class="text-center flex flex-col items-center space-y-6">
+          <div class="cursor-pointer" @click="$refs.logoInput.click()">
+            <i class="fa-solid fa-camera text-4xl text-gray-500"></i>
+            <img v-if="evento.logo_path" :src="evento.logo_url" alt="Event Logo"
+              class="h-64 w-full object-cover rounded-xl mb-4" />
+            <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
+          </div>
 
+          <!-- Título del evento -->
+          <div class="flex flex-col items-center">
+            <template v-if="editMode">
+              <input type="text" class="text-4xl font-extrabold text-gray-900" v-model="evento.title" />
+            </template>
+            <template v-else>
+              <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
+            </template>
+          </div>
+
+          <!-- Descripción debajo del título -->
           <template v-if="editMode">
-            <input type="text" class="text-4xl font-extrabold text-gray-900" v-model="evento.title">
             <textarea class="mt-2 text-lg text-gray-600" v-model="evento.description"
               placeholder="Descripción"></textarea>
           </template>
           <template v-else>
-            <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
             <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
           </template>
         </div>
@@ -35,12 +48,36 @@
 
         <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
-          <FileUploader v-if="editMode" @updateFiles="handleDocumentsUpdate" />
+          <template v-if="editMode">
+            <FileUploader v-if="editMode" :uploaded-files="evento.files" @updateFiles="handleDocumentsUpdate"
+              @deletedFiles="handleDeletedFiles" />
+            <!-- Mostrar los archivos existentes en editMode -->
+            <!--div class="mt-4 grid grid-cols-2 gap-4">
+              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-2 text-center">
+                <p class="text-sm text-gray-600">{{ file.original_name }}</p>
+                <button @click="downloadFile(file)" class="mt-2 bg-blue-500 text-white py-1 px-4 rounded-lg text-sm">
+                  Descargar
+                </button>
+              </div>
+            </div-->
+          </template>
+          <ul v-else>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-2 text-center">
+                <p class="text-sm text-gray-600 mb-2">{{ file.original_name }}</p>
+                <button>
+                  <a :href="file.file_url" download class="mt-2 bg-blue-500 text-white py-1 px-4 rounded-lg text-sm">
+                    Descargar
+                  </a>
+                </button>
+              </div>
+            </div>
+          </ul>
         </div>
 
-        <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+        <div v-if="editMode" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Logo</h3>
-          <ImageUploader v-if="editMode" type="logo" @updateFiles="handleLogoUpdate" />
+          <ImageUploader type="logo" :uploaded-files="evento.logo_path" @updateFiles="handleLogoUpdate" />
         </div>
 
         <div v-if="!authStore.authenticated" class="mt-8 flex justify-end space-x-4">
@@ -126,6 +163,7 @@ const isResponsible = computed(() => authStore.hasRole("responsible"));
 
 const logoFile = ref(null);
 const documentFiles = ref([]);
+const deletedFiles = ref([]);
 
 const handleLogoUpdate = (files) => {
   logoFile.value = files.length > 0 ? files[0] : null;
@@ -133,6 +171,12 @@ const handleLogoUpdate = (files) => {
 
 const handleDocumentsUpdate = (files) => {
   documentFiles.value = files;
+};
+
+const handleDeletedFiles = (deleted) => {
+  // Aquí recibimos los archivos eliminados
+  deletedFiles.value = deleted;
+  console.log("Archivos eliminados:", deletedFiles.value);
 };
 
 
@@ -175,14 +219,14 @@ const update = async () => {
 
   formData.append("title", evento.value.title);
   formData.append("description", evento.value.description || "");
-formData.append("date", evento.value.date || "");
-formData.append("starts_at",  evento.value.starts_at || "");
-formData.append("ends_at",  evento.value.ends_at || "");
-formData.append("meeting_duration", evento.value.meeting_duration || "");
-formData.append("time_between_meetings", evento.value.time_between_meetings || "");
-formData.append("inscription_end_date", evento.value.inscription_end_date ? evento.value.inscription_end_date : "");
-formData.append("matching_end_date", evento.value.matching_end_date ? evento.value.matching_end_date : "");
-formData.append("location", evento.value.location || "");
+  formData.append("date", evento.value.date || "");
+  formData.append("starts_at", evento.value.starts_at || "");
+  formData.append("ends_at", evento.value.ends_at || "");
+  formData.append("meeting_duration", evento.value.meeting_duration || "");
+  formData.append("time_between_meetings", evento.value.time_between_meetings || "");
+  formData.append("inscription_end_date", evento.value.inscription_end_date ? evento.value.inscription_end_date : "");
+  formData.append("matching_end_date", evento.value.matching_end_date ? evento.value.matching_end_date : "");
+  formData.append("location", evento.value.location || "");
 
   // Agregar logo si hay uno nuevo
   if (logoFile.value) {
@@ -192,6 +236,12 @@ formData.append("location", evento.value.location || "");
   if (documentFiles.value.length > 0) {
     documentFiles.value.forEach((file, index) => {
       formData.append(`documents[${index}]`, file);
+    });
+  }
+
+  if (deletedFiles.value.length > 0) {
+    deletedFiles.value.forEach((fileId, index) => {
+      formData.append(`deleted_files[${index}]`, fileId);
     });
   }
 

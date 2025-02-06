@@ -12,7 +12,7 @@
         <div class="relative w-28 h-28">
           <img :src="preview" alt="Vista previa del logo" class="w-28 h-28 object-cover rounded-lg" />
           <button @click="removeLogo" class="remove-btn">
-            &times;
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </div>
@@ -55,7 +55,11 @@ export default {
   emits: ["updateFiles"],
   setup(props, { emit }) {
     const preview = ref(props.type === "logo" ? null : []);
-    const fileList = ref([]);
+    const fileList = ref([...props.uploadedFiles]);
+
+    watch(() => props.uploadedFiles, (newUploadedFiles) => {
+            fileList.value = [...newUploadedFiles];
+        }, { immediate: true });
 
     const handleFileChange = (event) => {
       const files = Array.from(event.target.files);

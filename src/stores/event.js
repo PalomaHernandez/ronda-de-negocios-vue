@@ -44,16 +44,8 @@ export const useEventStore = defineStore('eventStore', {
       this.error = null;
   
       try {
-          // 🔹 Asegúrate de agregar `_method: PATCH`
           formData.append('_method', 'PATCH');
-  
-          console.log(Array.from(formData.entries()));  // 👀 Verifica qué se está enviando
-  
-          const response = await axiosApiInstance.post(`/events/${this.evento.id}`, formData, {
-              headers: {
-                  'Content-Type': 'multipart/form-data'
-              }
-          });
+          const response = await axiosApiInstance.post(`/events/${this.evento.id}`, formData);
   
           console.log(response);
       } catch (err) {
