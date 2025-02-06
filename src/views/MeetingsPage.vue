@@ -12,7 +12,7 @@
           <p class="text-gray-600"><strong>Fase actual:</strong> {{ evento.status }}</p>
 
           <!-- Botón "Mis reuniones e invitaciones" -->
-          <button
+          <button @click="invitations"
             class="w-full bg-blue-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 mt-4"
           >
             Mis reuniones e invitaciones
@@ -70,10 +70,11 @@
                     </div>
                   </div>
                   <div class="space-x-2">
-                    <button class="bg-blue-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-700">
+                    <button class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
                       Más detalles
                     </button>
-                    <button class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
+                    <button 
+                      @click="openMeetingRequest(participant)" class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
                       Solicitar reunión
                     </button>
                   </div>
@@ -87,6 +88,39 @@
       </div>
 
       <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
+            <!-- 📌 MODAL: Solicitud de reunión -->
+            <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
+          <h2 class="text-xl font-bold mb-4">Solicitud de reunión</h2>
+
+          <!-- Objetivo de la reunión -->
+          <label class="block text-gray-700">Objetivo:</label>
+          <select v-model="meetingObjective" class="w-full p-2 border rounded-lg mb-4">
+            <option value="Busco tus servicios">Busco tus servicios</option>
+            <option value="Ofrezco mis servicios">Ofrezco mis servicios</option>
+            <option value="Busco tus servicios y oferto los míos">Busco tus servicios y oferto los míos</option>
+          </select>
+
+          <!-- Motivo -->
+          <label class="block text-gray-700">Motivo:</label>
+          <textarea
+            v-model="meetingReason"
+            rows="3"
+            class="w-full p-2 border rounded-lg mb-4"
+            placeholder="Escribe el motivo de la reunión..."
+          ></textarea>
+
+          <!-- Botones -->
+          <div class="flex justify-end space-x-2">
+            <button @click="closeMeetingRequest" class="bg-gray-400 text-white py-2 px-4 rounded-lg">
+              Cancelar
+            </button>
+            <button @click="submitMeetingRequest" class="bg-blue-600 text-white py-2 px-4 rounded-lg">
+              Enviar solicitud
+            </button>
+          </div>
+        </div>
+      </div>
     </template>
   </LayoutPage>
 </template>
@@ -96,7 +130,7 @@ import { ref, computed, onMounted, watchEffect } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 
 // Estado y store
@@ -104,6 +138,7 @@ const eventStore = useEventStore();
 const authStore = useAuthStore(); // Store del usuario actual
 const { evento, participants, loading, error } = storeToRefs(eventStore);
 const route = useRoute();
+const router = useRouter();
 
 // Estado de la barra de búsqueda y filtro
 const searchQuery = ref("");
@@ -146,4 +181,34 @@ onMounted(async () => {
     }
   });
 });
+
+const invitations = () => {
+    router.push({ name: "event-invitations" });
+  };
+
+// Estado del modal
+const showModal = ref(false);
+const meetingObjective = ref("");
+const meetingReason = ref("");
+const selectedParticipant = ref(null);
+
+// Abrir modal
+const openMeetingRequest = (participant) => {
+  selectedParticipant.value = participant;
+  showModal.value = true;
+};
+
+// Cerrar modal
+const closeMeetingRequest = () => {
+  showModal.value = false;
+  meetingObjective.value = "";
+  meetingReason.value = "";
+};
+
+// Enviar solicitud (falta lógica de backend)
+const submitMeetingRequest = () => {
+  console.log("Solicitud enviada:", { selectedParticipant, meetingObjective, meetingReason });
+  closeMeetingRequest();
+};
+
 </script>
