@@ -16,14 +16,16 @@
       </div>
     </nav>
 
-    <!-- Contenedor principal -->
+    <!-- Contenedor principal con SCROLL -->
     <div class="flex-1 flex items-center justify-center">
-      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10">
+      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10 
+                  h-[85vh] overflow-y-auto">
         <slot />
       </div>
     </div>
   </div>
 </template>
+
 
   
   <script setup>
