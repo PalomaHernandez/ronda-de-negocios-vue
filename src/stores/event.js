@@ -6,6 +6,7 @@ export const useEventStore = defineStore('eventStore', {
     evento: null,
     participants: [], 
     meetings: [], 
+    notifications: [], 
     loading: false,
     error: null,
   }),
@@ -51,6 +52,21 @@ export const useEventStore = defineStore('eventStore', {
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
         console.error("Error fetching meetings:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+
+    async fetchNotifications(eventId, userId) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await axiosApiInstance.get(`/events/${eventId}/notifications/${userId}`);
+        this.notifications = response.data; // Guardamos las reuniones en el store
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        console.error("Error fetching notifications:", this.error);
       } finally {
         this.loading = false;
       }
