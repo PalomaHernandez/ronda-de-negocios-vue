@@ -88,7 +88,7 @@ export const useAuthStore = defineStore('auth', {
         this.info = 'Logging in...'
         return axiosLoginInstance.get('sanctum/csrf-cookie')
           .then(() => {
-            return axiosApiInstance.post('login', credentials).then(({ data }) => {
+             return axiosApiInstance.post('login', credentials).then(({ data }) => {
               this.clearMessages()
               if (data.user) {
                 this.authenticated = true
@@ -115,36 +115,34 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async logout() {
-      this.authenticated = false;
-      this.user = null;
-      this.role = null;
-      router.push({ name: "event-detail" });
-    },
-    /*async logout() {
-      //clearValidationErrors()
       if (!this.loggingOut) {
-        this.loggingOut = true
-        this.clearMessages()
-        this.info = 'Logging out...'
-        return axiosApiInstance.post('logout')
-          .then(() => {
-            this.authenticated = false
-            this.loggingOut = false
-            this.clearMessages()
-            router.push({ name: 'login' })
-          }).catch((error) => {
-            throw error
-            handleErrors(error).then((message) => {
-              this.clearMessages()
-              this.error = message
-            }).catch((routeName) => {
-              router.push({ name: routeName })
-            })?
-          }).finally(() => {
-            this.loggingOut = false
-          })
-      },*/
+        this.loggingOut = true;
+        this.clearMessages();
+        this.info = 'Logging out...';
     
+        try {
+          const response = await axiosApiInstance.post('logout');
+          console.log(response.data);
+    
+          this.authenticated = false;
+          this.user = null;
+          this.role = [];
+    
+          router.push({ name: "event-detail" });
+        } catch (error) {
+          console.error("Error en logout:", error.response ? error.response.data : error.message);
+    
+          if (error.response && error.response.status === 401) {
+            this.authenticated = false;
+            this.user = null;
+            this.role = [];
+            router.push({ name: "login" });
+          }
+        } finally {
+          this.loggingOut = false;
+        }
+      }
+    }    
   },
   getters: {
     isAuthenticated: (state) => !!state.user,

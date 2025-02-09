@@ -6,7 +6,7 @@ export const axiosLoginInstance = axios.create({
     baseURL: apiUrl,
     withCredentials: true,
     headers: {
-        Accept: 'application/json'
+        Accept: 'application/json',
     }
 })
 
@@ -14,6 +14,6 @@ export const axiosApiInstance = axios.create({
     baseURL: `${apiUrl}/api`,
     withCredentials: true,
     headers: {
-        Accept: 'application/json'
+        Accept: 'application/json',
     }
 })
