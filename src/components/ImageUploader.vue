@@ -2,12 +2,7 @@
   <div class="upload-container">
     <!-- Logo Upload -->
     <div v-if="type === 'logo'" class="upload-section">
-      <input 
-        type="file" 
-        accept="image/*" 
-        @change="handleFileChange" 
-        class="file-input mb-4" 
-      />
+      <input type="file" accept="image/*" @change="handleFileChange" class="file-input mb-4" />
       <div v-if="preview" class="preview-container">
         <div class="relative w-28 h-28">
           <img :src="preview" alt="Vista previa del logo" class="w-28 h-28 object-cover rounded-lg" />
@@ -20,13 +15,7 @@
 
     <!-- Gallery Upload -->
     <div v-if="type === 'gallery'" class="upload-section">
-      <input 
-        type="file" 
-        accept="image/*" 
-        multiple 
-        @change="handleFileChange" 
-        class="file-input mb-4" 
-      />
+      <input type="file" accept="image/*" multiple @change="handleFileChange" class="file-input mb-4" />
       <div class="preview-container flex flex-row gap-2 mt-2">
         <div v-for="(img, index) in preview" :key="index" class="relative w-28 h-28">
           <img :src="img" alt="Vista previa" class="w-full h-full object-cover rounded-lg" />
@@ -41,7 +30,7 @@
 
 
 <script>
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted, watch } from "vue";
 
 export default {
   name: "ImageUploader",
@@ -55,11 +44,19 @@ export default {
   emits: ["updateFiles"],
   setup(props, { emit }) {
     const preview = ref(props.type === "logo" ? null : []);
-    const fileList = ref([...props.uploadedFiles]);
+    const fileList = ref(Array.isArray(props.uploadedFiles) ? [...props.uploadedFiles] : []);
 
-    watch(() => props.uploadedFiles, (newUploadedFiles) => {
-            fileList.value = [...newUploadedFiles];
-        }, { immediate: true });
+
+    watch(
+      () => props.uploadedFiles,
+      (newUploadedFiles) => {
+        if (!Array.isArray(newUploadedFiles)) {
+          newUploadedFiles = [];
+        }
+        fileList.value = [...newUploadedFiles];
+      },
+      { immediate: true }
+    );
 
     const handleFileChange = (event) => {
       const files = Array.from(event.target.files);

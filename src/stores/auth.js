@@ -134,17 +134,17 @@ export const useAuthStore = defineStore('auth', {
             router.push({ name: 'login' })
           }).catch((error) => {
             throw error
-            /*handleErrors(error).then((message) => {
+            handleErrors(error).then((message) => {
               this.clearMessages()
               this.error = message
             }).catch((routeName) => {
               router.push({ name: routeName })
-            })
+            })?
           }).finally(() => {
             this.loggingOut = false
           })
-      }
-    },*/
+      },*/
+    
   },
   getters: {
     isAuthenticated: (state) => !!state.user,

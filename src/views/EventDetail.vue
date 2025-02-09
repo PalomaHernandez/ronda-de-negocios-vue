@@ -182,8 +182,7 @@ const handleDeletedFiles = (deleted) => {
 
 // Cargar evento al montar
 onMounted(() => {
-  eventStore.fetch(route.params.name);
-  console.log(authStore.role);
+  eventStore.fetch(route.params.slug);
 });
 
 // Métodos

@@ -12,12 +12,12 @@ export const useEventStore = defineStore('eventStore', {
   }),
   persist: true,
   actions: {
-    async fetch(name) {
+    async fetch(slug) {
       this.loading = true;
       this.error = null;
 
       try {
-        const response = await axiosApiInstance.get(`/events/${name}`);
+        const response = await axiosApiInstance.get(`/events/${slug}`);
         this.evento = response.data;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al cargar el evento.';
