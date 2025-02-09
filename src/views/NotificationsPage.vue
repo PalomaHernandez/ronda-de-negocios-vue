@@ -39,7 +39,7 @@ const authStore = useAuthStore();
 
 // Cargar evento y notificaciones al montar
 onMounted(async () => {
-  await eventStore.fetch(route.params.name); // Obtener evento
+  await eventStore.fetch(route.params.slug); // Obtener evento
   watchEffect(() => {
     if (evento.value) {
       const userId = authStore.user.id;

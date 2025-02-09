@@ -75,7 +75,7 @@ const router = useRouter();
 
 // Cargar evento al montar
 onMounted(() => {
-  eventStore.fetch(route.params.name);
+  eventStore.fetch(route.params.slug);
 });
 
 // Estado local del formulario

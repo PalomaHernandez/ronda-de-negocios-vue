@@ -153,7 +153,7 @@ const filteredMeetings = computed(() => {
 
 // Cargar datos al montar
 onMounted(async () => {
-  await eventStore.fetch(route.params.name); // Obtener evento
+  await eventStore.fetch(route.params.slug); // Obtener evento
 
   watchEffect(() => {
     if (evento.value) {

@@ -172,7 +172,7 @@ const userRemainingMeetings = computed(() => {
 
 // Cargar datos al montar
 onMounted(async () => {
-  await eventStore.fetch(route.params.name); // Obtener evento
+  await eventStore.fetch(route.params.slug); // Obtener evento
 
   // Verificar que se obtuvo el evento antes de pedir participantes
   watchEffect(() => {
