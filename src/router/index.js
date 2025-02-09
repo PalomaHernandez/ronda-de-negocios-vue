@@ -23,44 +23,46 @@ const routes = [
   },
 
   {
-    path: '/events/:name',  // Ruta para el detalle del evento
+    path: '/:name',  // Ruta para el detalle del evento
     name: 'event-detail',
     component: EventDetail,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
-    path: '/events/:name/inscription', // Ahora la URL utilizará el nombre del evento
+    path: '/:name/inscription', // Ahora la URL utilizará el nombre del evento
     name: 'event-inscription',
     component: InscriptionPage,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
-    path: '/events/:name/notifications', // Ahora la URL utilizará el nombre del evento
+    path: '/:name/notifications', // Ahora la URL utilizará el nombre del evento
     name: 'event-notifications',
     component: NotificationsPage,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
-    path: '/events/:name/meetings', // Ahora la URL utilizará el nombre del evento
+    path: '/:name/meetings', // Ahora la URL utilizará el nombre del evento
     name: 'event-meetings',
     component: MeetingsPage,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
-    path: '/events/:name/invitations', // Ahora la URL utilizará el nombre del evento
+    path: '/:name/invitations', // Ahora la URL utilizará el nombre del evento
     name: 'event-invitations',
     component: InvitationsPage,
     props: true, // Esto permite pasar el `name` como prop
   },
   {
-    path: '/login',
+    path: '/:name/login',
     name: 'login',
-    component: Login
+    component: Login,
+    props: true, // Esto permite pasar el `name` como prop
   },
   {
-    path: '/register',
+    path: '/:name/register',
     name: 'register',
-    component: RegisterPage
+    component: RegisterPage,
+    props: true, // Esto permite pasar el `name` como prop
   },
 
 ];

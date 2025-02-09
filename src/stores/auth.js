@@ -118,6 +118,7 @@ export const useAuthStore = defineStore('auth', {
       this.authenticated = false;
       this.user = null;
       this.role = null;
+      router.push({ name: "event-detail" });
     },
     /*async logout() {
       //clearValidationErrors()

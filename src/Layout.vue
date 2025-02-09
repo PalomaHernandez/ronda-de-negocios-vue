@@ -1,13 +1,13 @@
 <template>
   <div class="bg-blue-500 min-h-screen flex flex-col">
     <!-- Barra de navegación -->
-    <nav class="bg-white shadow-md flex items-center px-4 h-12">
-      <div class="font-bold text-blue-600">Rondas UNS</div> 
+    <nav class="bg-white shadow-md flex items-center px-4 h-10">
+      <div class="font-bold text-blue-600 text-lg">Rondas UNS</div> 
 
-      <div v-if="authStore.authenticated" class="ml-auto flex space-x-4">
-        <button @click="landingPage" class="px-3 py-1 h-9 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Inicio</button>
-        <button @click="meetings" class="px-3 py-1 h-9 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Reuniones</button>
-        <button @click="notifications" class="px-3 py-1 h-9 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Notificaciones</button>
+      <div v-if="authStore.authenticated" class="ml-auto flex space-x-4 h-full items-center">
+        <button @click="landingPage" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Inicio</button>
+        <button @click="meetings" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Reuniones</button>
+        <button @click="notifications" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Notificaciones</button>
         
         <!-- Botón de perfil circular más pequeño -->
         <button @click="deslogearse" class="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500 flex items-center justify-center bg-gray-200">
@@ -19,7 +19,7 @@
     <!-- Contenedor principal con SCROLL -->
     <div class="flex-1 flex items-center justify-center">
       <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10 
-                  h-[85vh] overflow-y-auto">
+                  max-h-[85vh] overflow-y-auto">
         <slot />
       </div>
     </div>
