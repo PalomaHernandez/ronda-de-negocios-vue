@@ -72,6 +72,29 @@ export const useEventStore = defineStore('eventStore', {
       }
     },
 
+    async createMeeting(meetingData) {
+      this.loading = true;
+      this.error = null;
+    
+      try {
+
+        const response = await axiosApiInstance.post("/meetings", meetingData);
+        if (!Array.isArray(this.meetings)) {
+          this.meetings = [];
+        }
+    
+        this.meetings.push(response.data);
+
+      } catch (err) {
+        this.error = err.response?.data?.message || "Error al crear la reunión.";
+
+        console.error("Error completo:", err.response?.data);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+
     async update(formData) {
       this.error = null;
 

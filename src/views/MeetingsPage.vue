@@ -96,9 +96,9 @@
           <!-- Objetivo de la reunión -->
           <label class="block text-gray-700">Objetivo:</label>
           <select v-model="meetingObjective" class="w-full p-2 border rounded-lg mb-4">
-            <option value="Busco tus servicios">Busco tus servicios</option>
-            <option value="Ofrezco mis servicios">Ofrezco mis servicios</option>
-            <option value="Busco tus servicios y oferto los míos">Busco tus servicios y oferto los míos</option>
+            <option value="Compra">Busco tus servicios</option>
+            <option value="Venta">Ofrezco mis servicios</option>
+            <option value="Ambos">Busco tus servicios y oferto los míos</option>
           </select>
 
           <!-- Motivo -->
@@ -162,7 +162,6 @@ const filteredParticipants = computed(() => {
     });
 });
 
-// ✅ Computed para obtener las remaining meetings del usuario actual
 const userRemainingMeetings = computed(() => {
   const userParticipant = participants.value.find(
     (participant) => participant.participant_id === authStore.user.participant_id
@@ -206,9 +205,28 @@ const closeMeetingRequest = () => {
 };
 
 // Enviar solicitud (falta lógica de backend)
-const submitMeetingRequest = () => {
-  console.log("Solicitud enviada:", { selectedParticipant, meetingObjective, meetingReason });
-  closeMeetingRequest();
-};
-
+const submitMeetingRequest = async () => {
+        if (!selectedParticipant.value || !meetingObjective.value || !meetingReason.value) {
+          console.error('Faltan campos');
+          return;
+        }
+      
+        // Crear el objeto con los datos necesarios
+        const meetingData = {
+          requester_id: authStore.user.id, // ID del usuario autenticado
+          receiver_id: selectedParticipant.value.id, // ID del participante seleccionado
+          event_id: eventStore.evento.id, // ID del evento
+          reason: meetingReason.value, // Motivo de la reunión
+          time: '2025-02-09 14:30:00',  // Hora fija para el ejemplo, o puedes agregar un selector de hora en tu formulario
+          status: 'Pendiente', // Estado de la solicitud (puedes cambiarlo según tu lógica)
+          requester_role: meetingObjective.value, // Objetivo de la reunión
+        };
+        try {
+          await eventStore.createMeeting(meetingData);
+      
+          closeMeetingRequest();
+        } catch (error) {
+          console.error('Error al enviar la solicitud de reunión:', error);
+        }
+    }
 </script>
