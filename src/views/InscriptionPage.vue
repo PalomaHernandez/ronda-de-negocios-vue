@@ -5,7 +5,7 @@
       <div v-else-if="evento">
         <div class="text-center">
           <h1 class="text-2xl font-bold text-center mb-4">{{ 'Inscripcion al evento: '+evento.title }}</h1>
-          <p class="mt-2 text-lg text-gray-600">{{ 'El dia '+new Date(evento.date).toLocaleDateString()+' a las '+evento.location || 'Informacion no disponible.' }}</p>
+          <p class="mt-2 text-lg text-gray-600">{{ 'El dia '+new Date(evento.date).toLocaleDateString()+' en '+evento.location || 'Informacion no disponible.' }}</p>
         </div>
         <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>

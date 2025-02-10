@@ -57,7 +57,7 @@
   };
 
   onMounted(() => {
-	if (!authStore.authenticated && route.name !== "event-detail" && route.name !== "login" && route.name !== "register") {
+	if (!authStore.authenticated && route.name !== "event-detail" && route.name !== "login" && route.name !== "register" && route.name !== "inscription") {
 	  router.push({ name: "event-detail" });
 	}
   });

@@ -34,7 +34,7 @@ export const useAuthStore = defineStore("auth", {
             this.role = data.role;
             this.token = data.token; // 🔹 Guardar token
             
-            router.push({ name: "event-detail" });
+            router.push({ name: "event-inscription" });
           } else {
             this.error = data.text;
           }
@@ -83,7 +83,7 @@ export const useAuthStore = defineStore("auth", {
             this.role = data.role;
             this.token = data.token; // 🔹 Guardar token después de registrar
     
-            router.push({ name: "event-detail" }); // 🔹 Redirigir al usuario después del registro
+            router.push({ name: "event-inscription" }); // 🔹 Redirigir al usuario después del registro
           } else {
             this.error = "No se pudo registrar.";
           }

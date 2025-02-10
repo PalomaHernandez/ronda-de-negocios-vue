@@ -49,6 +49,10 @@
             <template #label>Logo</template>
             <ImageUploader type="logo" @updateFiles="updateLogo" />
           </LabeledObject>
+          <LabeledObject>
+            <template #label>Imágenes de servicios/productos</template>
+            <ImageUploader type="gallery" @updateFiles="updateGallery" />
+          </LabeledObject>
         </div>
 
         <!-- Botón de registro (ocupa casi todo el ancho) -->
@@ -81,12 +85,16 @@ const account = ref({
   password_confirmation: "",
 });
 const logo = ref(null);
-
+const gallery = ref([]);
 // Métodos
 const updateLogo = (files) => {
   logo.value = files[0] || null;
 };
 
+const updateGallery = (files) => {
+      gallery.value = files; 
+    };
+  
 const register = async () => {
   const form = document.querySelector("form");
   if (!form.checkValidity()) {
@@ -100,6 +108,10 @@ const register = async () => {
     if (logo.value) {
       formData.append("logo", logo.value);
     }
+    gallery.value.forEach((image, index) => {
+      formData.append(`image_${index}`, image);
+    });
+
 
     try {
       await authStore.register(formData);
