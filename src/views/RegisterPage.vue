@@ -92,9 +92,9 @@ const updateLogo = (files) => {
 };
 
 const updateGallery = (files) => {
-      gallery.value = files; 
-    };
-  
+  gallery.value = files;
+};
+
 const register = async () => {
   const form = document.querySelector("form");
   if (!form.checkValidity()) {
@@ -108,9 +108,12 @@ const register = async () => {
     if (logo.value) {
       formData.append("logo", logo.value);
     }
-    gallery.value.forEach((image, index) => {
-      formData.append(`image_${index}`, image);
-    });
+
+    if (gallery.value && gallery.value.length > 0) {
+      gallery.value.forEach((file) => {
+        formData.append("gallery[]", file);
+      });
+    }
 
 
     try {

@@ -68,14 +68,14 @@ export const useAuthStore = defineStore("auth", {
         }
       }
     },
-    async register(account) {
+    async register(formData) {
       if (!this.registering) {
         this.registering = true;
         this.clearMessages();
         this.info = "Registrando tu cuenta...";
     
         try {
-          const { data } = await axiosApiInstance.post("register", account);
+          const { data } = await axiosApiInstance.post("register", formData);
     
           if (data.user) {
             this.authenticated = true;

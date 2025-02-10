@@ -4,21 +4,19 @@
       <p v-if="loading">Cargando...</p>
       <div v-else-if="evento">
         <div class="text-center flex flex-col items-center space-y-6">
-          <div class="cursor-pointer" @click="$refs.logoInput.click()">
-            <i class="fa-solid fa-camera text-4xl text-gray-500"></i>
-            <img v-if="evento.logo_path" :src="evento.logo_url" alt="Event Logo"
-              class="h-64 w-full object-cover rounded-xl mb-4" />
-            <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
-          </div>
-
           <!-- Título del evento -->
           <div class="flex flex-col items-center">
-              <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
+            <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
           </div>
 
           <!-- Descripción debajo del título -->
-            <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
+          <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
 
+          <!-- Imagen clickeable -->
+          <div class="cursor-pointer" @click="abrirImagen">
+            <img v-if="evento.logo_url" :src="evento.logo_url" alt="Event Logo"
+              class="h-64 w-full object-cover rounded-xl mb-4" />
+          </div>
         </div>
 
         <!-- Información del Evento -->
@@ -27,9 +25,9 @@
             <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
             <p class="text-gray-600">
               {{
-                field.type === "date" ? formatDate(evento[key]) 
-                : field.type === "time" ? formatTime(evento[key]) 
-                : evento[key] || 'No disponible'
+                field.type === "date" ? formatDate(evento[key])
+                  : field.type === "time" ? formatTime(evento[key])
+                    : evento[key] || 'No disponible'
               }}
             </p>
           </div>
@@ -56,18 +54,15 @@
             class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
             Inscribirse al Evento
           </button>
-          <RouterLink :to="{name: 'login'}" class="btn btn-primary">
-              Acceder
+          <RouterLink :to="{ name: 'login' }" class="btn btn-primary">
+            Acceder
           </RouterLink>
         </div>
 
         <div v-if="isResponsible" class="mt-8 flex justify-end space-x-4">
-          <RouterLink
-          :to="{ name: 'event-edit', params: { slug: evento.slug } }"
-          class="btn btn-primary"
-        >
-          <i class="fa-solid fa-pen-to-square"></i> Editar
-        </RouterLink>
+          <RouterLink :to="{ name: 'event-edit', params: { slug: evento.slug } }" class="btn btn-primary">
+            <i class="fa-solid fa-pen-to-square"></i> Editar
+          </RouterLink>
 
         </div>
       </div>
@@ -79,11 +74,11 @@
           <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
 
           <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
-            <RouterLink :to="{name: 'login'}" class="btn btn-primary">
+            <RouterLink :to="{ name: 'login' }" class="btn btn-primary">
               <i class="fa-solid fa-right-to-bracket"></i>
               Si, iniciar sesión
             </RouterLink>
-            <RouterLink :to="{name: 'register'}" class="btn btn-primary">
+            <RouterLink :to="{ name: 'register' }" class="btn btn-primary">
               <i class="fa-solid fa-user-edit"></i>
               No, crear cuenta
             </RouterLink>
@@ -96,6 +91,17 @@
           </div>
         </div>
       </div>
+
+      <!-- Modal para la imagen -->
+    <div v-if="mostrarImagen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+      <div class="relative">
+        <img :src="evento.logo_url" alt="Imagen Completa" class="max-w-full max-h-screen rounded-lg shadow-lg" />
+        <button @click="cerrarImagen"
+          class="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-700">
+          ✕
+        </button>
+      </div>
+    </div>
     </template>
   </LayoutPage>
 </template>
@@ -117,6 +123,15 @@ const mostrarModal = ref(false);
 const authStore = useAuthStore();
 const editMode = ref(false);
 
+const mostrarImagen = ref(false);
+
+const abrirImagen = () => {
+  mostrarImagen.value = true;
+};
+
+const cerrarImagen = () => {
+  mostrarImagen.value = false;
+};
 
 const fields = {
   date: { label: "Fecha del Evento", type: "date" },
@@ -149,13 +164,13 @@ const cerrarModal = () => {
   mostrarModal.value = false;
 };
 
-const formatDate = (isoDate) =>{
-      if (!isoDate) return "No disponible";
-      return new Date(isoDate).toLocaleString("es-ES", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      });
+const formatDate = (isoDate) => {
+  if (!isoDate) return "No disponible";
+  return new Date(isoDate).toLocaleString("es-ES", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 };
 
 const formatTime = (time) => {
