@@ -1,151 +1,104 @@
-import router from '@/router'
-import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
-import { axiosApiInstance, axiosLoginInstance } from '@/api'
-//import { clearValidationErrors, handleErrors } from '@/helpers'
+import router from "@/router";
+import { defineStore } from "pinia";
+import { useStorage } from "@vueuse/core";
+import { axiosApiInstance } from "@/api";
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
-    authenticated: useStorage('authenticated', false),
+    authenticated: useStorage("authenticated", false),
+    user: useStorage("user", null),
+    role: useStorage("role", []),
+    token: useStorage("token", null), // 🔹 Agregar token aquí
     loggingIn: false,
     loggingOut: false,
-    registering: false,
-    user: useStorage('user', {}),
-    updating: false,
-    success: null,
     error: null,
     info: null,
-    role: useStorage('role', {}),
   }),
   actions: {
     clearMessages() {
-      this.info = null
-      this.success = null
-      this.error = null
+      this.error = null;
+      this.info = null;
     },
-    showError(message) {
-      this.clearMessages()
-      this.error = message
-    },
-    async register(account) {
-      //clearValidationErrors()
-      if (!this.registering) {
-        this.registering = true
-        this.clearMessages()
-        this.info = 'Registering your new account...'
-        return axiosLoginInstance.get('sanctum/csrf-cookie')
-          .then(() => {
-            return axiosApiInstance.post('register', account).then(() => {
-              this.authenticated = false
-              this.registering = false
-              this.clearMessages()
-              this.success = 'La cuenta se creo exitosamente, por favor inicie sesión.'
-              router.push({ name: 'login' })
-            }).catch((error) => {
-              throw error
-            })
-          }).catch((error) => {
-            throw error
-            /*handleErrors(error).then((message) => {
-              this.clearMessages()
-              this.error = message
-            }).catch((routeName) => {
-              router.push({ name: routeName })
-            })*/
-          }).finally(() => {
-            this.registering = false
-          })
-      }
-    },
-    /*async updateAccount() {
-      //clearValidationErrors()
-      if (this.user && !this.updating) {
-        this.updating = true
-        this.clearMessages()
-        this.info = 'Updating your account...'
-        return axiosApiInstance.patch(`account/update/${this.user.id}`, this.user)
-          .then(() => {
-            this.clearMessages()
-            this.success = 'The account was updated successfully.'
-          }).catch((error) => {
-            throw error
-            /*handleErrors(error).then((message) => {
-              this.clearMessages()
-              this.error = message
-            }).catch((routeName) => {
-              router.push({ name: routeName })
-            })
-          }).finally(() => {
-            this.updating = false
-          })
-      }
-    },*/
     async login(credentials) {
-      //clearValidationErrors()
       if (!this.loggingIn) {
-        this.loggingIn = true
-        this.clearMessages()
-        this.info = 'Logging in...'
-        return axiosLoginInstance.get('sanctum/csrf-cookie')
-          .then(() => {
-             return axiosApiInstance.post('login', credentials).then(({ data }) => {
-              this.clearMessages()
-              if (data.user) {
-                this.authenticated = true
-                this.user = data.user
-                this.role = data.role
-                router.go(-1)
-              } else {
-                this.error = data.text
-              }
-            }).catch((error) => {
-              throw error
-            })
-          }).catch((error) => {
-            this.clearMessages()
-            throw error
-            /*handleErrors(error).then((message) => {
-              this.error = message
-            }).catch((routeName) => {
-              router.push({ name: routeName })
-            })*/
-          }).finally(() => {
-            this.loggingIn = false
-          })
+        this.loggingIn = true;
+        this.clearMessages();
+        this.info = "Logging in...";
+
+        try {
+          const { data } = await axiosApiInstance.post("login", credentials);
+          
+          if (data.user) {
+            this.authenticated = true;
+            this.user = data.user;
+            this.role = data.role;
+            this.token = data.token; // 🔹 Guardar token
+            
+            router.push({ name: "event-detail" });
+          } else {
+            this.error = data.text;
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+          this.error = "Invalid credentials.";
+        } finally {
+          this.loggingIn = false;
+        }
       }
     },
     async logout() {
       if (!this.loggingOut) {
         this.loggingOut = true;
         this.clearMessages();
-        this.info = 'Logging out...';
-    
+        this.info = "Logging out...";
+
         try {
-          const response = await axiosApiInstance.post('logout');
-          console.log(response.data);
-    
+          await axiosApiInstance.post("logout");
+
           this.authenticated = false;
           this.user = null;
           this.role = [];
-    
+          this.token = null; // 🔹 Eliminar token
+
           router.push({ name: "event-detail" });
         } catch (error) {
-          console.error("Error en logout:", error.response ? error.response.data : error.message);
-    
-          if (error.response && error.response.status === 401) {
-            this.authenticated = false;
-            this.user = null;
-            this.role = [];
-            router.push({ name: "login" });
-          }
+          console.error("Logout error:", error);
         } finally {
           this.loggingOut = false;
         }
       }
-    }    
+    },
+    async register(account) {
+      if (!this.registering) {
+        this.registering = true;
+        this.clearMessages();
+        this.info = "Registrando tu cuenta...";
+    
+        try {
+          const { data } = await axiosApiInstance.post("register", account);
+    
+          if (data.user) {
+            this.authenticated = true;
+            this.user = data.user;
+            this.role = data.role;
+            this.token = data.token; // 🔹 Guardar token después de registrar
+    
+            router.push({ name: "event-detail" }); // 🔹 Redirigir al usuario después del registro
+          } else {
+            this.error = "No se pudo registrar.";
+          }
+        } catch (error) {
+          console.error("Error en el registro:", error);
+          this.error = "Hubo un problema con el registro.";
+        } finally {
+          this.registering = false;
+        }
+      }
+    }
+    
   },
   getters: {
-    isAuthenticated: (state) => !!state.user,
+    isAuthenticated: (state) => !!state.token, // 🔹 Cambiar a token
     hasRole: (state) => (role) => state.role?.includes(role),
-  }
-})
+  },
+});

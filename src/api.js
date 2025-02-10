@@ -1,19 +1,17 @@
-import axios from 'axios'
+import axios from "axios";
+import { useAuthStore } from "@/stores/auth";
 
-export const apiUrl = 'http://127.0.0.1:8000'
+const axiosApiInstance = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+});
 
-export const axiosLoginInstance = axios.create({
-    baseURL: apiUrl,
-    withCredentials: true,
-    headers: {
-        Accept: 'application/json',
-    }
-})
+// 🔹 Interceptor para incluir el token en cada petición
+axiosApiInstance.interceptors.request.use((config) => {
+  const authStore = useAuthStore();
+  if (authStore.token) {
+    config.headers.Authorization = `Bearer ${authStore.token}`;
+  }
+  return config;
+});
 
-export const axiosApiInstance = axios.create({
-    baseURL: `${apiUrl}/api`,
-    withCredentials: true,
-    headers: {
-        Accept: 'application/json',
-    }
-})
+export { axiosApiInstance };
