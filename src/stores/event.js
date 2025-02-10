@@ -34,6 +34,7 @@ export const useEventStore = defineStore('eventStore', {
       try {
         const response = await axiosApiInstance.get(`/events/${eventId}/participants`);
         this.participants = response.data; // 🔹 Guardamos los participantes en el store
+        console.log(...this.participants);
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener los participantes.';
         console.error("Error fetching participants:", this.error);

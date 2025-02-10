@@ -30,10 +30,12 @@ export const useAuthStore = defineStore("auth", {
           
           if (data.user) {
             this.authenticated = true;
-            this.user = data.user;
+            this.user = JSON.stringify(data.user);  // Convierte el objeto a cadena JSON
+            localStorage.setItem('user', JSON.stringify(data.user));  // Asegúrate de que se guarda como cadena
+            
             this.role = data.role;
             this.token = data.token; // 🔹 Guardar token
-            
+            console.log(this.user);
             router.push({ name: "event-inscription" });
           } else {
             this.error = data.text;

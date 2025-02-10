@@ -2,17 +2,34 @@
   <div class="bg-blue-500 min-h-screen flex flex-col">
     <!-- Barra de navegación -->
     <nav class="bg-white shadow-md flex items-center px-4 h-10">
-      <div class="font-bold text-blue-600 text-lg">Rondas UNS</div> 
+      <div class="font-bold text-blue-600 text-lg">Rondas UNS</div>
 
-      <div v-if="authStore.authenticated" class="ml-auto flex space-x-4 h-full items-center">
-        <button @click="landingPage" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Inicio</button>
-        <button @click="meetings" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Reuniones</button>
-        <button @click="notifications" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Notificaciones</button>
-        
-        <!-- Botón de perfil circular más pequeño -->
-        <button @click="deslogearse" class="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500 flex items-center justify-center bg-gray-200">
-          <i class="fa-solid fa-user text-blue-500 text-xs">Perfil</i> 
-        </button>
+      <div v-if="authStore.authenticated" class="ml-auto flex space-x-4 h-full items-center relative">
+        <button @click="landingPage"
+          class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Inicio</button>
+        <button @click="meetings"
+          class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Reuniones</button>
+        <button @click="notifications"
+          class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Notificaciones</button>
+
+        <!-- Botón de perfil con menú desplegable -->
+        <div class="relative">
+          <button @click="toggleMenu"
+            class="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500 flex items-center justify-center bg-gray-200">
+            <i class="fa-solid fa-user text-blue-500 text-xs"></i>
+          </button>
+
+          <!-- Menú desplegable -->
+          <div v-if="menuOpen" class="fixed top-12 right-4 w-40 bg-white border border-gray-200 rounded shadow-lg z-50">
+            <button @click="verPerfil" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+              Ver perfil
+            </button>
+            <button @click="deslogearse" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+              Cerrar sesión
+            </button>
+          </div>
+
+        </div>
       </div>
     </nav>
 
@@ -26,41 +43,56 @@
   </div>
 </template>
 
+<script setup>
+import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { useRouter, useRoute } from "vue-router";
 
-  
-  <script setup>
-  import { useAuthStore } from "@/stores/auth";
-  import { useRouter, useRoute } from "vue-router";
-  import { onMounted } from "vue";
-  
-  // Accedemos al store de autenticación
-  const authStore = useAuthStore();
-  const router = useRouter();
-  const route = useRoute();
-  
-  // Redirigir a EventDetail si el usuario no está autenticado
+// Accedemos al store de autenticación
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
-  const landingPage = () => {
-    router.push({ name: "event-detail" });
-  };
+// Estado del menú desplegable
+const menuOpen = ref(false);
 
-  const meetings = () => {
-    router.push({ name: "event-meetings" });
-  };
+// Métodos de navegación
+const landingPage = () => {
+  router.push({ name: "event-detail" });
+};
 
-  const notifications = () => {
-    router.push({ name: "event-notifications" });
-  };
+const meetings = () => {
+  router.push({ name: "event-meetings" });
+};
 
-  const deslogearse = () => {
-    authStore.logout()
-  };
+const notifications = () => {
+  router.push({ name: "event-notifications" });
+};
 
-  onMounted(() => {
-	if (!authStore.authenticated && route.name !== "event-detail" && route.name !== "login" && route.name !== "register" && route.name !== "inscription") {
-	  router.push({ name: "event-detail" });
-	}
-  });
+const verPerfil = () => {
+  menuOpen.value = false;
+  router.push({ name: "profile" }); // Ajusta el nombre de la ruta según tu configuración
+};
 
-  </script>
-  
+const deslogearse = () => {
+  menuOpen.value = false;
+  authStore.logout();
+};
+
+// Alternar el menú desplegable
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value;
+};
+
+// Cerrar menú si se hace clic fuera
+const closeMenuOnClickOutside = (event) => {
+  if (!event.target.closest(".relative")) {
+    menuOpen.value = false;
+  }
+};
+
+// Escuchar clics fuera del menú
+onMounted(() => {
+  document.addEventListener("click", closeMenuOnClickOutside);
+});
+</script>

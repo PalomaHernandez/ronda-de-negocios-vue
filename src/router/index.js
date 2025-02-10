@@ -8,6 +8,7 @@ import NotificationsPage from '@/views/NotificationsPage.vue';
 import MeetingsPage from '@/views/MeetingsPage.vue';
 import InvitationsPage from '@/views/InvitationsPage.vue';
 import EventEdit from '@/views/EventEdit.vue';
+import UserProfile from '@/views/UserProfile.vue';
 
 const routes = [
   {
@@ -62,6 +63,11 @@ const routes = [
     name: 'register',
     component: RegisterPage,
     props: true, 
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: UserProfile,
   },
 
 ];
