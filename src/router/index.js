@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import TestConnection from '@/views/TestConnection.vue';
 import LandingPage from '@/views/LandingPage.vue';
 import EventDetail from '@/views/EventDetail.vue';
 import Login from '@/views/LoginPage.vue';
@@ -8,6 +7,7 @@ import InscriptionPage from '@/views/InscriptionPage.vue';
 import NotificationsPage from '@/views/NotificationsPage.vue';
 import MeetingsPage from '@/views/MeetingsPage.vue';
 import InvitationsPage from '@/views/InvitationsPage.vue';
+import EventEdit from '@/views/EventEdit.vue';
 
 const routes = [
   {
@@ -15,54 +15,53 @@ const routes = [
     name: 'LandingPage',
     component: LandingPage
   },
-
   {
-    path: '/test-connection',
-    name: 'TestConnection',
-    component: TestConnection
-  },
-
-  {
-    path: '/:slug',  // Ruta para el detalle del evento
+    path: '/:slug', 
     name: 'event-detail',
     component: EventDetail,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true,
   },
   {
-    path: '/:slug/inscription', // Ahora la URL utilizará el nombre del evento
+    path: '/:slug/edit',
+    name: 'event-edit',
+    component: EventEdit,
+    props: true,
+  },
+  {
+    path: '/:slug/inscription',
     name: 'event-inscription',
     component: InscriptionPage,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true, 
   },
   {
-    path: '/:slug/notifications', // Ahora la URL utilizará el nombre del evento
+    path: '/:slug/notifications', 
     name: 'event-notifications',
     component: NotificationsPage,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true, 
   },
   {
-    path: '/:slug/meetings', // Ahora la URL utilizará el nombre del evento
+    path: '/:slug/meetings',
     name: 'event-meetings',
     component: MeetingsPage,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true, 
   },
   {
-    path: '/:slug/invitations', // Ahora la URL utilizará el nombre del evento
+    path: '/:slug/invitations', 
     name: 'event-invitations',
     component: InvitationsPage,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true, 
   },
   {
     path: '/:slug/login',
     name: 'login',
     component: Login,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true, 
   },
   {
     path: '/:slug/register',
     name: 'register',
     component: RegisterPage,
-    props: true, // Esto permite pasar el `name` como prop
+    props: true, 
   },
 
 ];

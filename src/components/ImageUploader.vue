@@ -40,20 +40,26 @@ export default {
       required: true,
       validator: (value) => ["logo", "gallery"].includes(value),
     },
+    uploadedFiles: {
+      type: [String, Array],
+      default: "",
+    },
   },
   emits: ["updateFiles"],
   setup(props, { emit }) {
-    const preview = ref(props.type === "logo" ? null : []);
+    const preview = ref(props.type === "logo" ? props.uploadedFiles : []);
     const fileList = ref(Array.isArray(props.uploadedFiles) ? [...props.uploadedFiles] : []);
 
 
     watch(
       () => props.uploadedFiles,
       (newUploadedFiles) => {
-        if (!Array.isArray(newUploadedFiles)) {
-          newUploadedFiles = [];
+        if (props.type === "logo") {
+          preview.value = newUploadedFiles; // Usar la URL directamente
+        } else if (Array.isArray(newUploadedFiles)) {
+          preview.value = [...newUploadedFiles];
+          fileList.value = [...newUploadedFiles];
         }
-        fileList.value = [...newUploadedFiles];
       },
       { immediate: true }
     );

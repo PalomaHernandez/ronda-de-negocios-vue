@@ -24,8 +24,10 @@ export default {
     emits: ["updateFiles"],
     props: {
         uploadedFiles: {
+            uploadedFiles: {
             type: Array,
-            required: true
+            default: () => [] // Asegura que sea un array si no se pasa nada
+    }
         }
     },
     setup(props, { emit }) {
