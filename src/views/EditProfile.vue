@@ -49,7 +49,7 @@
   import LayoutPage from "@/Layout.vue";
   
   const authStore = useAuthStore();
-  const user = computed(() => authStore.user ? JSON.parse(authStore.user) : {});
+  const user = computed(() => authStore.user ? authStore.user : {});
   
   // Estado del formulario
   const form = ref({

@@ -6,7 +6,7 @@ import { axiosApiInstance } from "@/api";
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     authenticated: useStorage("authenticated", false),
-    user: useStorage("user", null),
+    user: useStorage("user", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
     role: useStorage("role", []),
     token: useStorage("token", null), // 🔹 Agregar token aquí
     loggingIn: false,
@@ -30,8 +30,9 @@ export const useAuthStore = defineStore("auth", {
           
           if (data.user) {
             this.authenticated = true;
-            this.user = JSON.stringify(data.user);  // Convierte el objeto a cadena JSON
-            localStorage.setItem('user', JSON.stringify(data.user));  // Asegúrate de que se guarda como cadena
+            this.user = data.user;
+            //this.user = JSON.stringify(data.user);  // Convierte el objeto a cadena JSON
+            localStorage.setItem('user', data.user);  // Asegúrate de que se guarda como cadena
             
             this.role = data.role;
             this.token = data.token; // 🔹 Guardar token

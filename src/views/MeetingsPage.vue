@@ -204,6 +204,8 @@ const closeMeetingRequest = () => {
   meetingReason.value = "";
 };
 
+//const parsedUser = authStore.user ? JSON.parse(authStore.user) : null;
+
 // Enviar solicitud (falta lógica de backend)
 const submitMeetingRequest = async () => {
         if (!selectedParticipant.value || !meetingObjective.value || !meetingReason.value) {
