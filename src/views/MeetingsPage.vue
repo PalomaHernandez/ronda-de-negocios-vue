@@ -121,17 +121,17 @@
           <!-- Información en tarjetas -->
           <div class="mt-4 space-y-3">
             <div class="flex items-center bg-gray-100 p-3 rounded-lg">
-              <span class="material-icons text-blue-500 mr-2">place</span>
-              <p class="text-gray-700"><strong>Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
+              <i class="fa-solid fa-location-dot mr-2"></i>
+              <p class="text-gray-700">  <strong> Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
             </div>
 
             <div class="flex items-center bg-gray-100 p-3 rounded-lg">
-              <span class="material-icons text-green-500 mr-2">search</span>
+              <i class="fa-solid fa-magnifying-glass mr-2"></i>
               <p class="text-gray-700"><strong>Intereses:</strong> {{ selectedParticipantDetails.interests || 'No disponible' }}</p>
             </div>
 
             <div class="flex items-center bg-gray-100 p-3 rounded-lg">
-              <span class="material-icons text-yellow-500 mr-2">store</span>
+              <i class="fa-solid fa-store mr-2"></i>
               <p class="text-gray-700"><strong>Productos o Servicios:</strong> {{
                 selectedParticipantDetails.product_services || 'No disponible' }}</p>
             </div>
@@ -141,11 +141,14 @@
           <div v-if="selectedParticipantDetails.profile_images?.length" class="mt-4">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Galería</h3>
             <div class="grid grid-cols-3 gap-2">
-              <img v-for="image in selectedParticipantDetails.profile_images" :key="image.id" :src="image.file_url"
+              <img v-for="image in selectedParticipantDetails.profile_images" :key="image.id" :src="image.path"
                 alt="Gallery image"
-                class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105" />
+                class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105" @click="openImageModal(image.path)" />
             </div>
           </div>
+
+          <ImageModal :imageUrl="selectedImage" :visible="showImageModal"
+            @update:visible="showImageModal = $event" />
 
           <!-- Botón de cierre -->
           <div class="flex justify-center mt-5">
@@ -168,13 +171,14 @@ import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación
 import { useRouter, useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
+import ImageModal from "@/components/ImageModal.vue";
 
 // Estado y store
 const eventStore = useEventStore();
 const authStore = useAuthStore(); // Store del usuario actual
-const { evento, participants, loading, error } = storeToRefs(eventStore);
+const { evento, participants, loading, error, meetings } = storeToRefs(eventStore);
 const route = useRoute();
-const router = useRouter();
+
 
 // Estado de la barra de búsqueda y filtro
 const searchQuery = ref("");
@@ -183,6 +187,7 @@ const filterType = ref("all"); // "all", "offers", "seeks", "both"
 // 🔍 Computed para filtrar participantes según búsqueda y filtro
 const filteredParticipants = computed(() => {
   return participants.value
+  .filter(participant => !sentRequests.value.includes(participant.id))
     .filter(participant =>
       participant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
@@ -202,6 +207,7 @@ const userRemainingMeetings = computed(() => {
   const userParticipant = participants.value.find(
     (participant) => participant.participant_id === authStore.user.participant_id
   );
+  console.log(userParticipant);
   return userParticipant ? userParticipant.remaining_meetings : null;
 });
 
@@ -212,7 +218,11 @@ onMounted(async () => {
   // Verificar que se obtuvo el evento antes de pedir participantes
   watchEffect(() => {
     if (evento.value) {
-      eventStore.fetchParticipants(evento.value.id);
+      if(!participants.value.length){
+        eventStore.fetchParticipants(evento.value.id);
+      }
+      const userId = authStore.user.id;
+      eventStore.fetchUserMeetings(evento.value.id, userId);
     }
   });
 });
@@ -251,6 +261,19 @@ const closeDetailsModal = () => {
   selectedParticipantDetails.value = null;
 };
 
+const showImageModal = ref(false);
+const selectedImage = ref("");
+
+const openImageModal = (selected) => {
+  showImageModal.value = true;
+  selectedImage.value = selected;
+};
+
+const sentRequests = computed(() => {
+  return meetings.value
+    .map(meeting => meeting.receiver_id); // Guardamos los IDs de los destinatarios
+});;
+
 // Enviar solicitud (falta lógica de backend)
 const submitMeetingRequest = async () => {
   if (!selectedParticipant.value || !meetingObjective.value || !meetingReason.value) {
@@ -270,6 +293,8 @@ const submitMeetingRequest = async () => {
   };
   try {
     await eventStore.createMeeting(meetingData);
+
+    sentRequests.value.push(selectedParticipant.value.id);
 
     closeMeetingRequest();
   } catch (error) {

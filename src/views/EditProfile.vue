@@ -6,7 +6,7 @@
         <div class="flex flex-col items-center space-y-4">
           <!-- Imagen de perfil -->
           <div class="relative">
-            <img :src="previewImage || form.logo_url" alt="User Logo" class="w-24 h-24 rounded-full border shadow-lg" />
+            <img :src="previewImage || form.logo_path" alt="User Logo" class="w-24 h-24 rounded-full border shadow-lg" />
             <label class="absolute bottom-0 right-0 h-8 w-8 flex items-center justify-center bg-gray-800 text-white p-1 rounded-full cursor-pointer">
               <i class="fa-solid fa-camera"></i>
               <input type="file" @change="onFileChange" class="hidden" accept="image/*" />
@@ -57,7 +57,7 @@
     email: user.value.email || "",
     location: user.value.location || "",
     website: user.value.website || "",
-    logo_url: user.value.logo_url || "",
+    logo_path: user.value.logo_path || "",
   });
   
   const previewImage = ref(null);

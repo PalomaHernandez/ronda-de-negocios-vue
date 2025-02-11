@@ -35,7 +35,7 @@
                 <h3 class="text-lg font-semibold">Galería</h3>
                 <div class="grid grid-cols-3 gap-4 mt-2">
                     <img v-for="(image, index) in user.images" :key="index" :src="image.path"
-                        alt="Gallery image" class="w-full h-52 object-cover rounded-lg cursor-pointer"
+                        alt="Gallery image" class="w-full h-52 object-cover rounded-lg cursor-pointer transition transform hover:scale-105"
                         @click="openModal(image.path)" />
                 </div>
             </div>

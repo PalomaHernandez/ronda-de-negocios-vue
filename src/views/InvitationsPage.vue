@@ -260,8 +260,7 @@ const rejectMeeting = (meeting) => {
   console.log(`Reunión rechazada: ${meeting.id}`);
 };
 const getParticipant = (meeting) => {
-  const participant = participants.value.find(p => p.id === (meeting.receiver_id === authStore.user.id ? meeting.requester_id : meeting.receiver_id));
-  return participant;
+  return participantsMap.value[meeting.receiver_id] || participantsMap.value[meeting.requester_id] || null;
 };
 
 const backToMeetings = () => {

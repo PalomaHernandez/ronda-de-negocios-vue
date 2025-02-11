@@ -14,8 +14,8 @@
 
           <!-- Imagen clickeable -->
           <div class="cursor-pointer" @click="openImage">
-            <img v-if="evento.logo_url" :src="evento.logo_url" alt="Event Logo"
-              class="h-64 w-full object-cover rounded-xl mb-4" />
+            <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
+              class="h-64 w-full object-cover rounded-xl mb-4 cursor-pointer transition transform hover:scale-105" />
           </div>
         </div>
 
@@ -37,10 +37,10 @@
           <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
           <ul>
             <div class="mt-4 grid grid-cols-2 gap-4">
-              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-3 text-center">
+              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-3 text-center transition transform hover:scale-105">
                 <p class="text-sm text-gray-600 mb-3">{{ file.original_name }}</p>
                 <button>
-                  <a :href="file.file_url" download class="btn text-sm">
+                  <a :href="file.path" download class="btn text-sm">
                     Descargar
                   </a>
                 </button>
@@ -92,7 +92,7 @@
         </div>
       </div>
 
-      <ImageModal v-if="evento && evento.logo_url" :imageUrl="evento.logo_url" :visible="showImage" @update:visible="showImage = $event" />
+      <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage" @update:visible="showImage = $event" />
     
     </template>
   </LayoutPage>
@@ -120,7 +120,7 @@ const openImage = () => {
   showImage.value = true;
 };
 
-
+console.log(evento.logo_path);
 const fields = {
   date: { label: "Fecha del Evento", type: "date" },
   starts_at: { label: "Horario de inicio", type: "time" },
