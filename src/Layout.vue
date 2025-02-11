@@ -1,42 +1,73 @@
 <template>
-  <div class="bg-blue-500 min-h-screen flex flex-col">
+  <div class="bg-blue-500 min-h-screen">
     <!-- Barra de navegación -->
-    <nav class="bg-white shadow-md flex items-center px-4 h-10">
-      <div class="font-bold text-blue-600 text-lg">Rondas UNS</div>
+    <nav class="bg-white shadow-md flex items-center px-6 py-3 h-[10vh] flex-wrap relative">
+      <div class="font-bold text-blue-600 text-xl sm:text-2xl w-full sm:w-auto">
+        Rondas UNS
+      </div>
 
-      <div v-if="authStore.authenticated" class="ml-auto flex space-x-4 h-full items-center relative">
-        <button @click="landingPage"
-          class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Inicio</button>
-        <button @click="meetings"
-          class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Reuniones</button>
-        <button @click="notifications"
-          class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">Notificaciones</button>
+      <div v-if="authStore.authenticated" class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto flex-wrap justify-between sm:justify-end">
+        
+        <!-- Menú en pantallas grandes -->
+        <div class="hidden lg:flex space-x-4">
+          <RouterLink :to="{ name: 'event-detail' }" class="btn text-sm sm:text-lg">
+            <i class="fa-solid fa-house"></i>    
+            Inicio
+          </RouterLink>
+          <RouterLink :to="{ name: 'event-meetings' }" class="btn text-sm sm:text-lg">
+            <i class="fa-solid fa-handshake"></i>    
+            Reuniones
+          </RouterLink>
+          <RouterLink :to="{ name: 'event-notifications' }" class="btn text-sm sm:text-lg">
+            <i class="fa-solid fa-bell"></i>    
+            Notificaciones
+          </RouterLink>
+        </div>
+
+        <!-- Menú desplegable en pantallas pequeñas -->
+        <div class="lg:hidden">
+          <button @click="toggleMobileMenu" class="text-blue-500 text-lg">
+            <i class="fa-solid fa-bars"></i> <!-- Icono de menú hamburguesa -->
+          </button>
+          
+          <!-- Menú desplegable móvil -->
+          <div v-if="mobileMenuOpen" class="absolute top-full w-48 bg-white rounded-lg shadow-lg z-10">
+            <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              <i class="fa-solid fa-house"></i> Inicio
+            </RouterLink>
+            <RouterLink :to="{ name: 'event-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              <i class="fa-solid fa-handshake"></i> Reuniones
+            </RouterLink>
+            <RouterLink :to="{ name: 'event-notifications' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              <i class="fa-solid fa-bell"></i> Notificaciones
+            </RouterLink>
+          </div>
+        </div>
 
         <!-- Botón de perfil con menú desplegable -->
         <div class="relative">
-          <button @click="toggleMenu"
-            class="w-10 h-10 rounded-full overflow-hidden border-2 border-blue-500 flex items-center justify-center bg-gray-200">
-            <i class="fa-solid fa-user text-blue-500 text-xs"></i>
+          <button @click="toggleMenu" class="dropdown-header">
+            <i class="fa-solid fa-user text-blue-500 text-lg"></i>
           </button>
 
           <!-- Menú desplegable -->
-          <div v-if="menuOpen" class="fixed top-12 right-4 w-40 bg-white border border-gray-200 rounded shadow-lg z-50">
-            <button @click="verPerfil" class="block w-full text-left px-4 py-2 hover:bg-gray-100">
+          <div v-if="menuOpen" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+            <RouterLink :to="{ name: 'profile' }" class="dropdown-link">
+              <i class="fa-solid fa-user"></i>
               Ver perfil
-            </button>
-            <button @click="deslogearse" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+            </RouterLink>
+            <button @click="deslogearse" class="dropdown-link text-red-600">
+              <i class="fa-solid fa-right-from-bracket"></i>
               Cerrar sesión
             </button>
           </div>
-
         </div>
       </div>
     </nav>
 
-    <!-- Contenedor principal con SCROLL -->
-    <div class="flex-1 flex items-center justify-center">
-      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 sm:p-8 md:p-10 relative m-10 
-                  max-h-[85vh] overflow-y-auto">
+    <!-- Contenedor principal con título y contenido -->
+    <div class="flex-1 flex items-center justify-center max-h-[85vh] m-10">
+      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 relative max-h-[85vh] overflow-y-auto">
         <slot />
       </div>
     </div>
@@ -46,53 +77,27 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useRouter, useRoute } from "vue-router";
 
-// Accedemos al store de autenticación
 const authStore = useAuthStore();
-const router = useRouter();
-const route = useRoute();
 
-// Estado del menú desplegable
 const menuOpen = ref(false);
-
-// Métodos de navegación
-const landingPage = () => {
-  router.push({ name: "event-detail" });
-};
-
-const meetings = () => {
-  router.push({ name: "event-meetings" });
-};
-
-const notifications = () => {
-  router.push({ name: "event-notifications" });
-};
-
-const verPerfil = () => {
-  menuOpen.value = false;
-  router.push({ name: "profile" }); // Ajusta el nombre de la ruta según tu configuración
-};
+const mobileMenuOpen = ref(false); // Estado para el menú desplegable en móvil
 
 const deslogearse = () => {
   menuOpen.value = false;
   authStore.logout();
 };
+const toggleMenu = () => menuOpen.value = !menuOpen.value;
+const toggleMobileMenu = () => mobileMenuOpen.value = !mobileMenuOpen.value; // Función para abrir/cerrar el menú móvil
 
-// Alternar el menú desplegable
-const toggleMenu = () => {
-  menuOpen.value = !menuOpen.value;
-};
-
-// Cerrar menú si se hace clic fuera
 const closeMenuOnClickOutside = (event) => {
   if (!event.target.closest(".relative")) {
     menuOpen.value = false;
   }
 };
 
-// Escuchar clics fuera del menú
 onMounted(() => {
   document.addEventListener("click", closeMenuOnClickOutside);
 });
 </script>
+

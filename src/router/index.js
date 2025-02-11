@@ -9,6 +9,7 @@ import MeetingsPage from '@/views/MeetingsPage.vue';
 import InvitationsPage from '@/views/InvitationsPage.vue';
 import EventEdit from '@/views/EventEdit.vue';
 import UserProfile from '@/views/UserProfile.vue';
+import EditProfile from '@/views/EditProfile.vue';
 
 const routes = [
   {
@@ -65,9 +66,14 @@ const routes = [
     props: true, 
   },
   {
-    path: '/profile',
+    path: '/:slug/profile',
     name: 'profile',
     component: UserProfile,
+  },
+  {
+    path: '/:slug/profile/edit',
+    name: 'edit-profile',
+    component: EditProfile,
   },
 
 ];

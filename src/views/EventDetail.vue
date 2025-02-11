@@ -13,7 +13,7 @@
           <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
 
           <!-- Imagen clickeable -->
-          <div class="cursor-pointer" @click="abrirImagen">
+          <div class="cursor-pointer" @click="openImage">
             <img v-if="evento.logo_url" :src="evento.logo_url" alt="Event Logo"
               class="h-64 w-full object-cover rounded-xl mb-4" />
           </div>
@@ -37,10 +37,10 @@
           <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
           <ul>
             <div class="mt-4 grid grid-cols-2 gap-4">
-              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-2 text-center">
-                <p class="text-sm text-gray-600 mb-2">{{ file.original_name }}</p>
+              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-3 text-center">
+                <p class="text-sm text-gray-600 mb-3">{{ file.original_name }}</p>
                 <button>
-                  <a :href="file.file_url" download class="mt-2 bg-blue-500 text-white py-1 px-4 rounded-lg text-sm">
+                  <a :href="file.file_url" download class="btn text-sm">
                     Descargar
                   </a>
                 </button>
@@ -92,16 +92,8 @@
         </div>
       </div>
 
-      <!-- Modal para la imagen -->
-    <div v-if="mostrarImagen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div class="relative">
-        <img :src="evento.logo_url" alt="Imagen Completa" class="max-w-full max-h-screen rounded-lg shadow-lg" />
-        <button @click="cerrarImagen"
-          class="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-700">
-          ✕
-        </button>
-      </div>
-    </div>
+      <ImageModal v-if="evento && evento.logo_url" :imageUrl="evento.logo_url" :visible="showImage" @update:visible="showImage = $event" />
+    
     </template>
   </LayoutPage>
 </template>
@@ -113,25 +105,21 @@ import { useEventStore } from "@/stores/event";
 import { useRoute, useRouter } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import { useAuthStore } from "@/stores/auth";
+import ImageModal from "@/components/ImageModal.vue";
 
 // Estado y store
 const eventStore = useEventStore();
 const { evento, loading, error } = storeToRefs(eventStore);
 const route = useRoute();
-const router = useRouter();
 const mostrarModal = ref(false);
 const authStore = useAuthStore();
-const editMode = ref(false);
 
-const mostrarImagen = ref(false);
+const showImage = ref(false);
 
-const abrirImagen = () => {
-  mostrarImagen.value = true;
+const openImage = () => {
+  showImage.value = true;
 };
 
-const cerrarImagen = () => {
-  mostrarImagen.value = false;
-};
 
 const fields = {
   date: { label: "Fecha del Evento", type: "date" },
@@ -145,10 +133,6 @@ const fields = {
 };
 
 const isResponsible = computed(() => authStore.hasRole("responsible"));
-
-const logoFile = ref(null);
-const documentFiles = ref([]);
-const deletedFiles = ref([]);
 
 // Cargar evento al montar
 onMounted(() => {

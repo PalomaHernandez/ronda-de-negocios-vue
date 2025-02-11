@@ -52,7 +52,6 @@ export const useAuthStore = defineStore("auth", {
       if (!this.loggingOut) {
         this.loggingOut = true;
         this.clearMessages();
-        this.info = "Logging out...";
 
         try {
           await axiosApiInstance.post("logout");
@@ -96,7 +95,16 @@ export const useAuthStore = defineStore("auth", {
           this.registering = false;
         }
       }
-    }
+    },
+    async updateProfile(data) {
+      try {
+        const response = await axiosApiInstance.patch('/user/profile', data);
+        this.user = JSON.stringify(response.data);
+      } catch (error) {
+        console.error("Error al actualizar perfil", error);
+        throw error;
+      }
+    }    
     
   },
   getters: {
