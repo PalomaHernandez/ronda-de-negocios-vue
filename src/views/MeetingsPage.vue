@@ -12,11 +12,10 @@
           <p class="text-gray-600"><strong>Fase actual:</strong> {{ evento.status }}</p>
 
           <!-- Botón "Mis reuniones e invitaciones" -->
-          <button @click="invitations"
-            class="w-full bg-blue-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 mt-4"
-          >
+          <RouterLink :to="{ name: 'event-invitations' }"
+            class="w-full flex justify-center bg-blue-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 mt-4">
             Mis reuniones e invitaciones
-          </button>
+          </RouterLink>
 
           <!-- 📌 Remaining meetings del usuario actual -->
           <p class="text-gray-600 mt-4">
@@ -30,18 +29,12 @@
 
           <!-- 🔎 Barra de búsqueda y filtro -->
           <div class="flex space-x-2 mb-2">
-            <input
-              type="text"
-              v-model="searchQuery"
-              placeholder="Buscar por nombre..."
-              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <input type="text" v-model="searchQuery" placeholder="Buscar por nombre..."
+              class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
             <!-- 🏷️ Filtro desplegable -->
-            <select
-              v-model="filterType"
-              class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+            <select v-model="filterType"
+              class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="all">Todos</option>
               <option value="offers">Solo ofrece</option>
               <option value="seeks">Solo busca</option>
@@ -56,12 +49,8 @@
               <li v-for="participant in filteredParticipants" :key="participant.id" class="p-3 border-b">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
-                    <img
-                      v-if="participant.logo_path"
-                      :src="participant.logo_path"
-                      alt="Logo"
-                      class="w-10 h-10 rounded-full mr-3 object-cover"
-                    />
+                    <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"
+                      class="w-10 h-10 rounded-full mr-3 object-cover" />
                     <div>
                       <p class="text-lg font-medium">{{ participant.name }}</p>
                       <p class="text-sm text-gray-500">{{ participant.activity }}</p>
@@ -70,11 +59,12 @@
                     </div>
                   </div>
                   <div class="space-x-2">
-                    <button class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+                    <button @click="openDetailsModal(participant)"
+                      class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
                       Más detalles
                     </button>
-                    <button 
-                      @click="openMeetingRequest(participant)" class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
+                    <button @click="openMeetingRequest(participant)"
+                      class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
                       Solicitar reunión
                     </button>
                   </div>
@@ -88,8 +78,8 @@
       </div>
 
       <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
-            <!-- 📌 MODAL: Solicitud de reunión -->
-            <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+      <!-- 📌 MODAL: Solicitud de reunión -->
+      <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
           <h2 class="text-xl font-bold mb-4">Solicitud de reunión</h2>
 
@@ -103,12 +93,8 @@
 
           <!-- Motivo -->
           <label class="block text-gray-700">Motivo:</label>
-          <textarea
-            v-model="meetingReason"
-            rows="3"
-            class="w-full p-2 border rounded-lg mb-4"
-            placeholder="Escribe el motivo de la reunión..."
-          ></textarea>
+          <textarea v-model="meetingReason" rows="3" class="w-full p-2 border rounded-lg mb-4"
+            placeholder="Escribe el motivo de la reunión..."></textarea>
 
           <!-- Botones -->
           <div class="flex justify-end space-x-2">
@@ -121,6 +107,56 @@
           </div>
         </div>
       </div>
+
+      <div v-if="showDetailsModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <!-- Foto de perfil centrada -->
+          <div class="flex flex-col items-center">
+            <img v-if="selectedParticipantDetails.logo_path" :src="selectedParticipantDetails.logo_path" alt="Logo"
+              class="w-24 h-24 rounded-full object-cover shadow-md" />
+            <h2 class="text-2xl font-bold text-gray-900 mt-3">{{ selectedParticipantDetails.name }}</h2>
+            <p class="text-gray-500 text-lg">{{ selectedParticipantDetails.activity || 'No disponible' }}</p>
+          </div>
+
+          <!-- Información en tarjetas -->
+          <div class="mt-4 space-y-3">
+            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <span class="material-icons text-blue-500 mr-2">place</span>
+              <p class="text-gray-700"><strong>Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
+            </div>
+
+            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <span class="material-icons text-green-500 mr-2">search</span>
+              <p class="text-gray-700"><strong>Intereses:</strong> {{ selectedParticipantDetails.interests || 'No disponible' }}</p>
+            </div>
+
+            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <span class="material-icons text-yellow-500 mr-2">store</span>
+              <p class="text-gray-700"><strong>Productos o Servicios:</strong> {{
+                selectedParticipantDetails.product_services || 'No disponible' }}</p>
+            </div>
+          </div>
+
+          <!-- Galería de imágenes -->
+          <div v-if="selectedParticipantDetails.profile_images?.length" class="mt-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Galería</h3>
+            <div class="grid grid-cols-3 gap-2">
+              <img v-for="image in selectedParticipantDetails.profile_images" :key="image.id" :src="image.file_url"
+                alt="Gallery image"
+                class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105" />
+            </div>
+          </div>
+
+          <!-- Botón de cierre -->
+          <div class="flex justify-center mt-5">
+            <button @click="closeDetailsModal"
+              class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+
     </template>
   </LayoutPage>
 </template>
@@ -181,10 +217,6 @@ onMounted(async () => {
   });
 });
 
-const invitations = () => {
-    router.push({ name: "event-invitations" });
-  };
-
 // Estado del modal
 const showModal = ref(false);
 const meetingObjective = ref("");
@@ -204,31 +236,44 @@ const closeMeetingRequest = () => {
   meetingReason.value = "";
 };
 
-//const parsedUser = authStore.user ? JSON.parse(authStore.user) : null;
+const showDetailsModal = ref(false);
+const selectedParticipantDetails = ref(null);
+
+// Abrir modal de detalles
+const openDetailsModal = (participant) => {
+  selectedParticipantDetails.value = participant;
+  showDetailsModal.value = true;
+};
+
+// Cerrar modal de detalles
+const closeDetailsModal = () => {
+  showDetailsModal.value = false;
+  selectedParticipantDetails.value = null;
+};
 
 // Enviar solicitud (falta lógica de backend)
 const submitMeetingRequest = async () => {
-        if (!selectedParticipant.value || !meetingObjective.value || !meetingReason.value) {
-          console.error('Faltan campos');
-          return;
-        }
-      
-        // Crear el objeto con los datos necesarios
-        const meetingData = {
-          requester_id: authStore.user.id, // ID del usuario autenticado
-          receiver_id: selectedParticipant.value.id, // ID del participante seleccionado
-          event_id: eventStore.evento.id, // ID del evento
-          reason: meetingReason.value, // Motivo de la reunión
-          time: '2025-02-09 14:30:00',  // Hora fija para el ejemplo, o puedes agregar un selector de hora en tu formulario
-          status: 'Pendiente', // Estado de la solicitud (puedes cambiarlo según tu lógica)
-          requester_role: meetingObjective.value, // Objetivo de la reunión
-        };
-        try {
-          await eventStore.createMeeting(meetingData);
-      
-          closeMeetingRequest();
-        } catch (error) {
-          console.error('Error al enviar la solicitud de reunión:', error);
-        }
-    }
+  if (!selectedParticipant.value || !meetingObjective.value || !meetingReason.value) {
+    console.error('Faltan campos');
+    return;
+  }
+
+  // Crear el objeto con los datos necesarios
+  const meetingData = {
+    requester_id: authStore.user.id, // ID del usuario autenticado
+    receiver_id: selectedParticipant.value.id, // ID del participante seleccionado
+    event_id: eventStore.evento.id, // ID del evento
+    reason: meetingReason.value, // Motivo de la reunión
+    time: '2025-02-09 14:30:00',  // Hora fija para el ejemplo, o puedes agregar un selector de hora en tu formulario
+    status: 'Pendiente', // Estado de la solicitud (puedes cambiarlo según tu lógica)
+    requester_role: meetingObjective.value, // Objetivo de la reunión
+  };
+  try {
+    await eventStore.createMeeting(meetingData);
+
+    closeMeetingRequest();
+  } catch (error) {
+    console.error('Error al enviar la solicitud de reunión:', error);
+  }
+}
 </script>

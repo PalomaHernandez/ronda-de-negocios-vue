@@ -7,7 +7,7 @@
             </RouterLink>
             <div class="flex items-center space-x-4">
                 <!-- Logo -->
-                <img :src="user.logo_url" alt="User Logo" class="w-16 h-16 rounded-full" />
+                <img :src="user.logo_path" alt="User Logo" class="w-16 h-16 rounded-full" />
                 <div>
                     <h2 class="text-xl font-semibold">{{ user.name }}</h2>
                     <p class="text-gray-600">{{ user.email }}</p>
@@ -34,9 +34,9 @@
             <div class="mt-6">
                 <h3 class="text-lg font-semibold">Galería</h3>
                 <div class="grid grid-cols-3 gap-4 mt-2">
-                    <img v-for="(image, index) in user.images" :key="index" :src="image.image_url"
+                    <img v-for="(image, index) in user.images" :key="index" :src="image.path"
                         alt="Gallery image" class="w-full h-52 object-cover rounded-lg cursor-pointer"
-                        @click="openModal(image.image_url)" />
+                        @click="openModal(image.path)" />
                 </div>
             </div>
             <ImageModal :imageUrl="selectedImage" :visible="showImage" @update:visible="showImage = $event" />

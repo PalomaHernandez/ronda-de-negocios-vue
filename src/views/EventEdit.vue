@@ -7,7 +7,7 @@
           <div class="text-center flex flex-col items-center space-y-6">
             <div class="cursor-pointer" @click="$refs.logoInput.click()">
               <i class="fa-solid fa-camera text-4xl text-gray-500"></i>
-              <img v-if="evento.logo_path" :src="evento.logo_url" alt="Event Logo"
+              <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
                 class="h-64 w-full object-cover rounded-xl mb-4" />
               <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
             </div>
@@ -41,7 +41,7 @@
   
           <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Logo</h3>
-            <ImageUploader type="logo" :uploaded-files="evento.logo_url || ''" @updateFiles="handleLogoUpdate" />
+            <ImageUploader type="logo" :uploaded-files="evento.logo_path || ''" @updateFiles="handleLogoUpdate" />
           </div>
   
           <div class="mt-8 flex justify-end space-x-4">
