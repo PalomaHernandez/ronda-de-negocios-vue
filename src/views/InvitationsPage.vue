@@ -43,7 +43,7 @@
                   <!-- Botón "Más detalles" centrado y alineado a la misma altura -->
                   <div class="flex items-center justify-center w-1/3">
                     <button 
-                      @click="openMeetingRequest(meeting)" 
+                      @click="openMeetingDetails(meeting)" 
                       class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
                       Más detalles
                     </button>
@@ -98,6 +98,74 @@
           </button>
         </div>
       </div>
+<!-- 📌 MODAL: Detalles de la Reunión -->
+<div v-if="showMeetingDetailsModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
+    <h2 class="text-2xl font-bold mb-4 text-center">Detalles de la Reunión</h2>
+
+    <div v-if="selectedMeeting" class="grid grid-cols-3 gap-4 items-center">
+      <!-- 📌 Columna 1: Participantes -->
+      <div class="flex flex-col items-center">
+        <p class="text-sm text-gray-500">Solicitante</p>
+        <p class="text-lg font-semibold text-center">
+          {{ selectedMeeting.requesterName }}
+        </p>
+        <button          
+          class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+          Más detalles
+        </button>
+      </div>
+
+      <!-- 📌 Columna 2: Espacio vacío para alineación -->
+      <div class="flex flex-col items-center"></div>
+
+      <!-- 📌 Columna 3: Receptor -->
+      <div class="flex flex-col items-center">
+        <p class="text-sm text-gray-500">Receptor</p>
+        <p class="text-lg font-semibold text-center">
+          {{ selectedMeeting.receiverName }}
+        </p>
+        <button          
+          class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+          Más detalles
+        </button>
+      </div>
+    </div>
+
+    <!-- 📌 Sección de información adicional -->
+    <div class="grid grid-cols-3 gap-4 mt-6">
+      <div class="flex flex-col items-center">
+        <p class="text-sm text-gray-500">Rol</p>
+        <p class="text-lg font-semibold">{{ formatRole(selectedMeeting.requester_role) }}</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <p class="text-sm text-gray-500">Estado</p>
+        <p class="text-lg font-semibold">{{ selectedMeeting.status }}</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <p class="text-sm text-gray-500">Rol</p>
+        <p class="text-lg font-semibold">{{ formatRole(getReceiverRole(selectedMeeting.requester_role)) }}</p>
+      </div>
+    </div>
+
+    <!-- 📌 Motivo con salto de línea -->
+    <p class="mt-6 px-4 text-justify break-words">
+      <strong>Motivo:</strong> {{ selectedMeeting.reason || 'No especificado' }}
+    </p>
+
+    <!-- 📌 Botón de cierre abajo a la derecha -->
+    <div class="flex justify-end mt-6">
+      <button @click="closeMeetingDetails"
+        class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
     </template>
   </LayoutPage>
 </template>
@@ -116,6 +184,8 @@ const authStore = useAuthStore(); // Store del usuario actual
 const { evento, meetings , loading, error, participants} = storeToRefs(eventStore);
 const route = useRoute();
 const router = useRouter();
+const showMeetingDetailsModal = ref(false);
+const selectedMeeting = ref(null);
 
 // Estado de la barra de búsqueda y filtro
 const searchQuery = ref("");
@@ -197,5 +267,36 @@ const getParticipant = (meeting) => {
 const backToMeetings = () => {
     router.push({ name: "event-meetings" });
   };
+
+  const openMeetingDetails = (meeting) => {
+  const requester = participants.value.find(p => p.id === meeting.requester_id);
+  const receiver = participants.value.find(p => p.id === meeting.receiver_id);
+
+  selectedMeeting.value = {
+    ...meeting,
+    requesterName: requester ? requester.name : "Desconocido",
+    receiverName: receiver ? receiver.name : "Desconocido",
+  };
+
+  showMeetingDetailsModal.value = true;
+};
+const closeMeetingDetails = () => {
+  showMeetingDetailsModal.value = false;
+  selectedMeeting.value = null;
+};
+const formatRole = (role) => {
+  if (role === "Compra") return "Comprador";
+  if (role === "Venta") return "Vendedor";
+  if (role === "Ambos") return "Comprador y Vendedor";
+  return role; // Si hay otros valores, los deja igual
+};
+
+const getReceiverRole = (requesterRole) => {
+  if (requesterRole === "Compra") return "Venta";
+  if (requesterRole === "Venta") return "Compra";
+  if (requesterRole === "Ambos") return "Ambos";
+  return requesterRole; // Por si hay valores inesperados
+};
+
 
 </script>
