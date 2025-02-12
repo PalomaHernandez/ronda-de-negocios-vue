@@ -10,7 +10,7 @@
         <!-- 📌 Lista de notificaciones -->
         <div class="border rounded-lg shadow p-4 mt-2 flex-grow h-[50vh] overflow-y-auto bg-white">
           <ul v-if="notifications.length > 0">
-            <li v-for="notification in notifications.reverse()" :key="notification.id" class="p-3 border-b">
+            <li v-for="notification in sortedNotifications" :key="notification.id" class="p-3 border-b">
               <p class="text-lg font-medium">
                 {{ notification.message }}
               </p>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect,computed,watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useRoute } from "vue-router";
@@ -37,16 +37,26 @@ const { evento, loading, error, notifications } = storeToRefs(eventStore);
 const route = useRoute();
 const authStore = useAuthStore();
 
+const sortedNotifications = computed(() => {
+  return notifications.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Cambia 'created_at' por el campo de tu notificación
+});
+
 // Cargar evento y notificaciones al montar
 onMounted(async () => {
   await eventStore.fetch(route.params.slug); // Obtener evento
-  watchEffect(() => {
-    if (evento.value) {
-      const userId = authStore.user.id;
-      eventStore.fetchNotifications(evento.value.id, userId);
-    }
-  });
 });
+
+// Solo llamar a fetchNotifications cuando evento.id cambie y sea válido
+watch(
+  () => evento.value?.id, // Solo observar cambios en evento.id
+  async (newEventId) => {
+    if (newEventId) {
+      const userId = authStore.user.id;
+      await eventStore.fetchNotifications(newEventId, userId);
+    }
+  },
+  { immediate: true } // Llamar al iniciar si evento.id ya está disponible
+);
 
 // Esperar que el evento esté listo y luego cargar notificaciones
 
