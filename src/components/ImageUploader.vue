@@ -18,9 +18,9 @@
       <input type="file" accept="image/*" multiple @change="handleFileChange" class="file-input mb-4" />
       <div class="preview-container flex flex-row gap-2 mt-2">
         <div v-for="(img, index) in preview" :key="index" class="relative w-28 h-28">
-          <img :src="img" alt="Vista previa" class="w-full h-full object-cover rounded-lg" />
-          <button @click="removeImage(index)" type="button" class="remove-btn">
-            &times;
+          <img :src="typeof img === 'string' ? img : img.path" alt="Vista previa" class="w-full h-full object-cover rounded-lg" />
+          <button @click="removeImage(index, img)" type="button" class="remove-btn">
+              <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </div>
@@ -45,17 +45,19 @@ export default {
       default: "",
     },
   },
-  emits: ["updateFiles"],
+  emits: ["updateFiles", "deletedFiles"],
   setup(props, { emit }) {
-    const preview = ref(props.type === "logo" ? props.uploadedFiles : []);
+    const preview = ref(props.type === "logo" ? props.uploadedFiles : [...props.uploadedFiles]);
     const fileList = ref(Array.isArray(props.uploadedFiles) ? [...props.uploadedFiles] : []);
-
+    const deletedFiles = ref([]);
+  
+    console.log(fileList.value);
 
     watch(
       () => props.uploadedFiles,
       (newUploadedFiles) => {
         if (props.type === "logo") {
-          preview.value = newUploadedFiles; // Usar la URL directamente
+          preview.value = newUploadedFiles;
         } else if (Array.isArray(newUploadedFiles)) {
           preview.value = [...newUploadedFiles];
           fileList.value = [...newUploadedFiles];
@@ -93,14 +95,16 @@ export default {
       emit("updateFiles", fileList.value);
     };
 
-    const removeImage = (index) => {
-      const newFiles = [...fileList.value];
-      newFiles.splice(index, 1);
-      fileList.value = newFiles;
+    const removeImage = (index, file) => {
+      if (file.id) {
+        // Es una URL (imagen ya subida), la agregamos a `deletedFiles`
+        deletedFiles.value.push(file);
+        emit("deletedFiles", deletedFiles.value);
+      }
 
-      const newPreviews = [...preview.value];
-      newPreviews.splice(index, 1);
-      preview.value = newPreviews;
+      // Eliminamos la imagen de la lista
+      fileList.value.splice(index, 1);
+      preview.value.splice(index, 1);
 
       emit("updateFiles", fileList.value);
     };
@@ -121,6 +125,7 @@ export default {
     return {
       preview,
       handleFileChange,
+      deletedFiles,
       removeLogo,
       removeImage,
     };
