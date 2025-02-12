@@ -36,7 +36,7 @@
                   <!-- Nombre del participante -->
                   <div class="flex items-center w-1/3">
                     <p class="text-lg font-medium">
-                      {{ getParticipant(meeting)?.name }}
+                      {{ getParticipant(meeting)?.name || 'Desconocido' }}
                     </p>
                   </div>
 
@@ -265,7 +265,10 @@ const rejectMeeting = async (meeting) => {
 };
 
 const getParticipant = (meeting) => {
-  return participantsMap.value[meeting.receiver_id] || participantsMap.value[meeting.requester_id] || null;
+  // Obtener el otro participante
+  const otherParticipantId = meeting.receiver_id === authStore.user.id ? meeting.requester_id : meeting.receiver_id;
+  
+  return participantsMap.value[otherParticipantId] || null;
 };
 
 const backToMeetings = () => {

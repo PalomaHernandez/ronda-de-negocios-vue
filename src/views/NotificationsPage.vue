@@ -10,9 +10,9 @@
         <!-- 📌 Lista de notificaciones -->
         <div class="border rounded-lg shadow p-4 mt-2 flex-grow h-[50vh] overflow-y-auto bg-white">
           <ul v-if="notifications.length > 0">
-            <li v-for="notification in notifications" :key="notification.id" class="p-3 border-b">
+            <li v-for="notification in notifications.reverse()" :key="notification.id" class="p-3 border-b">
               <p class="text-lg font-medium">
-                {{ notification.data }}
+                {{ notification.message }}
               </p>
             </li>
           </ul>

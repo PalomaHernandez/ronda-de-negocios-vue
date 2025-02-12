@@ -187,6 +187,7 @@ const filterType = ref("all"); // "all", "offers", "seeks", "both"
 // 🔍 Computed para filtrar participantes según búsqueda y filtro
 const filteredParticipants = computed(() => {
   return participants.value
+  .filter(participant => participant.id !== authStore.user.id)
   .filter(participant => !sentRequests.value.includes(participant.id))
     .filter(participant =>
       participant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -216,11 +217,11 @@ onMounted(async () => {
 
   // Verificar que se obtuvo el evento antes de pedir participantes
   watchEffect(() => {
-    if (evento.value) {
-      if(!participants.value.length){
-        eventStore.fetchParticipants(evento.value.id);
-      }
-      const userId = authStore.user.id;
+    if (evento.value && !participants.value.length) {
+      eventStore.fetchParticipants(evento.value.id);
+    }
+    const userId = authStore.user.id;
+    if (evento.value && meetings.value.length === 0) {
       eventStore.fetchUserMeetings(evento.value.id, userId);
     }
   });
