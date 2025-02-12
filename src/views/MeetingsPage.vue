@@ -207,7 +207,6 @@ const userRemainingMeetings = computed(() => {
   const userParticipant = participants.value.find(
     (participant) => participant.participant_id === authStore.user.participant_id
   );
-  console.log(userParticipant);
   return userParticipant ? userParticipant.remaining_meetings : null;
 });
 

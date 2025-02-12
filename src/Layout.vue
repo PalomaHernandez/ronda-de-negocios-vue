@@ -1,7 +1,7 @@
 <template>
   <div class="bg-blue-500 min-h-screen">
     <!-- Barra de navegación -->
-    <nav class="bg-white shadow-md flex items-center px-6 py-3 h-[10vh] flex-wrap relative">
+    <nav class="bg-white shadow-md flex items-center px-6 py-3 h-[8vh] flex-wrap relative">
       <div class="font-bold text-blue-600 text-xl sm:text-2xl w-full sm:w-auto">
         Rondas UNS
       </div>
@@ -66,8 +66,8 @@
     </nav>
 
     <!-- Contenedor principal con título y contenido -->
-    <div class="flex-1 flex items-center justify-center max-h-[85vh] m-10">
-      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-6 relative max-h-[85vh] overflow-y-auto">
+    <div class="flex-1 flex items-center justify-center max-h-[85vh] m-8">
+      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative max-h-[85vh] overflow-y-auto">
         <slot />
       </div>
     </div>

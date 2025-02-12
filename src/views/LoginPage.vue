@@ -19,8 +19,8 @@
 			<template #label>Contraseña</template>
 			<input type="password" v-model="credentials.password" required>
 		  </LabeledObject>
-		  <button type="submit" class="btn btn-primary">
-			Log in
+		  <button type="submit" class="btn">
+			Iniciar sesión
 		  </button>
 		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">
 			No tenés cuenta? Registrate haciendo click acá.

@@ -13,11 +13,27 @@ export const useAuthStore = defineStore("auth", {
     loggingOut: false,
     error: null,
     info: null,
+    registered: useStorage("registered", null),
   }),
   actions: {
     clearMessages() {
       this.error = null;
       this.info = null;
+    },
+    async checkEventRegistration(eventSlug) {
+      if (this.registered !== null) {
+        return this.registered;
+      }
+
+      try {
+        const response = await axiosApiInstance.get(`/events/${eventSlug}/is-registered/${this.user.id}`);
+        this.registered = response.data.registered; // Guardamos la respuesta
+        return this.registered;
+      } catch (error) {
+        console.error("Error al verificar inscripción:", error);
+        this.registered = false; // En caso de error, asumimos que no está registrado
+        return false;
+      }
     },
     async login(credentials) {
       if (!this.loggingIn) {
@@ -31,13 +47,16 @@ export const useAuthStore = defineStore("auth", {
           if (data.user) {
             this.authenticated = true;
             this.user = data.user;
-            //this.user = JSON.stringify(data.user);  // Convierte el objeto a cadena JSON
-            localStorage.setItem('user', data.user);  // Asegúrate de que se guarda como cadena
-            
             this.role = data.role;
-            this.token = data.token; // 🔹 Guardar token
-            console.log(this.user);
-            router.push({ name: "event-inscription" });
+            this.token = data.token;
+          
+            const eventSlug = router.currentRoute.value.params.slug;
+            if (this.checkEventRegistration(eventSlug)) {
+              router.push({ name: "event-detail", params: { slug: eventSlug } });
+            } else {
+              router.push({ name: "event-inscription", params: { slug: eventSlug } });
+            }
+
           } else {
             this.error = data.text;
           }
@@ -60,7 +79,8 @@ export const useAuthStore = defineStore("auth", {
           this.authenticated = false;
           this.user = null;
           this.role = [];
-          this.token = null; // 🔹 Eliminar token
+          this.token = null;
+          this.registered = false;
 
           router.push({ name: "event-detail" });
         } catch (error) {
@@ -109,7 +129,8 @@ export const useAuthStore = defineStore("auth", {
     
   },
   getters: {
-    isAuthenticated: (state) => !!state.token, // 🔹 Cambiar a token
-    hasRole: (state) => (role) => state.role?.includes(role),
+    isAuthenticated: (state) => !!state.token,
+    isRegistered: (state) => state.registered,
+    hasRole: (state) => (role) => state.role.includes(role),
   },
 });

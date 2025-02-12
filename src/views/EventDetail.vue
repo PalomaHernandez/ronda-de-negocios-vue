@@ -1,27 +1,40 @@
 <template>
   <LayoutPage>
     <template #default>
-      <p v-if="loading">Cargando...</p>
-      <div v-else-if="evento">
-        <div class="text-center flex flex-col items-center space-y-6">
-          <!-- Título del evento -->
-          <div class="flex flex-col items-center">
-            <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
+        <p v-if="loading">Cargando...</p>
+        <div v-else-if="evento">
+          <div class="text-center flex flex-col items-center space-y-5">
+            <!-- Título del evento -->
+            <div class="flex flex-col items-center">
+              <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
+            </div>
+
+            <!-- Descripción debajo del título -->
+            <p class="text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
+
+            <!-- Imagen clickeable -->
+            <div class="cursor-pointer" @click="openImage">
+              <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
+                class="h-64 w-full object-cover rounded-xl mb-4 cursor-pointer transition transform hover:scale-105" />
+            </div>
           </div>
 
-          <!-- Descripción debajo del título -->
-          <p class="mt-2 text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
-
-          <!-- Imagen clickeable -->
-          <div class="cursor-pointer" @click="openImage">
-            <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
-              class="h-64 w-full object-cover rounded-xl mb-4 cursor-pointer transition transform hover:scale-105" />
+          <!-- Información del Evento -->
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
+              <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
+              <p class="text-gray-600">
+                {{
+                  field.type === "date" ? formatDate(evento[key])
+                    : field.type === "time" ? formatTime(evento[key])
+                      : evento[key] || 'No disponible'
+                }}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <!-- Información del Evento -->
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
+          <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key"
+            class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
             <p class="text-gray-600">
               {{
@@ -31,72 +44,75 @@
               }}
             </p>
           </div>
-        </div>
 
-        <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
-          <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
-          <ul>
-            <div class="mt-4 grid grid-cols-2 gap-4">
-              <div v-for="file in evento.files" :key="file.id" class="border rounded-lg p-3 text-center transition transform hover:scale-105">
-                <p class="text-sm text-gray-600 mb-3">{{ file.original_name }}</p>
-                <button>
-                  <a :href="file.path" download class="btn text-sm">
-                    Descargar
-                  </a>
-                </button>
+          <div v-if="authStore.authenticated && authStore.registered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
+            <ul>
+              <div class="mt-4 grid grid-cols-2 gap-4">
+                <div v-for="file in evento.files" :key="file.id"
+                  class="border rounded-lg p-3 text-center transition transform hover:scale-105">
+                  <p class="text-sm text-gray-600 mb-3">{{ file.original_name }}</p>
+                  <button>
+                    <a :href="file.path" download class="btn text-sm">
+                      Descargar
+                    </a>
+                  </button>
+                </div>
               </div>
-            </div>
-          </ul>
-        </div>
-
-        <div v-if="!authStore.authenticated" class="mt-8 flex justify-end space-x-4">
-          <button @click="abrirModal"
-            class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
-            Inscribirse al Evento
-          </button>
-          <RouterLink :to="{ name: 'login' }" class="btn btn-primary">
-            Acceder
-          </RouterLink>
-        </div>
-
-        <div v-if="isResponsible" class="mt-8 flex justify-end space-x-4">
-          <RouterLink :to="{ name: 'event-edit', params: { slug: evento.slug } }" class="btn btn-primary">
-            <i class="fa-solid fa-pen-to-square"></i> Editar
-          </RouterLink>
-
-        </div>
-      </div>
-      <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
-
-      <!-- Modal -->
-      <div v-if="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-        <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
-          <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
-
-          <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
-            <RouterLink :to="{ name: 'login' }" class="btn btn-primary">
-              <i class="fa-solid fa-right-to-bracket"></i>
-              Si, iniciar sesión
-            </RouterLink>
-            <RouterLink :to="{ name: 'register' }" class="btn btn-primary">
-              <i class="fa-solid fa-user-edit"></i>
-              No, crear cuenta
-            </RouterLink>
+            </ul>
           </div>
 
-          <div class="absolute bottom-2 right-4">
-            <button @click="cerrarModal" class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
-              Cancelar
+          <div v-if="isResponsible" class="mt-8 flex justify-end space-x-4">
+            <RouterLink :to="{ name: 'event-edit', params: { slug: evento.slug } }" class="btn btn-primary">
+              <i class="fa-solid fa-pen-to-square"></i> Editar
+            </RouterLink>
+          </div>
+        </div>
+        <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
+
+        <div class="mt-5 flex justify-center"> <!-- Botones en la parte superior -->
+          <div v-if="!authStore.authenticated" class="space-x-4">
+            <button @click="abrirModal"
+              class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
+              Inscribirse al Evento
             </button>
+            <RouterLink :to="{ name: 'login' }"
+              class="bg-blue-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none">
+              Acceder
+            </RouterLink>
           </div>
         </div>
-      </div>
 
-      <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage" @update:visible="showImage = $event" />
-    
+        <!-- Modal -->
+        <div v-if="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
+            <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
+
+            <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
+              <RouterLink :to="{ name: 'login' }" class="btn text-xl">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Si, iniciar sesión
+              </RouterLink>
+              <RouterLink :to="{ name: 'register' }" class="btn text-xl">
+                <i class="fa-solid fa-user-edit"></i>
+                No, crear cuenta
+              </RouterLink>
+            </div>
+
+            <div class="absolute bottom-2 right-4">
+              <button @click="cerrarModal" class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage"
+          @update:visible="showImage = $event" />
     </template>
   </LayoutPage>
 </template>
+
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
@@ -120,17 +136,19 @@ const openImage = () => {
   showImage.value = true;
 };
 
-console.log(evento.logo_path);
 const fields = {
   date: { label: "Fecha del Evento", type: "date" },
   starts_at: { label: "Horario de inicio", type: "time" },
   ends_at: { label: "Horario de fin", type: "time" },
-  meeting_duration: { label: "Duración de reuniones (en minutos)", type: "number" },
-  time_between_meetings: { label: "Tiempo entre reuniones (en minutos)", type: "number" },
   inscription_end_date: { label: "Inscripción hasta", type: "date" },
-  matching_end_date: { label: "Matching hasta", type: "date" },
   location: { label: "Ubicación", type: "text" }
 };
+
+const responsibleOnlyFields = {
+  meeting_duration: { label: "Duración de reuniones (en minutos)", type: "number" },
+  time_between_meetings: { label: "Tiempo entre reuniones (en minutos)", type: "number" },
+  matching_end_date: { label: "Matching hasta", type: "date" },
+}
 
 const isResponsible = computed(() => authStore.hasRole("responsible"));
 

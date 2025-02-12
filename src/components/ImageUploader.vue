@@ -50,8 +50,6 @@ export default {
     const preview = ref(props.type === "logo" ? props.uploadedFiles : [...props.uploadedFiles]);
     const fileList = ref(Array.isArray(props.uploadedFiles) ? [...props.uploadedFiles] : []);
     const deletedFiles = ref([]);
-  
-    console.log(fileList.value);
 
     watch(
       () => props.uploadedFiles,

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from "@/stores/auth";
 import LandingPage from '@/views/LandingPage.vue';
 import EventDetail from '@/views/EventDetail.vue';
 import Login from '@/views/LoginPage.vue';
@@ -82,5 +83,31 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach(async (to, from) => {
+  const authStore = useAuthStore();
+  const eventSlug = to.params.slug;
+
+  if (!authStore.isAuthenticated) {
+    if (to.name !== 'login' && to.name !== 'register' && from.name !== 'event-detail' && to.name !== 'event-detail') {
+      return { name: 'event-detail', params: { slug: eventSlug } };
+    }
+  } else {
+    const isRegistered = await authStore.checkEventRegistration(eventSlug);
+
+    if (!isRegistered) {
+      if (to.name !== 'event-inscription') {
+        return { name: 'event-inscription', params: { slug: eventSlug } };
+      }
+    } else {
+      if (to.name === 'event-inscription') {
+        if (from.name !== 'event-detail') {
+          return { name: 'event-detail', params: { slug: eventSlug } }; 
+        }
+      }
+    }
+  }
+});
+
 
 export default router;

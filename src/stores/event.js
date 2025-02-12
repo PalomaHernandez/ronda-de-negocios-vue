@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { axiosApiInstance } from '@/api';
+import router from '@/router';
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
@@ -33,8 +34,7 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.get(`/events/${eventId}/participants`);
-        this.participants = response.data; // 🔹 Guardamos los participantes en el store
-        console.log(...this.participants);
+        this.participants = response.data;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener los participantes.';
         console.error("Error fetching participants:", this.error);
@@ -158,10 +158,9 @@ export const useEventStore = defineStore('eventStore', {
       this.error = null;
 
       try {
-
         formData.append('_method', 'PATCH');
         const response = await axiosApiInstance.post(`/events/${this.evento.id}`, formData);
-        console.log(response);
+        router.push({ name: 'event-detail', params: { slug: this.evento.slug }});
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al editar el evento.';
         console.error("Error updating event:", this.error);
