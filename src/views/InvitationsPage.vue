@@ -245,20 +245,25 @@ const participantsMap = computed(() => {
   return map;
 });
 
-const cancelMeeting = (meeting) => {
-  // Lógica para cancelar la reunión
-  console.log(`Reunión cancelada: ${meeting.id}`);
+const cancelMeeting = async (meeting) => {
+
+  try {
+    await eventStore.deleteMeeting(meeting.id); // Llamar al método en el store
+    await eventStore.fetchUserMeetings(evento.value.id, authStore.user.id); // Recargar la lista de reuniones
+  } catch (error) {
+    console.error("Error al cancelar la reunión:", error);
+  }
 };
 
-const acceptMeeting = (meeting) => {
-  // Lógica para aceptar la reunión
-  console.log(`Reunión aceptada: ${meeting.id}`);
+
+const acceptMeeting = async (meeting) => {
+  await eventStore.acceptMeeting(meeting.id);
 };
 
-const rejectMeeting = (meeting) => {
-  // Lógica para rechazar la reunión
-  console.log(`Reunión rechazada: ${meeting.id}`);
+const rejectMeeting = async (meeting) => {
+  await eventStore.rejectMeeting(meeting.id);
 };
+
 const getParticipant = (meeting) => {
   return participantsMap.value[meeting.receiver_id] || participantsMap.value[meeting.requester_id] || null;
 };

@@ -95,6 +95,64 @@ export const useEventStore = defineStore('eventStore', {
       }
     },
 
+    async acceptMeeting(meetingId) {
+      this.loading = true;
+      this.error = null;
+    
+      try {
+        const response = await axiosApiInstance.patch(`/meetings/${meetingId}`, { status: "Aceptada" });
+        const updatedMeeting = response.data;
+    
+        // Actualizamos el estado local
+        const index = this.meetings.findIndex(m => m.id === meetingId);
+        if (index !== -1) {
+          this.meetings[index] = updatedMeeting;
+        }
+      } catch (err) {
+        this.error = err.response?.data?.message || "Error al aceptar la reunión.";
+        console.error("Error:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    async rejectMeeting(meetingId) {
+      this.loading = true;
+      this.error = null;
+    
+      try {
+        const response = await axiosApiInstance.patch(`/meetings/${meetingId}`, { status: "Rechazada" });
+        const updatedMeeting = response.data;
+    
+        // Actualizamos el estado local
+        const index = this.meetings.findIndex(m => m.id === meetingId);
+        if (index !== -1) {
+          this.meetings[index] = updatedMeeting;
+        }
+      } catch (err) {
+        this.error = err.response?.data?.message || "Error al rechazar la reunión.";
+        console.error("Error:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },    
+
+    async deleteMeeting(meetingId) {
+      try {
+        const response = await axiosApiInstance.delete(`/meetings/${meetingId}`);
+        
+        if (response.status === 200) {
+          // Filtramos la reunión eliminada del estado global
+          this.meetings = this.meetings.filter((meeting) => meeting.id !== meetingId);
+        } else {
+          throw new Error("Error al eliminar la reunión.");
+        }
+      } catch (error) {
+        console.error("Error eliminando la reunión:", error);
+        throw error;
+      }
+    },
+    
 
     async update(formData) {
       this.error = null;
