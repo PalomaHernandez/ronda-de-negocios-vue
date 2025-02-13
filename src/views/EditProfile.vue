@@ -89,6 +89,7 @@ const onFileChange = (event) => {
 
 const guardarCambios = async () => {
   try {
+    console.log("Form values:", form.value);
     const formData = new FormData();
     formData.append("name", form.value.name);
     formData.append("location", form.value.location);
@@ -98,7 +99,7 @@ const guardarCambios = async () => {
       formData.append("logo", previewImage.value);
     }
 
-    if(form.gallery.length > 0) {
+    if(Array.isArray(form.gallery) &&  form.gallery.length > 0) {
       form.gallery.forEach((file, index) => {
       if (file instanceof File) {
         formData.append(`gallery[${index}]`, file);
@@ -106,11 +107,14 @@ const guardarCambios = async () => {
     });
     }
     
-    if(form.deleted_images.length > 0) {
+    if(Array.isArray(form.deleted_images) && form.deleted_images.length > 0) {
     form.deleted_images.forEach((img) => {
       formData.append("deleted_images[]", img);
     });
   }
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
     await authStore.updateProfile(formData);
     alert("Perfil actualizado con éxito");
   } catch (error) {

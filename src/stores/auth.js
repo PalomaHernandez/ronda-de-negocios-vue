@@ -124,7 +124,7 @@ export const useAuthStore = defineStore("auth", {
     async updateProfile(data) {
       try {
         const response = await axiosApiInstance.patch('/user/profile', data);
-        this.user = JSON.stringify(response.data);
+        this.user = response.data.user ?? response.data;
       } catch (error) {
         console.error("Error al actualizar perfil", error);
         throw error;
