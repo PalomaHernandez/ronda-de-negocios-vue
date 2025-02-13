@@ -31,6 +31,14 @@ export const useAuthStore = defineStore("auth", {
         return false;
       }
     },
+    async fetchUpdatedUserProfile () {
+      try {
+        const response = await axiosApiInstance.get("/user");
+        this.user = response.data;  // Actualiza el estado del usuario en el store
+      } catch (error) {
+        console.error("Error al obtener el perfil del usuario:", error);
+      }
+    },    
     async login(credentials) {
       if (!this.loggingIn) {
         this.loggingIn = true;

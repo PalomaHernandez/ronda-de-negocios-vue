@@ -57,10 +57,11 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         console.log(...formData);
-        const response = await axiosApiInstance.get(`/events/${eventId}/registration`, formData);
+        const response = await axiosApiInstance.post(`/events/${eventId}/registration`, formData);
         this.success = response.data;
         const authStore = useAuthStore();
         authStore.checkEventRegistration(this.evento.slug);
+        authStore.fetchUpdatedUserProfile();
         router.push({ name: 'event-detail', params: { slug: this.evento.slug }});
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';

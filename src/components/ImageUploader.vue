@@ -96,7 +96,7 @@ export default {
     const removeImage = (index, file) => {
       if (file.id) {
         // Es una URL (imagen ya subida), la agregamos a `deletedFiles`
-        deletedFiles.value.push(file);
+        deletedFiles.value.push(file.id);
         emit("deletedFiles", deletedFiles.value);
       }
 

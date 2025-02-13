@@ -73,7 +73,7 @@ const inscription = ref({
   products: "",
 });
 const gallery = ref([]);
-const deleted_images = [];
+const deleted_images = ref([]);
 
 
 // Métodos
@@ -82,7 +82,7 @@ const updateGallery = (files) => {
 };
 
 const handleDeletedImages = (deleted) => {
-  deleted_images = deleted;
+  deleted_images.value = deleted;
 };
 
 const submitInscription = async () => {
@@ -97,7 +97,12 @@ const submitInscription = async () => {
   formData.append("products", inscription.value.products);
   if (gallery.value.length > 0) {
     gallery.value.forEach((image, index) => {
-      formData.append(`gallery${index}`, image);
+      formData.append(`gallery[${index}]`, image);
+    });
+  }
+  if(deleted_images.value.length > 0) {
+    deleted_images.value.forEach((img, index) => {
+      formData.append(`deleted_files[${index}]`, img);
     });
   }
 
