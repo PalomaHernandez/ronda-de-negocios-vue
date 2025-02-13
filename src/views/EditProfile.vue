@@ -34,7 +34,7 @@
           </div>
           <div>
             <label class="block font-semibold">Galeria:</label>
-            <ImageUploader type="gallery" :uploaded-files="form.gallery || []" @updateFiles="handleImagesUpdate"
+            <ImageUploader type="gallery" :uploaded-files="user.images || []" @updateFiles="handleImagesUpdate"
               @deletedFiles="handleDeletedImages" />
           </div>
         </div>
@@ -69,11 +69,12 @@ const form = ref({
   location: user.value.location || "",
   website: user.value.website || "",
   logo_path: user.value.logo_path || "",
-  gallery: user.value.images || [],
-  deleted_images : [],
 });
 
 const previewImage = ref(null);
+
+const gallery = ref([]);
+const deleted_images = ref([]);
 
 // Manejar la carga de una nueva imagen de perfil
 const onFileChange = (event) => {
@@ -99,36 +100,34 @@ const guardarCambios = async () => {
       formData.append("logo", previewImage.value);
     }
 
-    if(Array.isArray(form.gallery) &&  form.gallery.length > 0) {
-      form.gallery.forEach((file, index) => {
+    if(gallery.value.length > 0) {
+      gallery.value.forEach((file, index) => {
       if (file instanceof File) {
         formData.append(`gallery[${index}]`, file);
       }
     });
     }
     
-    if(Array.isArray(form.deleted_images) && form.deleted_images.length > 0) {
-    form.deleted_images.forEach((img) => {
-      formData.append("deleted_images[]", img);
+    if(deleted_images.value.length > 0) {
+    deleted_images.value.forEach((img, index) => {
+      formData.append(`deleted_images[${index}]`, img);
     });
   }
     for (let pair of formData.entries()) {
       console.log(pair[0] + ': ' + pair[1]);
     }
     await authStore.updateProfile(formData);
-    alert("Perfil actualizado con éxito");
   } catch (error) {
     console.error("Error al actualizar perfil:", error);
-    alert("Hubo un error al actualizar el perfil");
   }
 };
 
 const handleImagesUpdate = (files) => {
-    form.gallery = files;
+    gallery.value = files;
   };
 
 const handleDeletedImages = (deleted) => {
-  form.deleted_images = deleted;
+  deleted_images.value = deleted;
 };
 
 </script>

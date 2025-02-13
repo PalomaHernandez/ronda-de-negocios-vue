@@ -13,12 +13,14 @@ export const useAuthStore = defineStore("auth", {
     loggingOut: false,
     error: null,
     info: null,
+    success: null,
     registered: useStorage("registered", null),
   }),
   actions: {
     clearMessages() {
       this.error = null;
       this.info = null;
+      this.success = null;
     },
     async checkEventRegistration(eventSlug) {
       try {
@@ -123,8 +125,11 @@ export const useAuthStore = defineStore("auth", {
     },
     async updateProfile(data) {
       try {
-        const response = await axiosApiInstance.patch('/user/profile', data);
-        this.user = response.data.user ?? response.data;
+        data.append('_method', 'PATCH');
+        const response = await axiosApiInstance.post('/user/profile', data);
+        this.user = response.data.user;
+        this.success = response.data.message;
+        router.push({ name: 'profile' });
       } catch (error) {
         console.error("Error al actualizar perfil", error);
         throw error;

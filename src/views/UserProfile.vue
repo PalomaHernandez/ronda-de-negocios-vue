@@ -1,10 +1,14 @@
 <template>
     <LayoutPage>
         <div v-if="user.id" class="p-6">
-            <RouterLink :to="{ name: 'edit-profile' }" class="btn bg-blue-500 absolute top-2 right-2">
+            <div v-if="success" class="alert alert-success mt-2" @click="authStore.clearMessages()">{{ success }}</div>
+            <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
+            <div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
+            <RouterLink :to="{ name: 'edit-profile' }" class="btn bg-blue-500 absolute top-2 right-2 mb-5">
                 <i class="fa-solid fa-user-edit"></i>
                 Editar perfil
             </RouterLink>
+
             <div class="flex items-center space-x-4">
                 <!-- Logo -->
                 <img :src="user.logo_path" alt="User Logo" class="w-16 h-16 rounded-full" />
@@ -34,8 +38,8 @@
             <div v-if="user.images" class="mt-6">
                 <h3 class="text-lg font-semibold">Galería</h3>
                 <div class="grid grid-cols-3 gap-4 mt-2">
-                    <img v-for="(image, index) in user.images" :key="index" :src="image.path"
-                        alt="Gallery image" class="w-full h-52 object-cover rounded-lg cursor-pointer transition transform hover:scale-105"
+                    <img v-for="(image, index) in user.images" :key="index" :src="image.path" alt="Gallery image"
+                        class="w-full h-52 object-cover rounded-lg cursor-pointer transition transform hover:scale-105"
                         @click="openModal(image.path)" />
                 </div>
             </div>
@@ -58,7 +62,7 @@ import { useAuthStore } from "@/stores/auth";
 import ImageModal from "@/components/ImageModal.vue";
 
 const authStore = useAuthStore();
-const { user } = storeToRefs(authStore);
+const { user, success, error, info } = storeToRefs(authStore);
 
 const showImage = ref(false);
 const selectedImage = ref("");
