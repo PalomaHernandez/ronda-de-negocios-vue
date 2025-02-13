@@ -66,8 +66,8 @@
     </nav>
 
     <!-- Contenedor principal con título y contenido -->
-    <div class="flex-1 flex items-center justify-center max-h-[85vh] m-8">
-      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative max-h-[85vh] overflow-y-auto">
+    <div class="flex-1 flex items-center justify-center h-[85vh] m-8">
+      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative h-[85vh] overflow-y-auto">
         <slot />
       </div>
     </div>

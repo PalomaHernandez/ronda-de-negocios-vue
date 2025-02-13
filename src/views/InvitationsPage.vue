@@ -3,7 +3,7 @@
     <template #default>
       <p v-if="loading">Cargando...</p>
 
-      <div v-else-if="evento" class="flex flex-col space-y-6">
+      <div v-else-if="evento" class="flex flex-col space-y-10">
         <!-- 📌 Columna izquierda con información del evento -->
         <div class="w-full flex-grow">
           <h2 class="text-2xl font-semibold">Reuniones</h2>
@@ -163,7 +163,57 @@
   </div>
 </div>
 
+<div v-if="showDetailsModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+          <!-- Foto de perfil centrada -->
+          <div class="flex flex-col items-center">
+            <img v-if="selectedParticipantDetails.logo_path" :src="selectedParticipantDetails.logo_path" alt="Logo"
+              class="w-24 h-24 rounded-full object-cover shadow-md" />
+            <h2 class="text-2xl font-bold text-gray-900 mt-3">{{ selectedParticipantDetails.name }}</h2>
+            <p class="text-gray-500 text-lg">{{ selectedParticipantDetails.activity || 'No disponible' }}</p>
+          </div>
 
+          <!-- Información en tarjetas -->
+          <div class="mt-4 space-y-3">
+            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <i class="fa-solid fa-location-dot mr-2"></i>
+              <p class="text-gray-700"> <strong> Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
+            </div>
+
+            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <i class="fa-solid fa-magnifying-glass mr-2"></i>
+              <p class="text-gray-700"><strong>Intereses:</strong> {{ selectedParticipantDetails.interests || 'No disponible' }}</p>
+            </div>
+
+            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <i class="fa-solid fa-store mr-2"></i>
+              <p class="text-gray-700"><strong>Productos o Servicios:</strong> {{
+                selectedParticipantDetails.product_services || 'No disponible' }}</p>
+            </div>
+          </div>
+
+          <!-- Galería de imágenes -->
+          <div v-if="selectedParticipantDetails.profile_images?.length" class="mt-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Galería</h3>
+            <div class="grid grid-cols-3 gap-2">
+              <img v-for="image in selectedParticipantDetails.profile_images" :key="image.id" :src="image.path"
+                alt="Gallery image"
+                class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105"
+                @click="openImageModal(image.path)" />
+            </div>
+          </div>
+
+          <ImageModal :imageUrl="selectedImage" :visible="showImageModal" @update:visible="showImageModal = $event" />
+
+          <!-- Botón de cierre -->
+          <div class="flex justify-center mt-5">
+            <button @click="closeDetailsModal"
+              class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
 
 
     </template>

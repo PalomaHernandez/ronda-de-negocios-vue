@@ -75,11 +75,13 @@ const previewImage = ref(null);
 
 const gallery = ref([]);
 const deleted_images = ref([]);
+const selectedFile = ref(null);
 
 // Manejar la carga de una nueva imagen de perfil
 const onFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
+    selectedFile.value = file;
     const reader = new FileReader();
     reader.onload = () => {
       previewImage.value = reader.result; // Muestra vista previa de la imagen
@@ -97,24 +99,21 @@ const guardarCambios = async () => {
     formData.append("website", form.value.website);
 
     if (previewImage.value) {
-      formData.append("logo", previewImage.value);
+      formData.append("logo", selectedFile.value);
     }
 
-    if(gallery.value.length > 0) {
+    if (gallery.value.length > 0) {
       gallery.value.forEach((file, index) => {
-      if (file instanceof File) {
-        formData.append(`gallery[${index}]`, file);
-      }
-    });
+        if (file instanceof File) {
+          formData.append(`gallery[${index}]`, file);
+        }
+      });
     }
-    
-    if(deleted_images.value.length > 0) {
-    deleted_images.value.forEach((img, index) => {
-      formData.append(`deleted_images[${index}]`, img);
-    });
-  }
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
+
+    if (deleted_images.value.length > 0) {
+      deleted_images.value.forEach((img, index) => {
+        formData.append(`deleted_images[${index}]`, img);
+      });
     }
     await authStore.updateProfile(formData);
   } catch (error) {
@@ -123,8 +122,8 @@ const guardarCambios = async () => {
 };
 
 const handleImagesUpdate = (files) => {
-    gallery.value = files;
-  };
+  gallery.value = files;
+};
 
 const handleDeletedImages = (deleted) => {
   deleted_images.value = deleted;

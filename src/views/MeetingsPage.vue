@@ -53,9 +53,9 @@
                       class="w-10 h-10 rounded-full mr-3 object-cover" />
                     <div>
                       <p class="text-lg font-medium">{{ participant.name }}</p>
-                      <p class="text-sm text-gray-500">{{ participant.activity }}</p>
-                      <p class="text-lg font-medium">{{ 'Busca ' + (participant.interests || 'Nada') }}</p>
-                      <p class="text-lg font-medium">{{ 'Ofrece ' + (participant.product_services || 'Nada') }}</p>
+                      <p v-if="participant.activity" class="text-sm text-gray-500">{{ participant.activity }}</p>
+                      <p v-if="participant.interests" class="text-lg font-medium">{{ 'Busca ' + (participant.interests || '') }}</p>
+                      <p v-if="participant.product_services" class="text-lg font-medium">{{ 'Ofrece ' + (participant.product_services || '') }}</p>
                     </div>
                   </div>
                   <div class="space-x-2">
@@ -125,9 +125,14 @@
               <p class="text-gray-700"> <strong> Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
             </div>
 
-            <div class="flex items-center bg-gray-100 p-3 rounded-lg">
+            <div v-if="selectedParticipantDetails.interests" class="flex items-center bg-gray-100 p-3 rounded-lg">
               <i class="fa-solid fa-magnifying-glass mr-2"></i>
               <p class="text-gray-700"><strong>Intereses:</strong> {{ selectedParticipantDetails.interests || 'No disponible' }}</p>
+            </div>
+
+            <div v-if="selectedParticipantDetails.website" class="flex items-center bg-gray-100 p-3 rounded-lg">
+              <i class="fa-solid fa-cloud mr-2"></i>
+                <a :href="selectedParticipantDetails.website" target="_blank" class="text-gray-700"><strong>Sitio web:</strong> {{ selectedParticipantDetails.website || 'No disponible' }}</a>
             </div>
 
             <div class="flex items-center bg-gray-100 p-3 rounded-lg">
