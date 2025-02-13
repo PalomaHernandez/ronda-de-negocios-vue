@@ -193,7 +193,13 @@ const filterType = ref("all"); // "all", "offers", "seeks", "both"
 const filteredParticipants = computed(() => {
   return participants.value
     .filter(participant => participant.id !== authStore.user.id)
-    .filter(participant => !sentRequests.value.includes(participant.id))
+    .filter(participant => 
+  !sentRequests.value.includes(participant.id) &&
+  !meetings.value.some(meeting =>
+    (meeting.requester_id === authStore.user.id && meeting.receiver_id === participant.id) ||
+    (meeting.receiver_id === authStore.user.id && meeting.requester_id === participant.id)
+  )
+)
     .filter(participant =>
       participant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
