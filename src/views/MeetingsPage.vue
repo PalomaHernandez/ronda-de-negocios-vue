@@ -122,7 +122,7 @@
           <div class="mt-4 space-y-3">
             <div class="flex items-center bg-gray-100 p-3 rounded-lg">
               <i class="fa-solid fa-location-dot mr-2"></i>
-              <p class="text-gray-700">  <strong> Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
+              <p class="text-gray-700"> <strong> Ubicación:</strong> {{ selectedParticipantDetails.location || 'No disponible' }}</p>
             </div>
 
             <div class="flex items-center bg-gray-100 p-3 rounded-lg">
@@ -143,12 +143,12 @@
             <div class="grid grid-cols-3 gap-2">
               <img v-for="image in selectedParticipantDetails.profile_images" :key="image.id" :src="image.path"
                 alt="Gallery image"
-                class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105" @click="openImageModal(image.path)" />
+                class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105"
+                @click="openImageModal(image.path)" />
             </div>
           </div>
 
-          <ImageModal :imageUrl="selectedImage" :visible="showImageModal"
-            @update:visible="showImageModal = $event" />
+          <ImageModal :imageUrl="selectedImage" :visible="showImageModal" @update:visible="showImageModal = $event" />
 
           <!-- Botón de cierre -->
           <div class="flex justify-center mt-5">
@@ -165,7 +165,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watchEffect } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación
@@ -187,8 +187,8 @@ const filterType = ref("all"); // "all", "offers", "seeks", "both"
 // 🔍 Computed para filtrar participantes según búsqueda y filtro
 const filteredParticipants = computed(() => {
   return participants.value
-  .filter(participant => participant.id !== authStore.user.id)
-  .filter(participant => !sentRequests.value.includes(participant.id))
+    .filter(participant => participant.id !== authStore.user.id)
+    .filter(participant => !sentRequests.value.includes(participant.id))
     .filter(participant =>
       participant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
@@ -215,16 +215,25 @@ const userRemainingMeetings = computed(() => {
 onMounted(async () => {
   await eventStore.fetch(route.params.slug); // Obtener evento
 
-  // Verificar que se obtuvo el evento antes de pedir participantes
-  watchEffect(() => {
-    if (evento.value && !participants.value.length) {
-      eventStore.fetchParticipants(evento.value.id);
-    }
-    const userId = authStore.user.id;
-    if (evento.value && meetings.value.length === 0) {
-      eventStore.fetchUserMeetings(evento.value.id, userId);
-    }
-  });
+  watch(
+    () => evento.value?.id, // Solo reaccionar a cambios en `evento.id`
+    (eventId) => {
+      if (eventId && !participants.value.length) {
+        eventStore.fetchParticipants(eventId);
+      }
+    },
+    { immediate: true }
+  );
+
+  watch(
+    () => [evento.value?.id, authStore.user?.id], // Solo reaccionar a cambios en evento.id o user.id
+    ([eventId, userId]) => {
+      if (eventId && userId && meetings.value.length === 0) {
+        eventStore.fetchUserMeetings(eventId, userId);
+      }
+    },
+    { immediate: true }
+  );
 });
 
 // Estado del modal

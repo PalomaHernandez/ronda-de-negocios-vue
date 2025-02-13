@@ -3,6 +3,9 @@
     <template #default>
         <p v-if="loading">Cargando...</p>
         <div v-else-if="evento">
+          <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
+        <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
+        <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
           <div class="text-center flex flex-col items-center space-y-5">
             <!-- Título del evento -->
             <div class="flex flex-col items-center">
@@ -67,10 +70,10 @@
               <i class="fa-solid fa-pen-to-square"></i> Editar
             </RouterLink>
           </div>
-        </div>
+       
         <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
 
-        <div class="mt-5 flex justify-center"> <!-- Botones en la parte superior -->
+        <div class="mt-5 flex justify-center">
           <div v-if="!authStore.authenticated" class="space-x-4">
             <button @click="abrirModal"
               class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
@@ -109,6 +112,7 @@
 
         <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage"
           @update:visible="showImage = $event" />
+        </div>
     </template>
   </LayoutPage>
 </template>
@@ -125,7 +129,7 @@ import ImageModal from "@/components/ImageModal.vue";
 
 // Estado y store
 const eventStore = useEventStore();
-const { evento, loading, error } = storeToRefs(eventStore);
+const { evento, loading, error, info, success } = storeToRefs(eventStore);
 const route = useRoute();
 const mostrarModal = ref(false);
 const authStore = useAuthStore();

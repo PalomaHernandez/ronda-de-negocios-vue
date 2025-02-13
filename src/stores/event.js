@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { axiosApiInstance } from '@/api';
 import router from '@/router';
+import { useAuthStore } from "@/stores/auth";
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
@@ -10,9 +11,16 @@ export const useEventStore = defineStore('eventStore', {
     notifications: [], 
     loading: false,
     error: null,
+    info: null,
+    success: null,
   }),
   persist: true,
   actions: {
+    clearMessages() {
+      this.error = null;
+      this.info = null;
+      this.success = null;
+    },
     async fetch(slug) {
       this.loading = true;
       this.error = null;
@@ -35,6 +43,7 @@ export const useEventStore = defineStore('eventStore', {
       try {
         const response = await axiosApiInstance.get(`/events/${eventId}/participants`);
         this.participants = response.data;
+        console.log(...this.participants);
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener los participantes.';
         console.error("Error fetching participants:", this.error);
@@ -42,7 +51,24 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
+    async inscription(eventId, formData){
+      this.loading = true;
+      this.error = null;
 
+      try {
+        console.log(...formData);
+        const response = await axiosApiInstance.get(`/events/${eventId}/registration`, formData);
+        this.success = response.data;
+        const authStore = useAuthStore();
+        authStore.checkEventRegistration(this.evento.slug);
+        router.push({ name: 'event-detail', params: { slug: this.evento.slug }});
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        console.error("Error creating registration:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
     async fetchUserMeetings(eventId, userId) {
       this.loading = true;
       this.error = null;
