@@ -172,13 +172,12 @@ const cerrarModal = () => {
   mostrarModal.value = false;
 };
 
-const formatDate = (isoDate) => {
-  if (!isoDate) return "No disponible";
-  return new Date(isoDate).toLocaleString("es-ES", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
+const formatDate = (date) => {
+  if (!date) return "No disponible";
+  
+  const [year, month, day] = date.split('-');
+  
+  return `${day}-${month}-${year}`;
 };
 
 const formatTime = (time) => {
