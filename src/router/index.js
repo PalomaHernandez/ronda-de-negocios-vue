@@ -93,6 +93,7 @@ router.beforeEach(async (to, from) => {
       return { name: 'event-detail', params: { slug: eventSlug } };
     }
   } else {
+
     const isRegistered = await authStore.checkEventRegistration(eventSlug);
 
     if (!isRegistered) {
@@ -107,6 +108,7 @@ router.beforeEach(async (to, from) => {
       }
     }
   }
+  
 });
 
 

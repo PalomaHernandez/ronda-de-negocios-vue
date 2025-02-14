@@ -36,6 +36,7 @@
             </div>
           </div>
 
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key"
             class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
@@ -46,6 +47,7 @@
                     : evento[key] || 'No disponible'
               }}
             </p>
+          </div>
           </div>
 
           <div v-if="authStore.authenticated && authStore.registered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">

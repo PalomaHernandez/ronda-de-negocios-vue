@@ -3,7 +3,6 @@
         <div v-if="user.id" class="p-6">
             <div v-if="success" class="alert alert-success mt-2" @click="authStore.clearMessages()">{{ success }}</div>
             <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
-            <div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
             <RouterLink :to="{ name: 'edit-profile' }" class="btn bg-blue-500 absolute top-2 right-2 mb-5">
                 <i class="fa-solid fa-user-edit"></i>
                 Editar perfil

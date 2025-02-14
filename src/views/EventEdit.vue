@@ -6,7 +6,7 @@
         <div v-else-if="evento">
           <div class="text-center flex flex-col items-center space-y-6">
             <div class="cursor-pointer" @click="$refs.logoInput.click()">
-              <i class="fa-solid fa-camera text-4xl text-gray-500"></i>
+              <!--i class="fa-solid fa-camera text-4xl text-gray-500"></i-->
               <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
                 class="h-64 w-full object-cover rounded-xl mb-4" />
               <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
@@ -45,11 +45,11 @@
           </div>
   
           <div class="mt-8 flex justify-end space-x-4">
-            <RouterLink :to="{ name: 'event-detail', params: { slug: evento.slug } }" class="btn btn-primary">
+            <RouterLink :to="{ name: 'event-detail', params: { slug: evento.slug } }" class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-blue-700">
             Cancelar
             </RouterLink>
             <button @click="update"
-              class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg">
+              class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-blue-700">
               Guardar cambios
             </button>
           </div>

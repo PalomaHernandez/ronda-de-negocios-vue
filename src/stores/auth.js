@@ -68,7 +68,7 @@ export const useAuthStore = defineStore("auth", {
           }
         } catch (error) {
           console.error("Login error:", error);
-          this.error = "Invalid credentials.";
+          this.error = "El email o la contraseña son incorrectos.";
         } finally {
           this.loggingIn = false;
         }

@@ -5,9 +5,7 @@
 		<h1 class="text-2xl font-bold text-center mb-4">Iniciar sesión</h1>
   
 		<!-- Mensajes de estado -->
-		<div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
 		<div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
-		<div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
   
 		<!-- Formulario de login -->
 		<form class="flex flex-col gap-3 p-4" ref="form" @submit.prevent="login">
@@ -32,6 +30,7 @@
   
   <script setup>
   import { ref } from 'vue'
+  import { storeToRefs } from 'pinia'
   import { useAuthStore } from '@/stores/auth'
   import { RouterLink } from 'vue-router'
   import LabeledObject from '@/components/LabeledObject.vue'
@@ -39,6 +38,7 @@
   
   // Estado y store
   const authStore = useAuthStore()
+  const { error } = storeToRefs(authStore);
   const credentials = ref({
 	email: '',
 	password: '',
@@ -54,9 +54,5 @@
 	}
   }
   
-  // Computed properties
-  const success = authStore.success
-  const error = authStore.error
-  const info = authStore.info
   </script>
   
