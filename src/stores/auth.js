@@ -2,13 +2,14 @@ import router from "@/router";
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
 import { axiosApiInstance } from "@/api";
+import { useEventStore } from "@/stores/event";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     authenticated: useStorage("authenticated", false),
     user: useStorage("user", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
-    role: useStorage("role", []),
-    token: useStorage("token", null), // 🔹 Agregar token aquí
+    token: useStorage("token", null),
+    responsible: useStorage("responsible", false),
     loggingIn: false,
     loggingOut: false,
     error: null,
@@ -25,18 +26,18 @@ export const useAuthStore = defineStore("auth", {
     async checkEventRegistration(eventSlug) {
       try {
         const response = await axiosApiInstance.get(`/events/${eventSlug}/is-registered/${this.user.id}`);
-        this.registered = response.data.registered; // Guardamos la respuesta
+        this.registered = response.data.registered;
         return this.registered;
       } catch (error) {
         console.error("Error al verificar inscripción:", error);
-        this.registered = false; // En caso de error, asumimos que no está registrado
+        this.registered = false;
         return false;
       }
     },
     async fetchUpdatedUserProfile () {
       try {
         const response = await axiosApiInstance.get("/user");
-        this.user = response.data;  // Actualiza el estado del usuario en el store
+        this.user = response.data; 
       } catch (error) {
         console.error("Error al obtener el perfil del usuario:", error);
       }
@@ -53,15 +54,18 @@ export const useAuthStore = defineStore("auth", {
           if (data.user) {
             this.authenticated = true;
             this.user = data.user;
-            this.role = data.role;
             this.token = data.token;
-          
-            const eventSlug = router.currentRoute.value.params.slug;
-            if (this.checkEventRegistration(eventSlug)) {
-              router.push({ name: "event-detail", params: { slug: eventSlug } });
-            } else {
-              router.push({ name: "event-inscription", params: { slug: eventSlug } });
+
+            const eventStore = useEventStore();
+
+            if(data.role.includes('responsible')) {
+              eventStore.fetch(eventStore.evento.slug);
+              this.responsible = eventStore.evento?.responsible_id === this.user.id;
             }
+
+            this.registered = this.checkEventRegistration(eventStore.evento.slug);
+            
+            router.push({ name: "event-detail" });
 
           } else {
             this.error = data.text;
@@ -84,8 +88,8 @@ export const useAuthStore = defineStore("auth", {
 
           this.authenticated = false;
           this.user = null;
-          this.role = [];
           this.token = null;
+          this.responsible = false;
           this.registered = false;
 
           router.push({ name: "event-detail" });
@@ -108,10 +112,8 @@ export const useAuthStore = defineStore("auth", {
           if (data.user) {
             this.authenticated = true;
             this.user = data.user;
-            this.role = data.role;
-            this.token = data.token; // 🔹 Guardar token después de registrar
-    
-            router.push({ name: "event-inscription" }); // 🔹 Redirigir al usuario después del registro
+            this.token = data.token; 
+            router.push({ name: "event-detail" });
           } else {
             this.error = "No se pudo registrar.";
           }
@@ -140,6 +142,6 @@ export const useAuthStore = defineStore("auth", {
   getters: {
     isAuthenticated: (state) => !!state.token,
     isRegistered: (state) => state.registered,
-    hasRole: (state) => (role) => state.role.includes(role),
+    isResponsible: (state) => state.responsible,
   },
 });

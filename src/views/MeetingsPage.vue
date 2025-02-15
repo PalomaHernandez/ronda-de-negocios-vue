@@ -1,7 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
-      <p v-if="loading">Cargando...</p>
+      <Loading v-if="loading" />
 
       <div v-else-if="evento" class="flex space-x-6">
         <!-- 📌 Columna izquierda con información del evento -->
@@ -176,6 +176,7 @@ import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación
 import { useRouter, useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
+import Loading from "@/components/Loading.vue";
 import ImageModal from "@/components/ImageModal.vue";
 
 // Estado y store
@@ -226,7 +227,12 @@ const userRemainingMeetings = computed(() => {
 onMounted(async () => {
   await eventStore.fetch(route.params.slug); // Obtener evento
 
-  watch(
+  if(evento.value) {
+    eventStore.fetchParticipants(evento.value.id); // Obtener participantes
+    eventStore.fetchUserMeetings(evento.value.id, authStore.user.id); // Obtener reuniones del usuario
+  }
+
+  /*watch(
     () => evento.value?.id, // Solo reaccionar a cambios en `evento.id`
     (eventId) => {
       if (eventId && !participants.value.length) {
@@ -244,7 +250,7 @@ onMounted(async () => {
       }
     },
     { immediate: true }
-  );
+  );*/
 });
 
 // Estado del modal

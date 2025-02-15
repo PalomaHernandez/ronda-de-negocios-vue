@@ -1,7 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
-      <p v-if="loading">Cargando...</p>
+      <Loading v-if="loading" />
       <div v-else-if="evento">
         <div class="text-center">
           <h1 class="text-4xl font-extrabold text-gray-900">Notificaciones</h1>
@@ -30,6 +30,7 @@ import { useEventStore } from "@/stores/event";
 import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import { useAuthStore } from "@/stores/auth";
+import Loading from "@/components/Loading.vue";
 
 // Estado y store
 const eventStore = useEventStore();
@@ -43,21 +44,11 @@ const sortedNotifications = computed(() => {
 
 // Cargar evento y notificaciones al montar
 onMounted(async () => {
-  await eventStore.fetch(route.params.slug); // Obtener evento
+  await eventStore.fetch(route.params.slug); 
+  if (evento.value?.id) {
+    const userId = authStore.user.id;
+    await eventStore.fetchNotifications(evento.value.id, userId);
+  }
 });
-
-// Solo llamar a fetchNotifications cuando evento.id cambie y sea válido
-watch(
-  () => evento.value?.id, // Solo observar cambios en evento.id
-  async (newEventId) => {
-    if (newEventId) {
-      const userId = authStore.user.id;
-      await eventStore.fetchNotifications(newEventId, userId);
-    }
-  },
-  { immediate: true } // Llamar al iniciar si evento.id ya está disponible
-);
-
-// Esperar que el evento esté listo y luego cargar notificaciones
 
 </script>

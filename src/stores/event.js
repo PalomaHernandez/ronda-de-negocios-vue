@@ -56,7 +56,6 @@ export const useEventStore = defineStore('eventStore', {
       this.error = null;
 
       try {
-        console.log(...formData);
         const response = await axiosApiInstance.post(`/events/${eventId}/registration`, formData);
         this.success = response.data;
         const authStore = useAuthStore();

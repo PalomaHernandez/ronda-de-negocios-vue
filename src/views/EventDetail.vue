@@ -1,7 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
-        <p v-if="loading">Cargando...</p>
+        <Loading v-if="loading" />
         <div v-else-if="evento">
           <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
@@ -128,6 +128,7 @@ import { useRoute, useRouter } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import { useAuthStore } from "@/stores/auth";
 import ImageModal from "@/components/ImageModal.vue";
+import Loading from "@/components/Loading.vue";
 
 // Estado y store
 const eventStore = useEventStore();
@@ -156,7 +157,7 @@ const responsibleOnlyFields = {
   matching_end_date: { label: "Matching hasta", type: "date" },
 }
 
-const isResponsible = computed(() => authStore.hasRole("responsible"));
+const isResponsible = computed(() => authStore.isResponsible);
 
 // Cargar evento al montar
 onMounted(() => {

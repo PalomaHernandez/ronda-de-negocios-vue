@@ -1,7 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
-      <p v-if="loading">Cargando...</p>
+      <Loading v-if="loading" />
       <div v-else-if="evento">
         <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
@@ -60,6 +60,7 @@ import { useAuthStore } from "@/stores/auth";
 import LayoutPage from "@/Layout.vue";
 import LabeledObject from "@/components/LabeledObject.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
+import Loading from "@/components/Loading.vue";
 
 // Estado y store
 const eventStore = useEventStore();

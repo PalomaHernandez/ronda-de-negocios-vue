@@ -1,7 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
-      <p v-if="loading">Cargando...</p>
+      <Loading v-if="loading" />
 
       <div v-else-if="evento" class="flex flex-col space-y-10">
         <!-- 📌 Columna izquierda con información del evento -->
@@ -227,6 +227,7 @@ import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación
 import { useRouter, useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
+import Loading from "@/components/Loading.vue";
 
 // Estado y store
 const eventStore = useEventStore();

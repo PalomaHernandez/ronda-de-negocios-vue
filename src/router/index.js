@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from "@/stores/auth";
+import { useEventStore } from "@/stores/event";
 import LandingPage from '@/views/LandingPage.vue';
 import EventDetail from '@/views/EventDetail.vue';
 import Login from '@/views/LoginPage.vue';
@@ -19,7 +20,7 @@ const routes = [
     component: LandingPage
   },
   {
-    path: '/:slug', 
+    path: '/:slug',
     name: 'event-detail',
     component: EventDetail,
     props: true,
@@ -34,37 +35,37 @@ const routes = [
     path: '/:slug/inscription',
     name: 'event-inscription',
     component: InscriptionPage,
-    props: true, 
+    props: true,
   },
   {
-    path: '/:slug/notifications', 
+    path: '/:slug/notifications',
     name: 'event-notifications',
     component: NotificationsPage,
-    props: true, 
+    props: true,
   },
   {
     path: '/:slug/meetings',
     name: 'event-meetings',
     component: MeetingsPage,
-    props: true, 
+    props: true,
   },
   {
-    path: '/:slug/invitations', 
+    path: '/:slug/invitations',
     name: 'event-invitations',
     component: InvitationsPage,
-    props: true, 
+    props: true,
   },
   {
     path: '/:slug/login',
     name: 'login',
     component: Login,
-    props: true, 
+    props: true,
   },
   {
     path: '/:slug/register',
     name: 'register',
     component: RegisterPage,
-    props: true, 
+    props: true,
   },
   {
     path: '/:slug/profile',
@@ -86,6 +87,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const authStore = useAuthStore();
+  const eventStore = useEventStore();
   const eventSlug = to.params.slug;
 
   if (!authStore.isAuthenticated) {
@@ -94,21 +96,28 @@ router.beforeEach(async (to, from) => {
     }
   } else {
 
-    const isRegistered = await authStore.checkEventRegistration(eventSlug);
+    const isResponsible = authStore.responsible;
 
-    if (!isRegistered) {
-      if (to.name !== 'event-inscription') {
-        return { name: 'event-inscription', params: { slug: eventSlug } };
-      }
-    } else {
-      if (to.name === 'event-inscription') {
-        if (from.name !== 'event-detail') {
-          return { name: 'event-detail', params: { slug: eventSlug } }; 
+    if (!isResponsible) {
+      const isRegistered = authStore.registered;
+      if (!isRegistered) {
+        if (to.name !== 'event-inscription') {
+          return { name: 'event-inscription', params: { slug: eventSlug } };
+        }
+      } else {
+        if (to.name === 'event-inscription') {
+          if (from.name !== 'event-detail') {
+            return { name: 'event-detail', params: { slug: eventSlug } };
+          }
+        }
+        if (to.name === 'login') {
+          if (from.name !== 'event-detail') {
+            return { name: 'event-detail', params: { slug: eventSlug } };
+          }
         }
       }
     }
   }
-  
 });
 
 
