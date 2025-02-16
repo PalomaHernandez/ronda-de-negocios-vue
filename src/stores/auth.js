@@ -11,6 +11,7 @@ export const useAuthStore = defineStore("auth", {
     user: useStorage("user", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
     token: useStorage("token", null),
     responsible: useStorage("responsible", false),
+    currentEventSlug: useStorage("currentEventSlug", null),
     loggingIn: false,
     loggingOut: false,
     error: null,
@@ -61,6 +62,7 @@ export const useAuthStore = defineStore("auth", {
             this.authenticated = true;
             this.user = data.user;
             this.token = data.token;
+            this.currentEventSlug = eventSlug;
             
             if(data.role.includes('responsible')) {
               this.responsible = await this.checkResponsibleUser(eventSlug);
@@ -98,6 +100,7 @@ export const useAuthStore = defineStore("auth", {
           this.token = null;
           this.responsible = false;
           this.registered = false;
+          this.currentEventSlug = null;
 
           router.push({ name: "event-detail" , params: { slug: eventSlug }});
         } catch (error) {

@@ -92,11 +92,13 @@ router.beforeEach(async (to, from) => {
   const eventSlug = to.params.slug;
 
   const isAuthenticated = authStore.isAuthenticated;
-  const isRegistered = authStore.registered;
-  const isResponsible = authStore.responsible;
+  const isRegistered = authStore.isRegistered;
+  const isResponsible = authStore.isResponsible;
+  const storedEventSlug = authStore.currentEventSlug;
 
-  if (isAuthenticated && from?.params.slug !== eventSlug) {
+  if (isAuthenticated && storedEventSlug && storedEventSlug !== eventSlug) {
     authStore.logout(eventSlug);
+    return { name: 'event-detail', params: { slug: eventSlug } };
   }
 
   if(!isAuthenticated && to.name !== 'login' && to.name !== 'register' && to.name !== 'event-detail'){

@@ -7,9 +7,9 @@ import * as XLSX from "xlsx";
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
     evento: null,
-    participants: [], 
-    meetings: [], 
-    notifications: [], 
+    participants: [],
+    meetings: [],
+    notifications: [],
     loading: false,
     error: null,
     info: null,
@@ -43,7 +43,7 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.get(`/events/${eventId}/participants`);
-        if(response.data){
+        if (response.data) {
           this.participants = response.data;
         }
       } catch (err) {
@@ -53,7 +53,7 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async inscription(eventId, formData){
+    async inscription(eventId, formData) {
       this.loading = true;
       this.error = null;
 
@@ -63,7 +63,7 @@ export const useEventStore = defineStore('eventStore', {
         const authStore = useAuthStore();
         authStore.checkEventRegistration(this.evento.slug);
         authStore.fetchUpdatedUserProfile();
-        router.push({ name: 'event-detail', params: { slug: this.evento.slug }});
+        router.push({ name: 'event-detail', params: { slug: this.evento.slug } });
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
         console.error("Error creating registration:", this.error);
@@ -104,14 +104,14 @@ export const useEventStore = defineStore('eventStore', {
     async createMeeting(meetingData) {
       this.loading = true;
       this.error = null;
-    
+
       try {
 
         const response = await axiosApiInstance.post("/meetings", meetingData);
         if (!Array.isArray(this.meetings)) {
           this.meetings = [];
         }
-    
+
         this.meetings.push(response.data);
 
       } catch (err) {
@@ -126,11 +126,11 @@ export const useEventStore = defineStore('eventStore', {
     async acceptMeeting(meetingId) {
       this.loading = true;
       this.error = null;
-    
+
       try {
         const response = await axiosApiInstance.patch(`/meetings/${meetingId}`, { status: "Aceptada" });
         const updatedMeeting = response.data;
-    
+
         // Actualizamos el estado local
         const index = this.meetings.findIndex(m => m.id === meetingId);
         if (index !== -1) {
@@ -143,15 +143,15 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    
+
     async rejectMeeting(meetingId) {
       this.loading = true;
       this.error = null;
-    
+
       try {
         const response = await axiosApiInstance.patch(`/meetings/${meetingId}`, { status: "Rechazada" });
         const updatedMeeting = response.data;
-    
+
         // Actualizamos el estado local
         const index = this.meetings.findIndex(m => m.id === meetingId);
         if (index !== -1) {
@@ -163,12 +163,12 @@ export const useEventStore = defineStore('eventStore', {
       } finally {
         this.loading = false;
       }
-    },    
+    },
 
     async deleteMeeting(meetingId) {
       try {
         const response = await axiosApiInstance.delete(`/meetings/${meetingId}`);
-        
+
         if (response.status === 200) {
           // Filtramos la reunión eliminada del estado global
           this.meetings = this.meetings.filter((meeting) => meeting.id !== meetingId);
@@ -180,7 +180,7 @@ export const useEventStore = defineStore('eventStore', {
         throw error;
       }
     },
-    
+
 
     async update(formData) {
       this.error = null;
@@ -188,7 +188,7 @@ export const useEventStore = defineStore('eventStore', {
       try {
         formData.append('_method', 'PATCH');
         const response = await axiosApiInstance.post(`/events/${this.evento.id}`, formData);
-        router.push({ name: 'event-detail', params: { slug: this.evento.slug }});
+        router.push({ name: 'event-detail', params: { slug: this.evento.slug } });
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al editar el evento.';
         console.error("Error updating event:", this.error);
@@ -210,25 +210,47 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-     // Función para descargar el listado de asistencia
-     downloadAttendanceList() {
-      /*if (this.evento && this.evento.status === "Terminado") {*/
-      if (this.evento) {
-          const participantsData = this.participants.map(participant => ({
-              Name: participant.name,
-              Email: participant.email,
-              // Agregar más campos si es necesario
-          }));
 
-          const ws = XLSX.utils.json_to_sheet(participantsData);
-          const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+    downloadAttendanceList() {
+      if (this.evento && this.evento.status === "Terminado") {
+        const participantsData = this.participants.map(participant => ({
+          Nombre: participant.name,
+          Email: participant.email,
+        }));
 
-          // Generar y descargar el archivo Excel
-          XLSX.writeFile(wb, "Listado_de_Asistencia.xlsx");
+        const ws = XLSX.utils.json_to_sheet(participantsData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+        XLSX.writeFile(wb, "Listado_de_Asistencia.xlsx");
       } else {
-        info.value = 'El listado no estará disponible hasta que no finalice la etapa de matcheo.'
+        this.info = 'El listado no estará disponible hasta que no finalice la etapa de matcheo.'
       }
-  },
+    },
+    async downloadParticipantSchedule(participant) {
+      if (this.evento && this.evento.status === "Terminado") {
+        const eventId = this.evento.id;
+        const url = `/cronograma/${eventId}/${participant.id}`;
+
+        try {
+          const response = await axiosApiInstance.get(url, {
+            responseType: "blob",
+          });
+
+          const blob = new Blob([response.data], { type: "application/pdf" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = `cronograma_${participant.name}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (error) {
+          this.error = "Error al descargar el cronograma."
+        }
+      }
+      else{
+        this.info = 'El cronograma no estará disponible hasta que no finalice la etapa de matcheo.'
+      }
+    },
+
   },
 });
