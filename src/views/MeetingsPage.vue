@@ -313,7 +313,6 @@ const submitMeetingRequest = async () => {
     receiver_id: selectedParticipant.value.id, // ID del participante seleccionado
     event_id: eventStore.evento.id, // ID del evento
     reason: meetingReason.value, // Motivo de la reunión
-    time: '2025-02-09 14:30:00',  // Hora fija para el ejemplo, o puedes agregar un selector de hora en tu formulario
     status: 'Pendiente', // Estado de la solicitud (puedes cambiarlo según tu lógica)
     requester_role: meetingObjective.value, // Objetivo de la reunión
   };
