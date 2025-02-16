@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { axiosApiInstance } from '@/api';
 import router from '@/router';
 import { useAuthStore } from "@/stores/auth";
+import * as XLSX from "xlsx";
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
@@ -209,5 +210,25 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
+     // Función para descargar el listado de asistencia
+     downloadAttendanceList() {
+      /*if (this.evento && this.evento.status === "Terminado") {*/
+      if (this.evento) {
+          const participantsData = this.participants.map(participant => ({
+              Name: participant.name,
+              Email: participant.email,
+              // Agregar más campos si es necesario
+          }));
+
+          const ws = XLSX.utils.json_to_sheet(participantsData);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+
+          // Generar y descargar el archivo Excel
+          XLSX.writeFile(wb, "Listado_de_Asistencia.xlsx");
+      } else {
+        info.value = 'El listado no estará disponible hasta que no finalice la etapa de matcheo.'
+      }
+  },
   },
 });

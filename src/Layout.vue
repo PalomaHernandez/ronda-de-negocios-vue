@@ -9,7 +9,7 @@
       <div v-if="authStore.authenticated" class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto flex-wrap justify-between sm:justify-end">
         
         <!-- Menú en pantallas grandes -->
-        <div class="hidden lg:flex space-x-4">
+        <div v-if="isRegistered || isResponsible" class="hidden lg:flex space-x-4">
           <RouterLink :to="{ name: 'event-detail' }" class="btn text-sm sm:text-lg">
             <i class="fa-solid fa-house"></i>    
             Inicio
@@ -28,7 +28,7 @@
         </div>
 
         <!-- Menú desplegable en pantallas pequeñas -->
-        <div class="lg:hidden">
+        <div v-if="isRegistered || isResponsible" class="lg:hidden">
           <button @click="toggleMobileMenu" class="text-blue-500 text-lg">
             <i class="fa-solid fa-bars"></i> <!-- Icono de menú hamburguesa -->
           </button>
@@ -58,7 +58,7 @@
 
           <!-- Menú desplegable -->
           <div v-if="menuOpen" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-            <RouterLink v-if="!isResponsible"  :to="{ name: 'profile' }" class="dropdown-link">
+            <RouterLink v-if="!isResponsible && isRegistered"  :to="{ name: 'profile' }" class="dropdown-link">
               <i class="fa-solid fa-user"></i>
               Ver perfil
             </RouterLink>
@@ -93,7 +93,8 @@ const menuOpen = ref(false);
 const mobileMenuOpen = ref(false);
 
 const isResponsible = computed(() => authStore.isResponsible);
-const isAuthenticated = computed(() => authStore.authenticated);
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const isRegistered = computed(() => authStore.isRegistered);
 
 const deslogearse = () => {
   menuOpen.value = false;

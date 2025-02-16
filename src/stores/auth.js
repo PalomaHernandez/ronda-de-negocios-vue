@@ -26,7 +26,7 @@ export const useAuthStore = defineStore("auth", {
     },
     async checkEventRegistration(eventSlug) {
       try {
-        const response = await axiosApiInstance.get(`/events/${eventSlug}/is-registered/${this.user.id}`);
+        const response = await axiosApiInstance.get(`/events/${eventSlug}/is-registered`);
         this.registered = response.data.registered;
         return this.registered;
       } catch (error) {
