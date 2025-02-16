@@ -18,9 +18,12 @@
             <i class="fa-solid fa-handshake"></i>    
             Reuniones
           </RouterLink>
-          <RouterLink :to="{ name: 'event-notifications' }" class="btn text-sm sm:text-lg">
+          <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }" class="btn text-sm sm:text-lg">
             <i class="fa-solid fa-bell"></i>    
             Notificaciones
+          </RouterLink>
+          <RouterLink v-if="isResponsible"  :to="{ name: 'participants' }" class="btn text-sm sm:text-lg">
+              <i class="fa-solid fa-users"></i> Participantes
           </RouterLink>
         </div>
 
@@ -38,8 +41,11 @@
             <RouterLink :to="{ name: 'event-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
-            <RouterLink :to="{ name: 'event-notifications' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink v-if="!isResponsible"  :to="{ name: 'event-notifications' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-bell"></i> Notificaciones
+            </RouterLink>
+            <RouterLink v-if="isResponsible"  :to="{ name: 'participants' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              <i class="fa-solid fa-users"></i> Participantes
             </RouterLink>
           </div>
         </div>
@@ -52,7 +58,7 @@
 
           <!-- Menú desplegable -->
           <div v-if="menuOpen" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-            <RouterLink :to="{ name: 'profile' }" class="dropdown-link">
+            <RouterLink v-if="!isResponsible"  :to="{ name: 'profile' }" class="dropdown-link">
               <i class="fa-solid fa-user"></i>
               Ver perfil
             </RouterLink>
@@ -75,17 +81,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, onBeforeMount } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { RouterLink, useRouter, useRoute } from "vue-router";
 
 const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
 const menuOpen = ref(false);
-const mobileMenuOpen = ref(false); // Estado para el menú desplegable en móvil
+const mobileMenuOpen = ref(false);
+
+const isResponsible = computed(() => authStore.isResponsible);
+const isAuthenticated = computed(() => authStore.authenticated);
 
 const deslogearse = () => {
   menuOpen.value = false;
-  authStore.logout();
+  authStore.logout(route.params.slug);
 };
 const toggleMenu = () => menuOpen.value = !menuOpen.value;
 const toggleMobileMenu = () => mobileMenuOpen.value = !mobileMenuOpen.value; // Función para abrir/cerrar el menú móvil
@@ -99,5 +111,12 @@ const closeMenuOnClickOutside = (event) => {
 onMounted(() => {
   document.addEventListener("click", closeMenuOnClickOutside);
 });
+
+onBeforeMount(() => {
+		if(!isAuthenticated && router.currentRoute.value.name !== 'login' && router.currentRoute.value.name !== 'register'){
+			this.authStore.logout(route.params.slug)
+		}
+})
+
 </script>
 

@@ -1,6 +1,6 @@
 <template>
     <LayoutPage>
-        <div v-if="user.id" class="p-6">
+        <div v-if="user" class="p-6">
             <div v-if="success" class="alert alert-success mt-2" @click="authStore.clearMessages()">{{ success }}</div>
             <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
             <RouterLink :to="{ name: 'edit-profile' }" class="btn bg-blue-500 absolute top-2 right-2 mb-5">
@@ -46,9 +46,7 @@
         </div>
 
         <!-- Mensaje de carga si los datos no están disponibles -->
-        <div v-else>
-            <p>Loading user data...</p>
-        </div>
+        <Loading v-else />
     </LayoutPage>
 </template>
 
@@ -59,6 +57,7 @@ import LayoutPage from "@/Layout.vue";
 import { useAuthStore } from "@/stores/auth";
 
 import ImageModal from "@/components/ImageModal.vue";
+import Loading from "@/components/Loading.vue";
 
 const authStore = useAuthStore();
 const { user, success, error, info } = storeToRefs(authStore);

@@ -35,6 +35,7 @@
   import { RouterLink } from 'vue-router'
   import LabeledObject from '@/components/LabeledObject.vue'
   import LayoutPage from '@/Layout.vue'
+  import { useRoute } from 'vue-router'
   
   // Estado y store
   const authStore = useAuthStore()
@@ -43,6 +44,8 @@
 	email: '',
 	password: '',
   })
+
+  const route = useRoute();
   
   // Métodos
   const login = () => {
@@ -50,7 +53,7 @@
 	if (!form.checkValidity()) {
 	  form.reportValidity()
 	} else {
-	  authStore.login(credentials.value)
+	  authStore.login(credentials.value, route.params.slug)
 	}
   }
   

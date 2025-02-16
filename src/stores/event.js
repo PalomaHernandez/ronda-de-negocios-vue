@@ -42,8 +42,9 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.get(`/events/${eventId}/participants`);
-        this.participants = response.data;
-        console.log(...this.participants);
+        if(response.data){
+          this.participants = response.data;
+        }
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener los participantes.';
         console.error("Error fetching participants:", this.error);
@@ -190,6 +191,20 @@ export const useEventStore = defineStore('eventStore', {
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al editar el evento.';
         console.error("Error updating event:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async removeParticipant(user_id) {
+      this.error = null;
+
+      try {
+        const response = await axiosApiInstance.delete(`/events/${this.evento.id}/participants/${user_id}`);
+        this.success = response.data.message;
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al eliminar el participante.';
+        console.error("Error deleting participant:", this.error);
       } finally {
         this.loading = false;
       }

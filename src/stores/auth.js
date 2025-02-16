@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
 import { axiosApiInstance } from "@/api";
 import { useEventStore } from "@/stores/event";
+import { useRoute } from "vue-router";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -15,7 +16,7 @@ export const useAuthStore = defineStore("auth", {
     error: null,
     info: null,
     success: null,
-    registered: useStorage("registered", null),
+    registered: useStorage("registered", false),
   }),
   actions: {
     clearMessages() {
@@ -41,8 +42,13 @@ export const useAuthStore = defineStore("auth", {
       } catch (error) {
         console.error("Error al obtener el perfil del usuario:", error);
       }
-    },    
-    async login(credentials) {
+    },   
+    async checkResponsibleUser(eventSlug) {
+      const eventStore = useEventStore();
+      await eventStore.fetch(eventSlug);
+      return this.responsible = eventStore.evento?.responsible_id === this.user.id;
+    },
+    async login(credentials, eventSlug) {
       if (!this.loggingIn) {
         this.loggingIn = true;
         this.clearMessages();
@@ -55,18 +61,19 @@ export const useAuthStore = defineStore("auth", {
             this.authenticated = true;
             this.user = data.user;
             this.token = data.token;
-
-            const eventStore = useEventStore();
-
+            
             if(data.role.includes('responsible')) {
-              eventStore.fetch(eventStore.evento.slug);
-              this.responsible = eventStore.evento?.responsible_id === this.user.id;
+              this.responsible = await this.checkResponsibleUser(eventSlug);
             }
 
-            this.registered = this.checkEventRegistration(eventStore.evento.slug);
-            
-            router.push({ name: "event-detail" });
+            await this.checkEventRegistration(eventSlug);
 
+            if(this.registered){
+              router.push({ name: "event-detail" });
+            }
+            else{
+              router.push({ name: "event-inscription" });
+            }
           } else {
             this.error = data.text;
           }
@@ -78,7 +85,7 @@ export const useAuthStore = defineStore("auth", {
         }
       }
     },
-    async logout() {
+    async logout(eventSlug) {
       if (!this.loggingOut) {
         this.loggingOut = true;
         this.clearMessages();
@@ -92,7 +99,7 @@ export const useAuthStore = defineStore("auth", {
           this.responsible = false;
           this.registered = false;
 
-          router.push({ name: "event-detail" });
+          router.push({ name: "event-detail" , params: { slug: eventSlug }});
         } catch (error) {
           console.error("Logout error:", error);
         } finally {

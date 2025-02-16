@@ -57,6 +57,7 @@ import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth";
+import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import LabeledObject from "@/components/LabeledObject.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
@@ -76,6 +77,11 @@ const inscription = ref({
 const gallery = ref([]);
 const deleted_images = ref([]);
 
+const route = useRoute();
+
+onMounted(() => {
+  eventStore.fetch(route.params.slug);
+});
 
 // Métodos
 const updateGallery = (files) => {

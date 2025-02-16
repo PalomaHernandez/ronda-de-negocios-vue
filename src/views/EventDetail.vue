@@ -50,7 +50,7 @@
           </div>
           </div>
 
-          <div v-if="authStore.authenticated && authStore.registered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+          <div v-if="isAuthenticated && isRegistered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
             <ul>
               <div class="mt-4 grid grid-cols-2 gap-4">
@@ -157,7 +157,9 @@ const responsibleOnlyFields = {
   matching_end_date: { label: "Matching hasta", type: "date" },
 }
 
-const isResponsible = computed(() => authStore.isResponsible);
+const isAuthenticated = computed(() => authStore.authenticated);
+const isRegistered = computed(() => authStore.registered);
+const isResponsible = computed(() => authStore.responsible);
 
 // Cargar evento al montar
 onMounted(() => {
