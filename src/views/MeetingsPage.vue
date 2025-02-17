@@ -19,7 +19,7 @@
 
           <!-- 📌 Remaining meetings del usuario actual -->
           <p class="text-gray-600 mt-4">
-            <strong>Remaining meetings:</strong> {{ userRemainingMeetings ?? 'No disponible' }}
+            <strong>Cantidad de invitaciones disponibles:</strong> {{ userRemainingMeetings ?? 'No disponible' }}
           </p>
         </div>
 
@@ -177,26 +177,6 @@ onMounted(async () => {
     eventStore.fetchParticipants(evento.value.id); // Obtener participantes
     eventStore.fetchUserMeetings(evento.value.id, authStore.user.id); // Obtener reuniones del usuario
   }
-
-  /*watch(
-    () => evento.value?.id, // Solo reaccionar a cambios en `evento.id`
-    (eventId) => {
-      if (eventId && !participants.value.length) {
-        eventStore.fetchParticipants(eventId);
-      }
-    },
-    { immediate: true }
-  );
-
-  watch(
-    () => [evento.value?.id, authStore.user?.id], // Solo reaccionar a cambios en evento.id o user.id
-    ([eventId, userId]) => {
-      if (eventId && userId && meetings.value.length === 0) {
-        eventStore.fetchUserMeetings(eventId, userId);
-      }
-    },
-    { immediate: true }
-  );*/
 });
 
 // Estado del modal

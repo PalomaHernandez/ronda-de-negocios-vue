@@ -71,6 +71,68 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
+    async fetchMeetings(eventId){
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await axiosApiInstance.get(`/events/${eventId}/meetings`);
+        console.log(response.data);
+        this.meetings = response.data;
+        router.push({ name: 'participants-meetings', params: { slug: this.evento.slug } });
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        console.error("Error fetching meetings:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async acceptAllMeetings(eventId){
+      this.loading = true;
+      this.error = null;
+      router.push({ name: 'participants-meetings', params: { slug: this.evento.slug } });
+      try {
+        const response = await axiosApiInstance.post(`/meetings/${eventId}/accept-all`);
+        console.log(response.data);
+        this.meetings = response.data;
+        router.push
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        console.error("Error fetching meetings:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async rejectAllMeetings(eventId){
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await axiosApiInstance.post(`/meetings/${eventId}/reject-all`);
+        console.log(response.data);
+        this.meetings = response.data;
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        console.error("Error fetching meetings:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async endMatchingPeriod(eventId){
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await axiosApiInstance.post(`events/${eventId}/end-matching`);
+        console.log(response.data);
+        this.meetings = response.data;
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        console.error("Error fetching meetings:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
     async fetchUserMeetings(eventId, userId) {
       this.loading = true;
       this.error = null;

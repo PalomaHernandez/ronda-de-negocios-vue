@@ -13,6 +13,7 @@ import EventEdit from '@/views/EventEdit.vue';
 import UserProfile from '@/views/UserProfile.vue';
 import EditProfile from '@/views/EditProfile.vue';
 import ParticipantsPage from '@/views/ParticipantsPage.vue';
+import ParticipantsMeetings from '@/views/ParticipantsMeetings.vue';
 
 const routes = [
   
@@ -41,7 +42,7 @@ const routes = [
     props: true,
   },
   {
-    path: '/:slug/reuniones',
+    path: '/:slug/mis-reuniones',
     name: 'event-meetings',
     component: MeetingsPage,
     props: true,
@@ -79,6 +80,11 @@ const routes = [
     name: 'participants',
     component: ParticipantsPage,
   },
+  {
+    path: '/:slug/reuniones',
+    name: 'participants-meetings',
+    component: ParticipantsMeetings,
+  },
 
 ];
 
@@ -113,11 +119,11 @@ router.beforeEach(async (to, from) => {
     return { name: 'event-detail', params: { slug: eventSlug } };
   }
 
-  if((to.name === 'profile' || to.name === 'edit-profile' || to.name === 'event-notifications') && isResponsible){
+  if((to.name === 'profile' || to.name === 'edit-profile' || to.name === 'event-notifications' || to.name === 'event-invitations' || to.name === 'event-meetings') && isResponsible){
     return { name: 'event-detail', params: { slug: eventSlug } };
   }
 
-  if((to.name === 'participants' || to.name === 'event-edit') && !isResponsible){
+  if((to.name === 'participants' || to.name === 'event-edit' || to.name === 'participants-meetings') && !isResponsible){
     return { name: 'event-detail', params: { slug: eventSlug } };
   }
 

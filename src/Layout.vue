@@ -1,12 +1,12 @@
 <template>
   <div class="bg-blue-500 min-h-screen">
     <!-- Barra de navegación -->
-    <nav class="bg-white shadow-md flex items-center px-6 py-3 h-[8vh] flex-wrap relative">
+    <nav class="bg-white shadow-md flex items-center px-6 py-3 h-[8vh] flex relative">
       <div class="font-bold text-blue-600 text-xl sm:text-2xl w-full sm:w-auto">
         Rondas UNS
       </div>
 
-      <div v-if="authStore.authenticated" class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto flex-wrap justify-between sm:justify-end">
+      <div v-if="authStore.authenticated" class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto justify-end flex-wrap sm:justify-end">
         
         <!-- Menú en pantallas grandes -->
         <div v-if="isRegistered || isResponsible" class="hidden lg:flex space-x-4">
@@ -14,7 +14,11 @@
             <i class="fa-solid fa-house"></i>    
             Inicio
           </RouterLink>
-          <RouterLink :to="{ name: 'event-meetings' }" class="btn text-sm sm:text-lg">
+          <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }" class="btn text-sm sm:text-lg">
+            <i class="fa-solid fa-handshake"></i>    
+            Reuniones
+          </RouterLink>
+          <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="btn text-sm sm:text-lg">
             <i class="fa-solid fa-handshake"></i>    
             Reuniones
           </RouterLink>
@@ -34,7 +38,7 @@
           </button>
           
           <!-- Menú desplegable móvil -->
-          <div v-if="mobileMenuOpen" class="absolute top-full w-48 bg-white rounded-lg shadow-lg z-10">
+          <div v-if="mobileMenuOpen" class="absolute top-full right-0 w-48 bg-white rounded-lg shadow-lg z-10">
             <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-house"></i> Inicio
             </RouterLink>
@@ -100,8 +104,14 @@ const deslogearse = () => {
   menuOpen.value = false;
   authStore.logout(route.params.slug);
 };
-const toggleMenu = () => menuOpen.value = !menuOpen.value;
-const toggleMobileMenu = () => mobileMenuOpen.value = !mobileMenuOpen.value; // Función para abrir/cerrar el menú móvil
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value;
+  mobileMenuOpen.value = false;
+};
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+  menuOpen.value = false;
+}; // Función para abrir/cerrar el menú móvil
 
 const closeMenuOnClickOutside = (event) => {
   if (!event.target.closest(".relative")) {

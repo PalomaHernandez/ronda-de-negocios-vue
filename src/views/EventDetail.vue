@@ -1,42 +1,49 @@
 <template>
   <LayoutPage>
     <template #default>
-        <Loading v-if="loading" />
-        <div v-else-if="evento">
-          <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
+      <Loading v-if="loading" />
+      <div v-else-if="evento">
+        <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
         <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
-          <div class="text-center flex flex-col items-center space-y-5">
-            <!-- Título del evento -->
-            <div class="flex flex-col items-center">
-              <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
-            </div>
+        
+        <div v-if="isResponsible" class="mb-8 flex justify-end space-x-4">
+          <RouterLink :to="{ name: 'event-edit', params: { slug: evento.slug } }" class="btn">
+            <i class="fa-solid fa-pen-to-square"></i> Editar
+          </RouterLink>
+        </div>
 
-            <!-- Descripción debajo del título -->
-            <p class="text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
-
-            <!-- Imagen clickeable -->
-            <div class="cursor-pointer" @click="openImage">
-              <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
-                class="h-64 w-full object-cover rounded-xl mb-4 cursor-pointer transition transform hover:scale-105" />
-            </div>
+        <div class="text-center flex flex-col items-center space-y-5">
+          <!-- Título del evento -->
+          <div class="flex flex-col items-center">
+            <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
           </div>
 
-          <!-- Información del Evento -->
-          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
-              <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
-              <p class="text-gray-600">
-                {{
-                  field.type === "date" ? formatDate(evento[key])
-                    : field.type === "time" ? formatTime(evento[key])
-                      : evento[key] || 'No disponible'
-                }}
-              </p>
-            </div>
-          </div>
+          <!-- Descripción debajo del título -->
+          <p class="text-lg text-gray-600">{{ evento.description || 'La descripción no está disponible.' }}</p>
 
-          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Imagen clickeable -->
+          <div class="cursor-pointer" @click="openImage">
+            <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
+              class="h-64 w-full object-cover rounded-xl mb-4 cursor-pointer transition transform hover:scale-105" />
+          </div>
+        </div>
+
+        <!-- Información del Evento -->
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
+            <p class="text-gray-600">
+              {{
+                field.type === "date" ? formatDate(evento[key])
+                  : field.type === "time" ? formatTime(evento[key])
+                    : evento[key] || 'No disponible'
+              }}
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key"
             class="bg-white p-4 rounded-lg shadow-lg">
             <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
@@ -48,31 +55,25 @@
               }}
             </p>
           </div>
-          </div>
+        </div>
 
-          <div v-if="isAuthenticated && isRegistered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
-            <ul>
-              <div class="mt-4 grid grid-cols-2 gap-4">
-                <div v-for="file in evento.files" :key="file.id"
-                  class="border rounded-lg p-3 text-center transition transform hover:scale-105">
-                  <p class="text-sm text-gray-600 mb-3">{{ file.original_name }}</p>
-                  <button>
-                    <a :href="file.path" download class="btn text-sm">
-                      Descargar
-                    </a>
-                  </button>
-                </div>
+        <div v-if="isAuthenticated && isRegistered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+          <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
+          <ul>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div v-for="file in evento.files" :key="file.id"
+                class="border rounded-lg p-3 text-center transition transform hover:scale-105">
+                <p class="text-sm text-gray-600 mb-3">{{ file.original_name }}</p>
+                <button>
+                  <a :href="file.path" download class="btn text-sm">
+                    Descargar
+                  </a>
+                </button>
               </div>
-            </ul>
-          </div>
+            </div>
+          </ul>
+        </div>
 
-          <div v-if="isResponsible" class="mt-8 flex justify-end space-x-4">
-            <RouterLink :to="{ name: 'event-edit', params: { slug: evento.slug } }" class="btn btn-primary">
-              <i class="fa-solid fa-pen-to-square"></i> Editar
-            </RouterLink>
-          </div>
-       
         <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
 
         <div class="mt-5 flex justify-center">
@@ -114,7 +115,7 @@
 
         <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage"
           @update:visible="showImage = $event" />
-        </div>
+      </div>
     </template>
   </LayoutPage>
 </template>
@@ -177,9 +178,9 @@ const cerrarModal = () => {
 
 const formatDate = (date) => {
   if (!date) return "No disponible";
-  
+
   const [year, month, day] = date.split('-');
-  
+
   return `${day}-${month}-${year}`;
 };
 
