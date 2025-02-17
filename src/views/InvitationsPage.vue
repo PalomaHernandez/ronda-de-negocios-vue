@@ -85,9 +85,22 @@
           <button @click="backToMeetings" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
             Volver
           </button>
-          <button @click="downloadSchedule" class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+          <div v-if="evento?.status == 'Terminado'">
+            <!-- Botón activo si NO está en Inscripción -->
+            <button 
+              @click="downloadSchedule" 
+              class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
+              Descargar Cronograma
+            </button>
+          </div>
+
+          <!-- Botón deshabilitado si está en Inscripción -->
+          <div 
+            v-else 
+            class="bg-green-600 text-white py-2 px-4 rounded-lg opacity-60 cursor-not-allowed"
+            title="Disponible cuando haya finalizado el periodo de coordinacion de reuniones">
             Descargar Cronograma
-          </button>
+          </div>
         </div>
       </div>
       <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting"
@@ -153,6 +166,13 @@ const filteredMeetings = computed(() => {
 // Cargar datos al montar
 onMounted(async () => {
   await eventStore.fetch(route.params.slug); // Obtener evento
+  
+  await eventStore.fetch(route.params.slug); // Obtener evento
+  if (evento.value?.status === "Inscripcion") {
+    router.push({ name: "event-detail", params: { slug: route.params.slug } });
+    return; // Detener la ejecución
+  }
+
   if (evento.value) {
     eventStore.fetchParticipants(evento.value.id);
     const userId = authStore.user.id;

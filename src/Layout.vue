@@ -14,10 +14,27 @@
             <i class="fa-solid fa-house"></i>    
             Inicio
           </RouterLink>
-          <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }" class="btn text-sm sm:text-lg">
-            <i class="fa-solid fa-handshake"></i>    
-            Reuniones
-          </RouterLink>
+          <div v-if="!isResponsible">
+  <!-- Botón activo si NO está en Inscripción -->
+        <RouterLink  
+          v-if="evento?.status !== 'Inscripcion'" 
+          :to="{ name: 'event-meetings' }" 
+          class="btn text-sm sm:text-lg">
+          <i class="fa-solid fa-handshake"></i>    
+          Reuniones
+        </RouterLink>
+
+        <!-- Botón deshabilitado si está en Inscripción -->
+        <div 
+          v-else 
+          class="btn text-sm sm:text-lg bg-gray-400 cursor-not-allowed opacity-60"
+          title="No disponible durante la fase de inscripción">
+          <i class="fa-solid fa-handshake"></i>    
+          Reuniones
+        </div>
+      </div>
+
+
           <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="btn text-sm sm:text-lg">
             <i class="fa-solid fa-handshake"></i>    
             Reuniones
@@ -91,6 +108,11 @@
 import { ref, onMounted, computed, onBeforeMount } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { RouterLink, useRouter, useRoute } from "vue-router";
+import { useEventStore } from "@/stores/event";
+import { storeToRefs } from "pinia";
+
+const eventStore = useEventStore();
+const { evento } = storeToRefs(eventStore);
 
 const authStore = useAuthStore();
 const router = useRouter();

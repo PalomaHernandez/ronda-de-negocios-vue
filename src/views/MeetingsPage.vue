@@ -62,10 +62,18 @@
                       class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
                       Más detalles
                     </button>
-                    <button @click="openMeetingRequest(participant)"
+                    <button v-if="evento?.status == 'Matcheo'"
+                      @click="openMeetingRequest(participant)" 
                       class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
                       Solicitar reunión
                     </button>
+                    <!--
+                    <button v-else 
+                      class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg opacity-60 cursor-not-allowed"
+                      title="El periodo de coordinacion de reuniones ya ha finalizado">
+                      Solicitar reunión
+                    </button>
+                    -->
                   </div>
                 </div>
               </li>
@@ -129,7 +137,7 @@ const eventStore = useEventStore();
 const authStore = useAuthStore(); // Store del usuario actual
 const { evento, participants, loading, error, meetings } = storeToRefs(eventStore);
 const route = useRoute();
-
+const router = useRouter();
 
 // Estado de la barra de búsqueda y filtro
 const searchQuery = ref("");
@@ -169,7 +177,10 @@ const userRemainingMeetings = computed(() => {
 // Cargar datos al montar
 onMounted(async () => {
   await eventStore.fetch(route.params.slug); // Obtener evento
-
+  if (evento.value?.status === "Inscripcion") {
+    router.push({ name: "event-detail", params: { slug: route.params.slug } });
+    return; // Detener la ejecución
+  }
   if(evento.value) {
     eventStore.fetchParticipants(evento.value.id); // Obtener participantes
     eventStore.fetchUserMeetings(evento.value.id, authStore.user.id); // Obtener reuniones del usuario
