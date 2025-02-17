@@ -21,7 +21,7 @@ import { ref, watch } from "vue";
 
 export default {
     name: "FileUploader",
-    emits: ["updateFiles"],
+    emits: ["updateFiles", "deletedFiles"],
     props: {
         uploadedFiles: {
             uploadedFiles: {

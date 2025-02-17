@@ -34,7 +34,7 @@
             </div>
 
             <!-- Gallery -->
-            <div v-if="user.images" class="mt-6">
+            <div v-if="user.images.length > 0" class="mt-6">
                 <h3 class="text-lg font-semibold">Galería</h3>
                 <div class="grid grid-cols-3 gap-4 mt-2">
                     <img v-for="(image, index) in user.images" :key="index" :src="image.path" alt="Gallery image"

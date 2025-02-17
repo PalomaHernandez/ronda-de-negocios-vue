@@ -61,8 +61,8 @@ export const useEventStore = defineStore('eventStore', {
         const response = await axiosApiInstance.post(`/events/${eventId}/registration`, formData);
         this.success = response.data;
         const authStore = useAuthStore();
-        authStore.checkEventRegistration(this.evento.slug);
-        authStore.fetchUpdatedUserProfile();
+        await authStore.checkEventRegistration(this.evento.slug);
+        await authStore.fetchUpdatedUserProfile();
         router.push({ name: 'event-detail', params: { slug: this.evento.slug } });
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
@@ -71,7 +71,7 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async fetchMeetings(eventId){
+    async fetchMeetings(eventId) {
       this.loading = true;
       this.error = null;
 
@@ -87,7 +87,7 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async acceptAllMeetings(eventId){
+    async acceptAllMeetings(eventId) {
       this.loading = true;
       this.error = null;
       router.push({ name: 'participants-meetings', params: { slug: this.evento.slug } });
@@ -103,7 +103,7 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async rejectAllMeetings(eventId){
+    async rejectAllMeetings(eventId) {
       this.loading = true;
       this.error = null;
 
@@ -118,7 +118,7 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
-    async endMatchingPeriod(eventId){
+    async endMatchingPeriod(eventId) {
       this.loading = true;
       this.error = null;
 
@@ -130,7 +130,7 @@ export const useEventStore = defineStore('eventStore', {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
         console.error("Error fetching meetings:", this.error);
       } finally {
-        this.loading = false; 
+        this.loading = false;
       }
     },
     async fetchUserMeetings(eventId, userId) {
@@ -309,7 +309,7 @@ export const useEventStore = defineStore('eventStore', {
           this.error = "Error al descargar el cronograma."
         }
       }
-      else{
+      else {
         this.info = 'El cronograma no estará disponible hasta que no finalice la etapa de matcheo.'
       }
     },

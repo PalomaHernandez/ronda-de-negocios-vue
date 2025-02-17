@@ -1,47 +1,46 @@
 <template>
   <LayoutPage>
     <template #default>
-      <h1 class="text-2xl font-bold text-center mb-4">Creacion de cuenta de Rondas UNS</h1>
+      <h1 class="text-2xl font-bold text-center mb-4">Creación de cuenta </h1>
 
       <!-- Mensajes de estado -->
       <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
       <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
-      <div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
 
       <!-- Formulario de registro en 2 columnas -->
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4" ref="form" @submit.prevent="register">
         <!-- Primera columna -->
         <div class="flex flex-col gap-3">
-          <LabeledObject>
+          <LabeledObject required>
             <template #label>Nombre de la empresa/entidad</template>
             <input type="text" v-model="account.name" required>
           </LabeledObject>
 
-          <LabeledObject>
+          <LabeledObject required>
             <template #label>Email</template>
             <input type="email" v-model="account.email" required>
           </LabeledObject>
-          <LabeledObject>
+          <LabeledObject required>
             <template #label>Contraseña</template>
             <input type="password" v-model="account.password" required>
           </LabeledObject>
-          <LabeledObject>
+          <LabeledObject required>
             <template #label>Confirmación de contraseña</template>
             <input type="password" v-model="account.password_confirmation" required>
           </LabeledObject>
           <LabeledObject>
             <template #label>Sitio web</template>
-            <input type="url" v-model="account.website" required>
+            <input type="url" v-model="account.website">
           </LabeledObject>
         </div>
 
         <!-- Segunda columna -->
         <div class="flex flex-col gap-3">
-          <LabeledObject>
+          <LabeledObject required>
             <template #label>Actividad/Sector</template>
             <input type="text" v-model="account.activity" required>
           </LabeledObject>
-          <LabeledObject>
+          <LabeledObject required>
             <template #label>Ubicación</template>
             <input type="text" v-model="account.location" required>
           </LabeledObject>
@@ -54,10 +53,9 @@
             <ImageUploader type="gallery" @updateFiles="updateGallery" />
           </LabeledObject>
         </div>
-
-        <!-- Botón de registro (ocupa casi todo el ancho) -->
+        <p class="text-sm font-medium text-neutral-600">Los campos marcados con * son obligatorios.</p>
         <div class="col-span-1 md:col-span-2 flex justify-center">
-          <button type="submit" class="btn btn-primary w-full max-w-2xl py-3 text-lg">
+          <button type="submit" class="btn w-full max-w-2xl py-3 text-lg">
             <i class="fa-solid fa-key"></i> Crear cuenta
           </button>
         </div>
@@ -72,9 +70,11 @@ import { useAuthStore } from "@/stores/auth";
 import LabeledObject from "@/components/LabeledObject.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
 import LayoutPage from "@/Layout.vue";
+import { storeToRefs } from "pinia";
 
-// Estado y store
 const authStore = useAuthStore();
+const { success, error } = storeToRefs(authStore);
+
 const account = ref({
   name: "",
   activity: "",
@@ -86,7 +86,7 @@ const account = ref({
 });
 const logo = ref(null);
 const gallery = ref([]);
-// Métodos
+
 const updateLogo = (files) => {
   logo.value = files[0] || null;
 };
@@ -115,7 +115,6 @@ const register = async () => {
       });
     }
 
-
     try {
       await authStore.register(formData);
     } catch (error) {
@@ -124,8 +123,4 @@ const register = async () => {
   }
 };
 
-// Computed properties
-const success = authStore.success;
-const error = authStore.error;
-const info = authStore.info;
 </script>

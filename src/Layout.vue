@@ -6,45 +6,39 @@
         Rondas UNS
       </div>
 
-      <div v-if="authStore.authenticated" class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto justify-end flex-wrap sm:justify-end">
-        
+      <div v-if="authStore.authenticated"
+        class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto justify-end flex-wrap sm:justify-end">
+
         <!-- Menú en pantallas grandes -->
         <div v-if="isRegistered || isResponsible" class="hidden lg:flex space-x-4">
           <RouterLink :to="{ name: 'event-detail' }" class="btn text-sm sm:text-lg">
-            <i class="fa-solid fa-house"></i>    
+            <i class="fa-solid fa-house"></i>
             Inicio
           </RouterLink>
-          <div v-if="!isResponsible">
-  <!-- Botón activo si NO está en Inscripción -->
-        <RouterLink  
-          v-if="evento?.status !== 'Inscripcion'" 
-          :to="{ name: 'event-meetings' }" 
-          class="btn text-sm sm:text-lg">
-          <i class="fa-solid fa-handshake"></i>    
-          Reuniones
-        </RouterLink>
+            <!-- Botón activo si NO está en Inscripción -->
+            <RouterLink v-if="evento?.status !== 'Inscripcion' && !isResponsible" :to="{ name: 'event-meetings' }"
+              class="btn text-sm sm:text-lg">
+              <i class="fa-solid fa-handshake"></i>
+              Reuniones
+            </RouterLink>
 
-        <!-- Botón deshabilitado si está en Inscripción -->
-        <div 
-          v-else 
-          class="btn text-sm sm:text-lg bg-gray-400 cursor-not-allowed opacity-60"
-          title="No disponible durante la fase de inscripción">
-          <i class="fa-solid fa-handshake"></i>    
-          Reuniones
-        </div>
-      </div>
-
-
+            <!-- Botón deshabilitado si está en Inscripción -->
+            <btn v-else-if="!isResponsible" class="btn text-sm sm:text-lg bg-gray-400 cursor-not-allowed opacity-60"
+              title="No disponible durante la fase de inscripción">
+              <i class="fa-solid fa-handshake"></i>
+              Reuniones
+          </btn>
+          
           <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="btn text-sm sm:text-lg">
-            <i class="fa-solid fa-handshake"></i>    
+            <i class="fa-solid fa-handshake"></i>
             Reuniones
           </RouterLink>
           <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }" class="btn text-sm sm:text-lg">
-            <i class="fa-solid fa-bell"></i>    
+            <i class="fa-solid fa-bell"></i>
             Notificaciones
           </RouterLink>
-          <RouterLink v-if="isResponsible"  :to="{ name: 'participants' }" class="btn text-sm sm:text-lg">
-              <i class="fa-solid fa-users"></i> Participantes
+          <RouterLink v-if="isResponsible" :to="{ name: 'participants' }" class="btn text-sm sm:text-lg">
+            <i class="fa-solid fa-users"></i> Participantes
           </RouterLink>
         </div>
 
@@ -53,22 +47,26 @@
           <button @click="toggleMobileMenu" class="text-blue-500 text-lg">
             <i class="fa-solid fa-bars"></i> <!-- Icono de menú hamburguesa -->
           </button>
-          
+
           <!-- Menú desplegable móvil -->
           <div v-if="mobileMenuOpen" class="absolute top-full right-0 w-48 bg-white rounded-lg shadow-lg z-10">
             <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-house"></i> Inicio
             </RouterLink>
-            <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }"
+              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
-            <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }"
+              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
-            <RouterLink v-if="!isResponsible"  :to="{ name: 'event-notifications' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }"
+              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-bell"></i> Notificaciones
             </RouterLink>
-            <RouterLink v-if="isResponsible"  :to="{ name: 'participants' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink v-if="isResponsible" :to="{ name: 'participants' }"
+              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-users"></i> Participantes
             </RouterLink>
           </div>
@@ -82,7 +80,7 @@
 
           <!-- Menú desplegable -->
           <div v-if="menuOpen" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-            <RouterLink v-if="!isResponsible && isRegistered"  :to="{ name: 'profile' }" class="dropdown-link">
+            <RouterLink v-if="!isResponsible && isRegistered" :to="{ name: 'profile' }" class="dropdown-link">
               <i class="fa-solid fa-user"></i>
               Ver perfil
             </RouterLink>
@@ -97,7 +95,8 @@
 
     <!-- Contenedor principal con título y contenido -->
     <div class="flex-1 flex items-center justify-center h-[85vh] m-8">
-      <div class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative h-[85vh] overflow-y-auto">
+      <div
+        class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative h-[85vh] overflow-y-auto">
         <slot />
       </div>
     </div>
@@ -125,6 +124,7 @@ const isResponsible = computed(() => authStore.isResponsible);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const isRegistered = computed(() => authStore.isRegistered);
 
+
 const deslogearse = () => {
   menuOpen.value = false;
   authStore.logout(route.params.slug);
@@ -149,10 +149,9 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-		if(!isAuthenticated && router.currentRoute.value.name !== 'login' && router.currentRoute.value.name !== 'register'){
-			this.authStore.logout(route.params.slug)
-		}
+  if (!isAuthenticated && router.currentRoute.value.name !== 'login' && router.currentRoute.value.name !== 'register') {
+    this.authStore.logout(route.params.slug)
+  }
 })
 
 </script>
-

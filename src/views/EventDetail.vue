@@ -3,7 +3,7 @@
     <template #default>
       <Loading v-if="loading" />
       <div v-else-if="evento">
-        <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
+        <div v-if="success" class="alert alert-success mb-2" @click="eventStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
         <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
         
@@ -37,6 +37,7 @@
               {{
                 field.type === "date" ? formatDate(evento[key])
                   : field.type === "time" ? formatTime(evento[key])
+                    : field.type === "datetime-local" ? formatDateTime(evento[key])
                     : evento[key] || 'No disponible'
               }}
             </p>
@@ -51,13 +52,14 @@
               {{
                 field.type === "date" ? formatDate(evento[key])
                   : field.type === "time" ? formatTime(evento[key])
+                   : field.type === "datetime-local" ? formatDateTime(evento[key])
                     : evento[key] || 'No disponible'
               }}
             </p>
           </div>
         </div>
 
-        <div v-if="isAuthenticated && isRegistered" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+        <div v-if="isAuthenticated && (isRegistered || isResponsible)" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>
           <ul>
             <div class="mt-4 grid grid-cols-2 gap-4">
@@ -148,14 +150,14 @@ const fields = {
   date: { label: "Fecha del Evento", type: "date" },
   starts_at: { label: "Horario de inicio", type: "time" },
   ends_at: { label: "Horario de fin", type: "time" },
-  inscription_end_date: { label: "Inscripción hasta", type: "date" },
+  inscription_end_date: { label: "Inscripción hasta", type: "datetime-local" },
   location: { label: "Ubicación", type: "text" }
 };
 
 const responsibleOnlyFields = {
   meeting_duration: { label: "Duración de reuniones (en minutos)", type: "number" },
   time_between_meetings: { label: "Tiempo entre reuniones (en minutos)", type: "number" },
-  matching_end_date: { label: "Matching hasta", type: "date" },
+  matching_end_date: { label: "Matching hasta", type: "datetime-local" },
 }
 
 const isAuthenticated = computed(() => authStore.authenticated);
@@ -184,11 +186,21 @@ const formatDate = (date) => {
   return `${day}-${month}-${year}`;
 };
 
+const formatDateTime = (datetime) => {
+  if (!datetime) return "No disponible";
+  
+  const [date, time] = datetime.split(' ');
+  const formattedDate = formatDate(date); 
+  const formattedTime = formatTime(time);
+
+  return `${formattedDate} ${formattedTime}`;
+};
+
 const formatTime = (time) => {
   if (!time) return "No disponible";
   const [hours, minutes] = time.split(":");
   const date = new Date();
   date.setHours(hours, minutes);
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false  });
 };
 </script>

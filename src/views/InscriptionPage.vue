@@ -93,11 +93,10 @@ const handleDeletedImages = (deleted) => {
 };
 
 const submitInscription = async () => {
-  if (!inscription.value.interests || !inscription.value.products) {
-    alert("Por favor, complete todos los campos requeridos.");
+  if (!inscription.value.interests && !inscription.value.products) {
+    info.value = "Por favor, complete al menos un campo."
     return;
   }
-
   // Crear FormData para enviar con las imágenes
   const formData = new FormData();
   formData.append("interests", inscription.value.interests);
@@ -107,12 +106,11 @@ const submitInscription = async () => {
       formData.append(`gallery[${index}]`, image);
     });
   }
-  if(deleted_images.value.length > 0) {
+  if (deleted_images.value.length > 0) {
     deleted_images.value.forEach((img, index) => {
       formData.append(`deleted_files[${index}]`, img);
     });
   }
-
   try {
     await eventStore.inscription(evento.value.id, formData)
   } catch (err) {

@@ -1,6 +1,8 @@
 <template>
   <LayoutPage>
     <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <div v-if="success" class="alert alert-success mt-2 mb-2" @click="authStore.clearMessages()">{{ success }}</div>
+      <div v-if="error" class="alert alert-danger mb-2" @click="authStore.clearMessages()">{{ error }}</div>
       <h2 class="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
 
       <div class="flex flex-col items-center space-y-4">
@@ -16,27 +18,27 @@
 
         <!-- Campos del perfil -->
         <div class="w-full space-y-3">
-          <div>
-            <label class="block font-semibold">Nombre:</label>
-            <input v-model="form.name" type="text" class="input" />
-          </div>
-          <div>
-            <label class="block font-semibold">Email:</label>
-            <input v-model="form.email" type="email" class="input" disabled />
-          </div>
-          <div>
-            <label class="block font-semibold">Ubicación:</label>
-            <input v-model="form.location" type="text" class="input" />
-          </div>
-          <div>
-            <label class="block font-semibold">Sitio Web:</label>
-            <input v-model="form.website" type="text" class="input" />
-          </div>
-          <div>
-            <label class="block font-semibold">Galeria:</label>
+          <LabeledObject required>
+            <template #label>Nombre</template>
+            <input type="text" v-model="form.name" required>
+          </LabeledObject>
+          <LabeledObject>
+            <template #label>Email</template>
+            <input type="email" v-model="form.email" disabled>
+          </LabeledObject>
+          <LabeledObject required>
+            <template #label>Ubicacion</template>
+            <input type="email" v-model="form.location" required>
+          </LabeledObject>
+          <LabeledObject>
+            <template #label>Sitio web</template>
+            <input type="email" v-model="form.website">
+          </LabeledObject>
+          <LabeledObject>
+            <template #label>Galeria</template>
             <ImageUploader type="gallery" :uploaded-files="user.images || []" @updateFiles="handleImagesUpdate"
-              @deletedFiles="handleDeletedImages" />
-          </div>
+            @deletedFiles="handleDeletedImages" />
+          </LabeledObject>
         </div>
 
         <div class="flex justify-center space-x-4">
@@ -55,11 +57,14 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import LayoutPage from "@/Layout.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
+import LabeledObject from "@/components/LabeledObject.vue";
 
 const authStore = useAuthStore();
+const { success, error } = storeToRefs(authStore);
 const user = computed(() => authStore.user ? authStore.user : {});
 
 // Estado del formulario
@@ -77,14 +82,13 @@ const gallery = ref([]);
 const deleted_images = ref([]);
 const selectedFile = ref(null);
 
-// Manejar la carga de una nueva imagen de perfil
 const onFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
     selectedFile.value = file;
     const reader = new FileReader();
     reader.onload = () => {
-      previewImage.value = reader.result; // Muestra vista previa de la imagen
+      previewImage.value = reader.result;
     };
     reader.readAsDataURL(file);
   }

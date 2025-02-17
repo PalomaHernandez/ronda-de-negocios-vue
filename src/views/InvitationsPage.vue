@@ -103,15 +103,14 @@
           </div>
         </div>
       </div>
-      <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting"
+      <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting" :participants="participantsMap"
                     @close="closeMeetingDetails" />
-
     </template>
   </LayoutPage>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watchEffect } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación

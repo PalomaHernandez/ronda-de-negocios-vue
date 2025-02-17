@@ -110,7 +110,7 @@ export const useAuthStore = defineStore("auth", {
         }
       }
     },
-    async register(formData) {
+    async register(formData, eventSlug) {
       if (!this.registering) {
         this.registering = true;
         this.clearMessages();
@@ -123,7 +123,9 @@ export const useAuthStore = defineStore("auth", {
             this.authenticated = true;
             this.user = data.user;
             this.token = data.token; 
-            router.push({ name: "event-detail" });
+            this.currentEventSlug = eventSlug;
+
+            router.push({ name: "event-inscription" });
           } else {
             this.error = "No se pudo registrar.";
           }
@@ -139,12 +141,18 @@ export const useAuthStore = defineStore("auth", {
       try {
         data.append('_method', 'PATCH');
         const response = await axiosApiInstance.post('/user/profile', data);
+        
         this.user = response.data.user;
         this.success = response.data.message;
+        
         router.push({ name: 'profile' });
       } catch (error) {
-        console.error("Error al actualizar perfil", error);
-        throw error;
+        if (error.response && error.response.data) {
+          this.error = error.response.data.message; 
+        } else {
+          this.error = "Ocurrió un error inesperado.";
+          console.error("Error desconocido:", error);
+        }
       }
     }    
     

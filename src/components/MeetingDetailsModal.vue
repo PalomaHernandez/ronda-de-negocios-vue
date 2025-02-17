@@ -8,7 +8,7 @@
           <div class="flex flex-col items-center">
             <p class="text-sm text-gray-500">Solicitante</p>
             <p class="text-lg font-semibold text-center">{{ meeting.requesterName }}</p>
-            <button class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+            <button @click="openParticipantDetails(meeting.requester_id)" class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
               Más detalles
             </button>
           </div>
@@ -20,7 +20,7 @@
           <div class="flex flex-col items-center">
             <p class="text-sm text-gray-500">Receptor</p>
             <p class="text-lg font-semibold text-center">{{ meeting.receiverName }}</p>
-            <button class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+            <button @click="openParticipantDetails(meeting.receiver_id)"  class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
               Más detalles
             </button>
           </div>
@@ -55,15 +55,31 @@
         </div>
       </div>
     </div>
+    <ParticipantDetailsModal :show="showParticipantDetailsModal" :participant="selectedParticipant"
+                    @close="showParticipantDetailsModal = false" />
   </template>
   
   <script setup>
-  defineProps({
+  import ParticipantDetailsModal from './ParticipantDetailsModal.vue';
+  import { ref } from "vue"; 
+  const props = defineProps({
     show: Boolean,
-    meeting: Object
+    meeting: Object,
+    participants: Array,
   });
   
   defineEmits(["close"]);
+
+  const showParticipantDetailsModal = ref(false);
+  const selectedParticipant = ref(null);
+
+  const openParticipantDetails = (participant_id) => {
+    const participant = props.participants[participant_id];
+    if(participant){
+      selectedParticipant.value = participant;
+      showParticipantDetailsModal.value = true;
+    }
+  };
   
   const formatRole = (role) => {
     if (role === "Demandante") return "Demandante";

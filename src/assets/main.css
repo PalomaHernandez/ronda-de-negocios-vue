@@ -43,7 +43,7 @@
 }
 
 .btn {
-	@apply text-white bg-blue-500 font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none
+	@apply text-white bg-blue-600 font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none
 }
 
 .btn-green { 
@@ -228,7 +228,7 @@ select {
   }
   
   .file-input {
-	@apply file:rounded file:border-0 file:bg-sky-700 file:text-sm file:text-white file:font-medium file:px-3 file:py-2;
+	@apply file:rounded file:border-0 file:bg-blue-600 file:text-sm file:text-white file:font-medium file:px-3 file:py-2 file:hover:bg-blue-700;
 	width: 100%; 
   }
   
