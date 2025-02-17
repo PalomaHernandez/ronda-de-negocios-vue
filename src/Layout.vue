@@ -42,7 +42,10 @@
             <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-house"></i> Inicio
             </RouterLink>
-            <RouterLink :to="{ name: 'event-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              <i class="fa-solid fa-handshake"></i> Reuniones
+            </RouterLink>
+            <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
             <RouterLink v-if="!isResponsible"  :to="{ name: 'event-notifications' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">

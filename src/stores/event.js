@@ -125,12 +125,12 @@ export const useEventStore = defineStore('eventStore', {
       try {
         const response = await axiosApiInstance.post(`events/${eventId}/end-matching`);
         console.log(response.data);
-        this.meetings = response.data;
+        this.success = response.data.message;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
         console.error("Error fetching meetings:", this.error);
       } finally {
-        this.loading = false;
+        this.loading = false; 
       }
     },
     async fetchUserMeetings(eventId, userId) {

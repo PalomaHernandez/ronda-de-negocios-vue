@@ -3,6 +3,10 @@
         <template #default>
             <Loading v-if="loading" />
 
+            <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
+            <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
+            <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
+
             <div v-else-if="evento" class="flex flex-col space-y-6 p-4 md:p-6">
                 <!-- 📌 Columna izquierda con información del evento -->
                 <div class="w-full flex-grow">
@@ -108,7 +112,7 @@ import MeetingDetailsModal from "@/components/MeetingDetailsModal.vue";
 
 // Estado y store
 const eventStore = useEventStore();
-const { evento, meetings, loading, participants } = storeToRefs(eventStore);
+const { evento, meetings, loading, participants, error, success, info } = storeToRefs(eventStore);
 const route = useRoute();
 const showMeetingDetailsModal = ref(false);
 const selectedMeeting = ref(null);
