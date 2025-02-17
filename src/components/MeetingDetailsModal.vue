@@ -66,15 +66,15 @@
   defineEmits(["close"]);
   
   const formatRole = (role) => {
-    if (role === "Compra") return "Comprador";
-    if (role === "Venta") return "Vendedor";
-    if (role === "Ambos") return "Comprador y Vendedor";
+    if (role === "Demandante") return "Demandante";
+    if (role === "Oferente") return "Oferente";
+    if (role === "Ambos") return "Demandante y Oferente";
     return role;
   };
   
   const getReceiverRole = (requesterRole) => {
-    if (requesterRole === "Compra") return "Venta";
-    if (requesterRole === "Venta") return "Compra";
+    if (requesterRole === "Demandante") return "Oferente";
+    if (requesterRole === "Oferente") return "Demandante";
     if (requesterRole === "Ambos") return "Ambos";
     return requesterRole;
   };

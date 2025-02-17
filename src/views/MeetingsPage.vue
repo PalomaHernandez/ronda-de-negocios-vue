@@ -36,9 +36,8 @@
             <select v-model="filterType"
               class="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="all">Todos</option>
-              <option value="offers">Solo ofrece</option>
-              <option value="seeks">Solo busca</option>
-              <option value="both">Ofrece y busca</option>
+              <option value="offers">Oferentes</option>
+              <option value="seeks">Demandantes</option>
             </select>
           </div>
 
@@ -54,8 +53,8 @@
                     <div>
                       <p class="text-lg font-medium">{{ participant.name }}</p>
                       <p v-if="participant.activity" class="text-sm text-gray-500">{{ participant.activity }}</p>
-                      <p v-if="participant.interests" class="text-lg font-medium">{{ 'Busca ' + (participant.interests || '') }}</p>
-                      <p v-if="participant.product_services" class="text-lg font-medium">{{ 'Ofrece ' + (participant.product_services || '') }}</p>
+                      <p v-if="participant.interests && filterType !== 'offers'" class="text-lg font-medium">{{ 'Busca ' + (participant.interests || '') }}</p>
+                      <p v-if="participant.product_services && filterType !== 'seeks'" class="text-lg font-medium">{{ 'Ofrece ' + (participant.product_services || '') }}</p>
                     </div>
                   </div>
                   <div class="space-x-2">
@@ -86,8 +85,8 @@
           <!-- Objetivo de la reunión -->
           <label class="block text-gray-700">Objetivo:</label>
           <select v-model="meetingObjective" class="w-full p-2 border rounded-lg mb-4">
-            <option value="Compra">Busco tus servicios</option>
-            <option value="Venta">Ofrezco mis servicios</option>
+            <option value="Demandante">Busco tus servicios</option>
+            <option value="Oferente">Ofrezco mis servicios</option>
             <option value="Ambos">Busco tus servicios y oferto los míos</option>
           </select>
 
@@ -134,7 +133,7 @@ const route = useRoute();
 
 // Estado de la barra de búsqueda y filtro
 const searchQuery = ref("");
-const filterType = ref("all"); // "all", "offers", "seeks", "both"
+const filterType = ref("all"); // "all", "offers", "seeks"
 
 // 🔍 Computed para filtrar participantes según búsqueda y filtro
 const filteredParticipants = computed(() => {
@@ -152,12 +151,10 @@ const filteredParticipants = computed(() => {
     )
     .filter(participant => {
       if (filterType.value === "offers") {
-        return participant.product_services && !participant.interests;
+        return participant.product_services;
       } else if (filterType.value === "seeks") {
-        return participant.interests && !participant.product_services;
-      } else if (filterType.value === "both") {
-        return participant.interests && participant.product_services;
-      }
+        return participant.interests;
+      } 
       return true; // "all" -> No filtramos nada
     });
 });
