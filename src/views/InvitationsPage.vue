@@ -2,12 +2,7 @@
   <LayoutPage>
     <template #default>
       <Loading v-if="loading" />
-
       <div v-else-if="evento" class="flex flex-col space-y-10">
-
-
-
-        <!-- 📌 Columna izquierda con información del evento -->
         <div class="w-full flex-grow">
           <h2 class="text-2xl font-semibold">Reuniones</h2>
 
@@ -103,10 +98,10 @@
           </div>
         </div>
       </div>
-      <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting" :participants="participantsMap"
-                    @close="closeMeetingDetails" />
     </template>
   </LayoutPage>
+  <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting" :participants="participantsMap"
+                    @close="closeMeetingDetails" />
 </template>
 
 <script setup>

@@ -131,7 +131,7 @@ select {
 }
 
 .alert {
-	@apply px-3 py-2 rounded-lg flex flex-col gap-2 mx-3 shadow-lg border
+	@apply px-3 py-2 rounded-lg flex flex-col gap-2 mx-3 shadow-lg border mt-2 mb-2
 }
 
 .alert-header {
@@ -269,3 +269,8 @@ select {
     padding: 5px 10px;
     border-radius: 5px;
   }
+
+  .rounded-scroll {
+	clip-path: inset(0px 0px 0px 0px round 10px);
+  }
+  

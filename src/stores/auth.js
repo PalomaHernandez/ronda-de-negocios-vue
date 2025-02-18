@@ -18,6 +18,7 @@ export const useAuthStore = defineStore("auth", {
     info: null,
     success: null,
     registered: useStorage("registered", false),
+    registration: useStorage("registration", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
   }),
   actions: {
     clearMessages() {
@@ -29,6 +30,9 @@ export const useAuthStore = defineStore("auth", {
       try {
         const response = await axiosApiInstance.get(`/events/${eventSlug}/is-registered`);
         this.registered = response.data.registered;
+        if(response.data.registration){
+          this.registration = response.data.registration;
+        }
         return this.registered;
       } catch (error) {
         console.error("Error al verificar inscripción:", error);
@@ -140,11 +144,12 @@ export const useAuthStore = defineStore("auth", {
     async updateProfile(data) {
       try {
         data.append('_method', 'PATCH');
-        const response = await axiosApiInstance.post('/user/profile', data);
-        
+        console.log(...data)
+        const response = await axiosApiInstance.post(`/user/profile/${this.registration.id}`, data);
         this.user = response.data.user;
-        this.success = response.data.message;
+        this.registration = response.data.registration;
         
+        this.success = response.data.message;
         router.push({ name: 'profile' });
       } catch (error) {
         if (error.response && error.response.data) {

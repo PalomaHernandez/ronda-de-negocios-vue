@@ -76,14 +76,12 @@
                 </button>
             </div>
         </div>
-
-        <!-- 📌 Modales -->
-        <ParticipantDetailsModal :show="showDetailsModal" :participant="selectedParticipant"
+    </LayoutPage>
+    <ParticipantDetailsModal :show="showDetailsModal" :participant="selectedParticipant"
             @close="showDetailsModal = false" />
         <ConfirmModal :show="showConfirmModal" title="Confirmar eliminación"
             message="¿Estás seguro de que querés eliminar este participante? Esta acción no se puede deshacer."
             @confirm="deleteParticipant" @cancel="showConfirmModal = false" />
-    </LayoutPage>
 </template>
 
 <script setup>

@@ -5,13 +5,6 @@
       <p v-if="loading">Cargando...</p>
       <div v-else-if="evento">
         <div class="text-center flex flex-col items-center space-y-6">
-          <div class="cursor-pointer" @click="$refs.logoInput.click()">
-            <!--i class="fa-solid fa-camera text-4xl text-gray-500"></i-->
-            <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
-              class="h-64 w-full object-cover rounded-xl mb-4" />
-            <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
-          </div>
-
           <!-- Título del evento -->
           <div class="flex flex-col items-center">
             <h1 class="text-4xl font-extrabold text-gray-900">{{ evento.title }}</h1>
@@ -19,6 +12,13 @@
 
           <textarea class="mt-2 text-lg text-gray-600" v-model="evento.description"
             placeholder="Descripción"></textarea>
+
+            <div class="cursor-pointer" @click="$refs.logoInput.click()">
+            <!--i class="fa-solid fa-camera text-4xl text-gray-500"></i-->
+            <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
+              class="h-64 w-full object-cover rounded-xl mb-4" />
+            <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
+          </div>
 
         </div>
 
@@ -113,11 +113,9 @@ onMounted(async () => {
   originalEvento.value = { ...evento.value };
 });
 
-// Función de actualización
 const update = async () => {
   const formData = new FormData();
 
-  // Compara cada campo con el original y solo agrega los que cambiaron
   Object.keys(evento.value).forEach((key) => {
     if (evento.value[key] !== originalEvento.value[key]) {
       console.log(`Cambio detectado en ${key}`);
@@ -125,19 +123,16 @@ const update = async () => {
     }
   });
 
-  // Agregar archivo de logo si se cambió
   if (logoFile.value) {
     formData.append("logo", logoFile.value);
   }
 
-  // Agregar documentos si se cambiaron
   if (documentFiles.value.length > 0) {
     documentFiles.value.forEach((file, index) => {
       formData.append(`documents[${index}]`, file);
     });
   }
 
-  // Agregar archivos eliminados si se eliminó alguno
   if (deletedFiles.value.length > 0) {
     deletedFiles.value.forEach((fileId, index) => {
       formData.append(`deleted_files[${index}]`, fileId);

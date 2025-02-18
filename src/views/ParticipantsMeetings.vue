@@ -92,11 +92,11 @@
                         Finalizar periodo de matcheo
                     </button>
                 </div>
-                <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting" :participants="participantsMap"
-                    @close="closeMeetingDetails" />
             </div>
         </template>
     </LayoutPage>
+    <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting" :participants="participantsMap"
+                    @close="closeMeetingDetails" />
 </template>
 
 <script setup>

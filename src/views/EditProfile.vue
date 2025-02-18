@@ -1,8 +1,8 @@
 <template>
   <LayoutPage>
-    <div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div v-if="success" class="alert alert-success mt-2 mb-2" @click="authStore.clearMessages()">{{ success }}</div>
-      <div v-if="error" class="alert alert-danger mb-2" @click="authStore.clearMessages()">{{ error }}</div>
+    <div class="w-full mx-auto p-6 bg-white rounded-lg shadow-md">
+      <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
+      <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
       <h2 class="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
 
       <div class="flex flex-col items-center space-y-4">
@@ -27,17 +27,35 @@
             <input type="email" v-model="form.email" disabled>
           </LabeledObject>
           <LabeledObject required>
+            <template #label>Actividad/sector</template>
+            <input type="text" v-model="form.activity" required>
+          </LabeledObject>
+          <LabeledObject required>
             <template #label>Ubicacion</template>
-            <input type="email" v-model="form.location" required>
+            <input type="text" v-model="form.location" required>
           </LabeledObject>
           <LabeledObject>
             <template #label>Sitio web</template>
-            <input type="email" v-model="form.website">
+            <input type="url" v-model="form.website">
           </LabeledObject>
+          <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow">
+            <h3 class="text-lg font-semibold mb-2 text-gray-700">Tus intereses y ofertas en este evento
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+              <LabeledObject>
+                <template #label>Intereses</template>
+                <input type="text" v-model="form.interests">
+              </LabeledObject>
+              <LabeledObject>
+                <template #label>Productos/servicios</template>
+                <input type="text" v-model="form.products_services">
+              </LabeledObject>
+            </div>
+          </div>
           <LabeledObject>
             <template #label>Galeria</template>
             <ImageUploader type="gallery" :uploaded-files="user.images || []" @updateFiles="handleImagesUpdate"
-            @deletedFiles="handleDeletedImages" />
+              @deletedFiles="handleDeletedImages" />
           </LabeledObject>
         </div>
 
@@ -56,7 +74,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import LayoutPage from "@/Layout.vue";
@@ -66,14 +84,23 @@ import LabeledObject from "@/components/LabeledObject.vue";
 const authStore = useAuthStore();
 const { success, error } = storeToRefs(authStore);
 const user = computed(() => authStore.user ? authStore.user : {});
+const registration = computed(() => authStore.registration ? authStore.registration : {});
 
-// Estado del formulario
+const originalForm = ref({});
+
 const form = ref({
   name: user.value.name || "",
   email: user.value.email || "",
   location: user.value.location || "",
+  activity: user.value.activity || "",
   website: user.value.website || "",
   logo_path: user.value.logo_path || "",
+  interests: registration.value.interests || "",
+  products_services: registration.value.products_services || "",
+});
+
+onMounted(() => {
+  originalForm.value = { ...form.value };
 });
 
 const previewImage = ref(null);
@@ -96,11 +123,14 @@ const onFileChange = (event) => {
 
 const guardarCambios = async () => {
   try {
-    console.log("Form values:", form.value);
+
     const formData = new FormData();
-    formData.append("name", form.value.name);
-    formData.append("location", form.value.location);
-    formData.append("website", form.value.website);
+
+    Object.keys(form.value).forEach((key) => {
+      if (form.value[key] !== originalForm.value[key]) {
+        formData.append(key, form.value[key]);
+      }
+    });
 
     if (previewImage.value) {
       formData.append("logo", selectedFile.value);
@@ -119,6 +149,11 @@ const guardarCambios = async () => {
         formData.append(`deleted_images[${index}]`, img);
       });
     }
+
+    if (formData.entries().next().done) {
+      return;
+    }
+
     await authStore.updateProfile(formData);
   } catch (error) {
     console.error("Error al actualizar perfil:", error);

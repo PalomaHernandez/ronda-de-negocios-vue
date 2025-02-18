@@ -112,12 +112,10 @@
           </div>
         </div>
       </div>
-
-      <ParticipantDetailsModal :show="showDetailsModal" :participant="selectedParticipantDetails"
-            @close="showDetailsModal = false" />
-
     </template>
   </LayoutPage>
+  <ParticipantDetailsModal :show="showDetailsModal" :participant="selectedParticipantDetails"
+            @close="showDetailsModal = false" />
 </template>
 
 <script setup>

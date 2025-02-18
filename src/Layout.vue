@@ -23,11 +23,11 @@
             </RouterLink>
 
             <!-- Botón deshabilitado si está en Inscripción -->
-            <btn v-else-if="!isResponsible" class="btn text-sm sm:text-lg bg-gray-400 cursor-not-allowed opacity-60"
+            <button v-else-if="!isResponsible" class="btn text-sm sm:text-lg bg-gray-400 cursor-not-allowed opacity-60"
               title="No disponible durante la fase de inscripción">
               <i class="fa-solid fa-handshake"></i>
               Reuniones
-          </btn>
+          </button>
           
           <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="btn text-sm sm:text-lg">
             <i class="fa-solid fa-handshake"></i>
@@ -96,7 +96,7 @@
     <!-- Contenedor principal con título y contenido -->
     <div class="flex-1 flex items-center justify-center h-[85vh] m-8">
       <div
-        class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative h-[85vh] overflow-y-auto">
+        class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative h-[85vh] overflow-y-auto pr-2 rounded-scroll">
         <slot />
       </div>
     </div>

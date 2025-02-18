@@ -3,7 +3,7 @@
     <template #default>
       <Loading v-if="loading" />
       <div v-else-if="evento">
-        <div v-if="success" class="alert alert-success mb-2" @click="eventStore.clearMessages()">{{ success }}</div>
+        <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
         <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
         
@@ -114,12 +114,11 @@
             </div>
           </div>
         </div>
-
-        <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage"
-          @update:visible="showImage = $event" />
       </div>
     </template>
   </LayoutPage>
+  <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage"
+          @update:visible="showImage = $event" />
 </template>
 
 

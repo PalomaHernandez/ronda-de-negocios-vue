@@ -1,7 +1,7 @@
 <template>
     <LayoutPage>
         <div v-if="user" class="p-6">
-            <div v-if="success" class="alert alert-success mt-2" @click="authStore.clearMessages()">{{ success }}</div>
+            <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
             <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
             <RouterLink :to="{ name: 'edit-profile' }" class="btn bg-blue-500 absolute top-2 right-2 mb-5">
                 <i class="fa-solid fa-user-edit"></i>
@@ -33,6 +33,21 @@
                 <p class="text-gray-700">{{ user.website || 'No disponible' }}</p>
             </div>
 
+            <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-2 text-gray-700">Tus intereses y ofertas en este evento
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-md font-semibold text-gray-600">Intereses</h4>
+                        <p class="text-gray-700">{{ registration.interests || 'No disponible' }}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-md font-semibold text-gray-600">Productos/Servicios</h4>
+                        <p class="text-gray-700">{{ registration.products_services || 'No disponible' }}</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Gallery -->
             <div v-if="user.images.length > 0" class="mt-6">
                 <h3 class="text-lg font-semibold">Galería</h3>
@@ -42,12 +57,12 @@
                         @click="openModal(image.path)" />
                 </div>
             </div>
-            <ImageModal :imageUrl="selectedImage" :visible="showImage" @update:visible="showImage = $event" />
         </div>
 
         <!-- Mensaje de carga si los datos no están disponibles -->
         <Loading v-else />
     </LayoutPage>
+    <ImageModal :imageUrl="selectedImage" :visible="showImage" @update:visible="showImage = $event" />
 </template>
 
 <script setup>
@@ -60,7 +75,7 @@ import ImageModal from "@/components/ImageModal.vue";
 import Loading from "@/components/Loading.vue";
 
 const authStore = useAuthStore();
-const { user, success, error, info } = storeToRefs(authStore);
+const { user, success, error, registration } = storeToRefs(authStore);
 
 const showImage = ref(false);
 const selectedImage = ref("");
