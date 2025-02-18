@@ -167,6 +167,16 @@ export const useEventStore = defineStore('eventStore', {
       this.loading = true;
       this.error = null;
 
+      const userParticipant = this.participants.find(
+        participant => participant.id === meetingData.requester_id
+      );
+
+      if (userParticipant && userParticipant.remaining_meetings > 0) {
+        userParticipant.remaining_meetings -= 1;
+      }
+      
+      await axiosApiInstance.patch(`/update-registration/${meetingData.event_id}/${meetingData.requester_id}`, { remaining_meetings: userParticipant.remaining_meetings });
+
       try {
 
         const response = await axiosApiInstance.post("/meetings", meetingData);
@@ -210,6 +220,20 @@ export const useEventStore = defineStore('eventStore', {
       this.loading = true;
       this.error = null;
 
+      const meetingData = this.meetings.find(
+        meeting => meeting.id === meetingId
+      );
+
+      const userParticipant = this.participants.find(
+        participant => participant.id === meetingData.requester_id
+      );
+
+      if (userParticipant && userParticipant.remaining_meetings > 0) {
+        userParticipant.remaining_meetings += 1;
+      }
+      
+      await axiosApiInstance.patch(`/update-registration/${meetingData.event_id}/${meetingData.requester_id}`, { remaining_meetings: userParticipant.remaining_meetings });
+
       try {
         const response = await axiosApiInstance.patch(`/meetings/${meetingId}`, { status: "Rechazada" });
         const updatedMeeting = response.data;
@@ -230,7 +254,21 @@ export const useEventStore = defineStore('eventStore', {
     async deleteMeeting(meetingId) {
       try {
         const response = await axiosApiInstance.delete(`/meetings/${meetingId}`);
-
+        
+        const meetingData = this.meetings.find(
+          meeting => meeting.id === meetingId
+        );
+      
+        const userParticipant = this.participants.find(
+          participant => participant.id === meetingData.requester_id
+        );
+      
+        if (userParticipant && userParticipant.remaining_meetings > 0) {
+          userParticipant.remaining_meetings += 1;
+        }
+        
+        await axiosApiInstance.patch(`/update-registration/${meetingData.event_id}/${meetingData.requester_id}`, { remaining_meetings: userParticipant.remaining_meetings });
+        
         if (response.status === 200) {
           // Filtramos la reunión eliminada del estado global
           this.meetings = this.meetings.filter((meeting) => meeting.id !== meetingId);

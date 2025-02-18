@@ -19,7 +19,7 @@
 
           <!-- 📌 Remaining meetings del usuario actual -->
           <p class="text-gray-600 mt-4">
-            <strong>Cantidad de invitaciones disponibles:</strong> {{ userRemainingMeetings ?? 'No disponible' }}
+            <strong>Cantidad de solicitudes restantes:</strong> {{ userRemainingMeetings ?? 'No disponible' }}
           </p>
         </div>
 
@@ -62,18 +62,16 @@
                       class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
                       Más detalles
                     </button>
-                    <button v-if="evento?.status == 'Matcheo'"
+                    <button v-if="evento?.status == 'Matcheo' && userRemainingMeetings>0"
                       @click="openMeetingRequest(participant)" 
                       class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
                       Solicitar reunión
                     </button>
-                    <!--
-                    <button v-else 
+                    <button v-if="evento?.status == 'Matcheo' && userRemainingMeetings<1"  
                       class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg opacity-60 cursor-not-allowed"
-                      title="El periodo de coordinacion de reuniones ya ha finalizado">
+                      title="Ha agotado todas sus solicitudes">
                       Solicitar reunión
                     </button>
-                    -->
                   </div>
                 </div>
               </li>
@@ -169,7 +167,7 @@ const filteredParticipants = computed(() => {
 
 const userRemainingMeetings = computed(() => {
   const userParticipant = participants.value.find(
-    (participant) => participant.participant_id === authStore.user.participant_id
+    (participant) => participant.id === authStore.user.id
   );
   return userParticipant ? userParticipant.remaining_meetings : null;
 });
