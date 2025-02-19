@@ -29,9 +29,9 @@
             <input v-if="field.type === 'number'" type="number" v-model="evento[key]"
               @input="evento[key] = Math.max(0, evento[key])">
             <input v-if="field.type === 'text'" type="text" v-model="evento[key]">
-            <input v-if="field.type === 'date'" type="date" v-model="formatDate[key]">
+            <input v-if="field.type === 'date'" type="date" v-model="evento[key]">
             <input v-if="field.type === 'datetime-local'" type="datetime-local" v-model="evento[key]">
-            <input v-if="field.type === 'time'" type="time" v-model="formatTime[key]">
+            <input v-if="field.type === 'time'" type="time" v-model="evento[key]">
           </div>
         </div>
 

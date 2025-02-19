@@ -23,7 +23,7 @@
 
             <LabeledObject>
               <template #label>Servicios/productos que ofrece</template>
-              <textarea v-model="inscription.products" rows="2"
+              <textarea v-model="inscription.products_services" rows="2"
                 placeholder="Ingrese los servicios o productos que ofrece"
                 class="resize-none border border-gray-300 rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"></textarea>
             </LabeledObject>
@@ -63,16 +63,13 @@ import LabeledObject from "@/components/LabeledObject.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
 import Loading from "@/components/Loading.vue";
 
-// Estado y store
 const eventStore = useEventStore();
 const { evento, loading, error, info, success } = storeToRefs(eventStore);
 const { user } = useAuthStore();
 
-
-// Estado local del formulario
 const inscription = ref({
   interests: "",
-  products: "",
+  products_services: "",
 });
 const gallery = ref([]);
 const deleted_images = ref([]);
@@ -97,10 +94,10 @@ const submitInscription = async () => {
     info.value = "Por favor, complete al menos un campo."
     return;
   }
-  // Crear FormData para enviar con las imágenes
+
   const formData = new FormData();
   formData.append("interests", inscription.value.interests);
-  formData.append("products", inscription.value.products);
+  formData.append("products_services", inscription.value.products_services);
   if (gallery.value.length > 0) {
     gallery.value.forEach((image, index) => {
       formData.append(`gallery[${index}]`, image);

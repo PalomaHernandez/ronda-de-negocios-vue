@@ -36,7 +36,7 @@
           </LabeledObject>
           <LabeledObject>
             <template #label>Sitio web</template>
-            <input type="url" v-model="form.website">
+            <input type="url" v-model="form.website" placeholder="https://">
           </LabeledObject>
           <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow">
             <h3 class="text-lg font-semibold mb-2 text-gray-700">Tus intereses y ofertas en este evento

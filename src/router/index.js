@@ -21,7 +21,6 @@ const routes = [
     path: '/:slug',
     name: 'event-detail',
     component: EventDetail,
-    props: true,
   },
   {
     path: '/:slug/editar',
@@ -33,37 +32,31 @@ const routes = [
     path: '/:slug/inscripcion',
     name: 'event-inscription',
     component: InscriptionPage,
-    props: true,
   },
   {
     path: '/:slug/notificaciones',
     name: 'event-notifications',
     component: NotificationsPage,
-    props: true,
   },
   {
     path: '/:slug/mis-reuniones',
     name: 'event-meetings',
     component: MeetingsPage,
-    props: true,
   },
   {
     path: '/:slug/invitaciones',
     name: 'event-invitations',
     component: InvitationsPage,
-    props: true,
   },
   {
     path: '/:slug/login',
     name: 'login',
     component: Login,
-    props: true,
   },
   {
     path: '/:slug/registro',
     name: 'register',
     component: RegisterPage,
-    props: true,
   },
   {
     path: '/:slug/perfil',

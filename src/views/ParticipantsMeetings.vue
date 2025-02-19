@@ -5,7 +5,7 @@
             <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
             <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
             <Loading v-if="loading" />
-            <div v-else-if="evento" class="flex flex-col space-y-6 p-4 md:p-6">
+            <div v-else-if="meetings" class="flex flex-col space-y-6 p-4 md:p-6">
                 <!-- 📌 Columna izquierda con información del evento -->
                 <div class="w-full flex-grow">
                     <h2 class="text-2xl font-semibold">Reuniones</h2>
@@ -120,23 +120,25 @@ const searchQuery = ref("");
 const filterType = ref("all");
 
 const filteredMeetings = computed(() => {
-
+    if (!meetings.value || !Array.isArray(meetings.value) || meetings.value.length === 0) {
+        return [];
+    }
     return meetings.value
-    .filter(meeting => {
-            // Filtrar por estado
-            if (filterType.value !== "all" && meeting.status !== filterType.value) {
-                return false;
-            }
+        .filter(meeting => {
+        // Filtrar por estado
+        if (filterType.value !== "all" && meeting.status !== filterType.value) {
+            return false;
+        }
 
-            // Filtrar por nombre de participante
-            const requester = getParticipant(meeting.requester_id);
-            const receiver = getParticipant(meeting.receiver_id);
-            const search = searchQuery.value.toLowerCase();
+        // Filtrar por nombre de participante
+        const requester = getParticipant(meeting.requester_id);
+        const receiver = getParticipant(meeting.receiver_id);
+        const search = searchQuery.value.toLowerCase();
 
-            return (
-                requester?.name.toLowerCase().includes(search) ||
-                receiver?.name.toLowerCase().includes(search)
-            );
+        return (
+            requester?.name.toLowerCase().includes(search) ||
+            receiver?.name.toLowerCase().includes(search)
+        );
         })
         .filter(meeting => {
             if (filterType.value === "Aceptada") {
@@ -148,7 +150,7 @@ const filteredMeetings = computed(() => {
             } 
             return true;
         });
-
+    
 });
 
 
@@ -165,10 +167,12 @@ onMounted(async () => {
 const participantsMap = computed(() => {
     // Mapeamos los participantes a un objeto donde las claves son los IDs
     const map = {};
-    participants.value.forEach(p => {
-        map[p.id] = p;
-    });
-    return map;
+    if(participants.value.length > 0){
+        participants.value.forEach(p => {
+            map[p.id] = p;
+        });
+        return map;
+    }
 });
 
 const cancelMeeting = async (meeting) => {

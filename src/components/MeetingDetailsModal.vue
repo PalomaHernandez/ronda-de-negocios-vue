@@ -65,7 +65,7 @@
   const props = defineProps({
     show: Boolean,
     meeting: Object,
-    participants: Array,
+    participants: Object | Array,
   });
   
   defineEmits(["close"]);

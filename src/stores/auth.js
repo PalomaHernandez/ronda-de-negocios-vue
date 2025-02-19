@@ -71,8 +71,9 @@ export const useAuthStore = defineStore("auth", {
             if(data.role.includes('responsible')) {
               this.responsible = await this.checkResponsibleUser(eventSlug);
             }
-
+            
             await this.checkEventRegistration(eventSlug);
+            
 
             if(this.registered){
               router.push({ name: "event-detail" });
@@ -104,6 +105,7 @@ export const useAuthStore = defineStore("auth", {
           this.token = null;
           this.responsible = false;
           this.registered = false;
+          this.registration = null;
           this.currentEventSlug = null;
 
           router.push({ name: "event-detail" , params: { slug: eventSlug }});

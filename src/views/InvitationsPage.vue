@@ -77,9 +77,9 @@
 
         <!-- Contenedor de los botones en la parte inferior derecha -->
         <div class="flex justify-end space-x-4">
-          <button @click="backToMeetings" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
-            Volver
-          </button>
+          <RouterLink :to="{ name: 'event-meetings' }" class="btn">
+            Cancelar
+          </RouterLink> 
           <div v-if="evento?.status == 'Terminado'">
             <!-- Botón activo si NO está en Inscripción -->
             <button 

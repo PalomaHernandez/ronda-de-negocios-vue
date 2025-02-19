@@ -30,7 +30,7 @@
           </LabeledObject>
           <LabeledObject>
             <template #label>Sitio web</template>
-            <input type="url" v-model="account.website">
+            <input type="url" v-model="account.website" placeholder="https://">
           </LabeledObject>
         </div>
 

@@ -12,7 +12,7 @@
           <p class="text-gray-600"><strong>Fase actual:</strong> {{ evento.status }}</p>
 
           <!-- Botón "Mis reuniones e invitaciones" -->
-          <RouterLink :to="{ name: 'event-invitations' }"
+          <RouterLink :to="{ name: 'event-invitations'}"
             class="w-full flex justify-center bg-blue-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 mt-4">
             Mis reuniones e invitaciones
           </RouterLink>
@@ -141,15 +141,16 @@ const filterType = ref("all"); // "all", "offers", "seeks"
 
 // 🔍 Computed para filtrar participantes según búsqueda y filtro
 const filteredParticipants = computed(() => {
-  return participants.value
-    .filter(participant => participant.id !== authStore.user.id)
-    .filter(participant => 
-  !sentRequests.value.includes(participant.id) &&
-  !meetings.value.some(meeting =>
-    (meeting.requester_id === authStore.user.id && meeting.receiver_id === participant.id) ||
-    (meeting.receiver_id === authStore.user.id && meeting.requester_id === participant.id)
+  if(participants.value){
+    return participants.value
+      .filter(participant => participant.id !== authStore.user.id)
+      .filter(participant => 
+    !sentRequests.value.includes(participant.id) &&
+    !meetings.value.some(meeting =>
+      (meeting.requester_id === authStore.user.id && meeting.receiver_id === participant.id) ||
+      (meeting.receiver_id === authStore.user.id && meeting.requester_id === participant.id)
+    )
   )
-)
     .filter(participant =>
       participant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
@@ -159,8 +160,9 @@ const filteredParticipants = computed(() => {
       } else if (filterType.value === "seeks") {
         return participant.interests;
       } 
-      return true; // "all" -> No filtramos nada
+      return true;
     });
+  }
 });
 
 const userRemainingMeetings = computed(() => {
