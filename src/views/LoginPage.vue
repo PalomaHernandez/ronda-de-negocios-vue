@@ -20,7 +20,7 @@
 		  <button type="submit" class="btn">
 			Iniciar sesión
 		  </button>
-		  <RouterLink :to="{ name: 'register' }" class="font-medium text-sky-700">
+		  <RouterLink v-if="inscriptionStatus" :to="{ name: 'register' }" class="font-medium text-sky-700">
 			No tenés cuenta? Registrate haciendo click acá.
 		  </RouterLink>
 		</form>
@@ -29,9 +29,10 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useAuthStore } from '@/stores/auth'
+  import { useEventStore } from '@/stores/event'
   import { RouterLink } from 'vue-router'
   import LabeledObject from '@/components/LabeledObject.vue'
   import LayoutPage from '@/Layout.vue'
@@ -39,6 +40,7 @@
   
   // Estado y store
   const authStore = useAuthStore()
+  const eventStore = useEventStore()
   const { error } = storeToRefs(authStore);
   const credentials = ref({
 	email: '',
@@ -46,6 +48,8 @@
   })
 
   const route = useRoute();
+
+  const inscriptionStatus = computed(() => eventStore.evento.status === "Inscripcion");
   
   // Métodos
   const login = () => {

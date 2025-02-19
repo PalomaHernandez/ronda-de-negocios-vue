@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import { axiosApiInstance } from '@/api';
+import { useStorage } from "@vueuse/core";
 import router from '@/router';
 import { useAuthStore } from "@/stores/auth";
 import * as XLSX from "xlsx";
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
-    evento: null,
+    evento: useStorage("evento", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
     participants: [],
     meetings: [],
     notifications: [],
@@ -28,7 +29,7 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.get(`/events/${slug}`);
-        this.evento = response.data;
+        this.evento = await response.data;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al cargar el evento.';
         console.error("Error fetching event:", this.error);

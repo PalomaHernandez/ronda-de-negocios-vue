@@ -76,11 +76,9 @@
           </ul>
         </div>
 
-        <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
-
         <div class="mt-5 flex justify-center">
           <div v-if="!authStore.authenticated" class="space-x-4">
-            <button @click="abrirModal"
+            <button v-if="inscriptionStatus" @click="abrirModal"
               class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
               Inscribirse al Evento
             </button>
@@ -90,33 +88,32 @@
             </RouterLink>
           </div>
         </div>
-
-        <!-- Modal -->
-        <div v-if="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
-            <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
-
-            <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
-              <RouterLink :to="{ name: 'login' }" class="btn text-xl">
-                <i class="fa-solid fa-right-to-bracket"></i>
-                Si, iniciar sesión
-              </RouterLink>
-              <RouterLink :to="{ name: 'register' }" class="btn text-xl">
-                <i class="fa-solid fa-user-edit"></i>
-                No, crear cuenta
-              </RouterLink>
-            </div>
-
-            <div class="absolute bottom-2 right-4">
-              <button @click="cerrarModal" class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </template>
   </LayoutPage>
+  <!-- Modal -->
+  <div v-if="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
+      <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
+
+      <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
+        <RouterLink :to="{ name: 'login' }" class="btn text-xl">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          Si, iniciar sesión
+        </RouterLink>
+        <RouterLink :to="{ name: 'register' }" class="btn text-xl">
+          <i class="fa-solid fa-user-edit"></i>
+          No, crear cuenta
+        </RouterLink>
+      </div>
+
+      <div class="absolute bottom-2 right-4">
+        <button @click="cerrarModal" class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
   <ImageModal v-if="evento && evento.logo_path" :imageUrl="evento.logo_path" :visible="showImage"
           @update:visible="showImage = $event" />
 </template>
@@ -157,15 +154,22 @@ const responsibleOnlyFields = {
   meeting_duration: { label: "Duración de reuniones (en minutos)", type: "number" },
   time_between_meetings: { label: "Tiempo entre reuniones (en minutos)", type: "number" },
   matching_end_date: { label: "Matching hasta", type: "datetime-local" },
+  max_participants: { label: "Cantidad máxima de participantes", type: "number" },
+  meetings_per_user: { label: "Cantidad de reuniones por participante", type: "number" },
 }
 
 const isAuthenticated = computed(() => authStore.authenticated);
 const isRegistered = computed(() => authStore.registered);
 const isResponsible = computed(() => authStore.responsible);
 
-// Cargar evento al montar
-onMounted(() => {
-  eventStore.fetch(route.params.slug);
+const inscriptionStatus = ref(true);
+
+onMounted(async () => {
+  await eventStore.fetch(route.params.slug);
+  
+  if (evento.value) {
+    inscriptionStatus.value = evento.value.status === "Inscripcion";
+  }
 });
 
 // Métodos

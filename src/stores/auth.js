@@ -73,20 +73,26 @@ export const useAuthStore = defineStore("auth", {
             }
             
             await this.checkEventRegistration(eventSlug);
-            
+            const eventStore =  useEventStore();
+            await eventStore.fetch(eventSlug);
 
-            if(this.registered){
+            if(this.registered || this.responsible){
               router.push({ name: "event-detail" });
             }
-            else{
+            else if(eventStore.evento.status === "Inscripcion"){
               router.push({ name: "event-inscription" });
+            }
+            else{
+              await this.logout();
+              router.push({ name: "event-detail" });
+              eventStore.info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
             }
           } else {
             this.error = data.text;
           }
         } catch (error) {
           console.error("Login error:", error);
-          this.error = "El email o la contraseña son incorrectos.";
+          this.info = "El email o la contraseña son incorrectos.";
         } finally {
           this.loggingIn = false;
         }
@@ -96,7 +102,7 @@ export const useAuthStore = defineStore("auth", {
       if (!this.loggingOut) {
         this.loggingOut = true;
         this.clearMessages();
-
+    
         try {
           await axiosApiInstance.post("logout");
 
@@ -116,24 +122,30 @@ export const useAuthStore = defineStore("auth", {
         }
       }
     },
-    async register(formData, eventSlug) {
+    async register(formData) {
       if (!this.registering) {
         this.registering = true;
         this.clearMessages();
         this.info = "Registrando tu cuenta...";
     
-        try {
-          const { data } = await axiosApiInstance.post("register", formData);
-    
-          if (data.user) {
-            this.authenticated = true;
-            this.user = data.user;
-            this.token = data.token; 
-            this.currentEventSlug = eventSlug;
+        const eventStore =  useEventStore();
 
-            router.push({ name: "event-inscription" });
+        try {
+          if(eventStore.evento.status === "Inscripcion"){
+            const { data } = await axiosApiInstance.post("register", formData);
+            if (data.user) {
+              this.authenticated = true;
+              this.user = data.user;
+              this.token = data.token; 
+              this.currentEventSlug = eventSlug;
+  
+              router.push({ name: "event-inscription" });
+            } else {
+              this.error = "No se pudo registrar.";
+            }
           } else {
-            this.error = "No se pudo registrar.";
+            eventStore.info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
+            router.push({ name: "event-inscription" });
           }
         } catch (error) {
           console.error("Error en el registro:", error);

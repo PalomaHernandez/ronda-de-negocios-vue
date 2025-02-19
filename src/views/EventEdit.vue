@@ -86,6 +86,8 @@ const fields = {
   location: { label: "Ubicación", type: "text" },
   meeting_duration: { label: "Duración de reuniones (en minutos)", type: "number" },
   time_between_meetings: { label: "Tiempo entre reuniones (en minutos)", type: "number" },
+  max_participants: { label: "Cantidad máxima de participantes", type: "number" },
+  meetings_per_user: { label: "Cantidad de reuniones por participante", type: "number" },
 };
 
 const logoFile = ref(null);

@@ -105,7 +105,7 @@ router.beforeEach(async (to, from) => {
   }
 
   if (to.name !== 'event-inscription' && !isRegistered && isAuthenticated && !isResponsible) {
-    return { name: 'event-inscription', params: { slug: eventSlug } };
+      return { name: 'event-inscription', params: { slug: eventSlug } };
   }
 
   if(to.name === 'event-inscription' && (isRegistered || isResponsible)){

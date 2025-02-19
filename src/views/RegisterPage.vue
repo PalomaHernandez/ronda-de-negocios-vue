@@ -67,6 +67,7 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useEventStore } from "@/stores/event";
 import LabeledObject from "@/components/LabeledObject.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
 import LayoutPage from "@/Layout.vue";
