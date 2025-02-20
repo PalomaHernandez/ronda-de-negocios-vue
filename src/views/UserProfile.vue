@@ -10,7 +10,10 @@
 
             <div class="flex items-center space-x-4">
                 <!-- Logo -->
-                <img :src="user.logo_path" alt="User Logo" class="w-16 h-16 rounded-full" />
+                 <div class="w-16 h-16 flex items-center justify-center">
+                    <img v-if="user.logo_path" :src="user.logo_path" alt="User Logo" class="rounded-full" />
+                    <i v-else class="fa-solid fa-circle-user text-gray-400 text-6xl"></i>
+                 </div>
                 <div>
                     <h2 class="text-xl font-semibold">{{ user.name }}</h2>
                     <p class="text-gray-600">{{ user.email }}</p>
@@ -73,6 +76,8 @@ import { useAuthStore } from "@/stores/auth";
 
 import ImageModal from "@/components/ImageModal.vue";
 import Loading from "@/components/Loading.vue";
+import defaultAvatar from '@/assets/user-default.png';
+
 
 const authStore = useAuthStore();
 const { user, success, error, registration } = storeToRefs(authStore);

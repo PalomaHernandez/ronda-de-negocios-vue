@@ -48,8 +48,10 @@
               <li v-for="participant in filteredParticipants" :key="participant.id" class="p-3 border-b">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
-                    <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"
-                      class="w-10 h-10 rounded-full mr-3 object-cover" />
+                    <div class="w-10 h-10 rounded-full mr-3 object-cover">
+                      <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"/>
+                      <i v-else class="fa-solid fa-circle-user text-gray-400 text-4xl"></i>
+                    </div>
                     <div>
                       <p class="text-lg font-medium">{{ participant.name }}</p>
                       <p v-if="participant.activity" class="text-sm text-gray-500">{{ participant.activity }}</p>

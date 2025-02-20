@@ -11,6 +11,7 @@ export const useEventStore = defineStore('eventStore', {
     participants: [],
     meetings: [],
     notifications: [],
+    statistics: [],
     loading: false,
     error: null,
     info: null,
@@ -352,6 +353,15 @@ export const useEventStore = defineStore('eventStore', {
         this.info = 'El cronograma no estará disponible hasta que no finalice la etapa de matcheo.'
       }
     },
-
+    async getStatistics() {
+      try {
+        const response = await axiosApiInstance.get(`/events/${this.evento.id}/statistics`);
+        this.statistics = response.data;
+      } catch (error) {
+        console.error('Error al obtener estadísticas:', error);
+        this.info = error.response.data;
+        console.log(error.response);
+      }
+    },
   },
 });

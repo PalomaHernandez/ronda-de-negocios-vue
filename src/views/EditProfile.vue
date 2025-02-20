@@ -8,7 +8,10 @@
       <div class="flex flex-col items-center space-y-4">
         <!-- Imagen de perfil -->
         <div class="relative">
-          <img :src="previewImage || form.logo_path" alt="User Logo" class="w-24 h-24 rounded-full border shadow-lg" />
+          <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
+                     <img v-if="previewImage || form.logo_path" :src="previewImage || form.logo_path" alt="User Logo">
+                    <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
+                 </div>
           <label
             class="absolute bottom-0 right-0 h-8 w-8 flex items-center justify-center bg-gray-800 text-white p-1 rounded-full cursor-pointer">
             <i class="fa-solid fa-camera"></i>

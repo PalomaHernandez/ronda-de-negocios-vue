@@ -11,6 +11,9 @@
           <RouterLink :to="{ name: 'event-edit', params: { slug: evento.slug } }" class="btn">
             <i class="fa-solid fa-pen-to-square"></i> Editar
           </RouterLink>
+          <RouterLink :to="{ name: 'event-statistics', params: { slug: evento.slug } }" class="btn">
+            <i class="fa-solid fa-pen-to-square"></i> Ver estadísticas
+          </RouterLink>
         </div>
 
         <div class="text-center flex flex-col items-center space-y-5">

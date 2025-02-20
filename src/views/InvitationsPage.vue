@@ -4,7 +4,7 @@
       <Loading v-if="loading" />
       <div v-else-if="evento" class="flex flex-col space-y-10">
         <div class="w-full flex-grow">
-          <h2 class="text-2xl font-semibold">Reuniones</h2>
+          <h2 class="text-2xl font-semibold mb-2">Reuniones</h2>
 
           <div class="flex space-x-2 mb-2">
             <input type="text" v-model="searchQuery" placeholder="Buscar por nombre..."
@@ -35,22 +35,25 @@
                   <!-- Botón "Más detalles" centrado y alineado a la misma altura -->
                   <div class="flex items-center justify-center w-1/3">
                     <button @click="openMeetingDetails(meeting)"
-                      class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+                      class="btn text-lg">
                       Más detalles
                     </button>
                   </div>
 
                   <!-- Estado y botones a la derecha -->
                   <div class="flex items-center justify-end w-1/3 space-x-4">
-                    <div v-if="meeting.status === 'Aceptada'" class="flex items-center space-x-2">
-                      <span class="text-green-500 font-semibold">Aceptada</span>
+                    <div v-if="meeting.status === 'Aceptada'" class="flex bg-emerald-600 rounded-full items-center space-x-2 py-1 px-3 m-1">
+                        <span class="text-white font-semibold">Aceptada</span>
                     </div>
-                    <div v-else-if="meeting.status === 'Rechazada'" class="flex items-center space-x-2">
-                      <span class="text-red-500 font-semibold">Rechazada</span>
+                    <div v-else-if="meeting.status === 'Rechazada'"
+                        class="flex bg-red-500 rounded-full items-center space-x-2 py-1 px-3">
+                        <span class="text-white font-semibold">Rechazada</span>
                     </div>
                     <div v-else-if="meeting.status === 'Pendiente' && meeting.receiver_id !== authStore.user.id"
                       class="flex items-center space-x-2">
-                      <span class="text-yellow-500 font-semibold">Esperando respuesta...</span>
+                      <div class="flex bg-gray-500 rounded-full items-center space-x-2 py-1 px-3">
+                        <span class="text-white font-semibold">Esperando respuesta</span>
+                    </div>
                       <button @click="cancelMeeting(meeting)"
                         class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
                         Cancelar
@@ -58,11 +61,11 @@
                     </div>
                     <div v-else class="flex items-center space-x-2">
                       <button @click="acceptMeeting(meeting)"
-                        class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
+                        class="btn-green">
                         Aceptar reunión
                       </button>
                       <button @click="rejectMeeting(meeting)"
-                        class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700">
+                        class="btn-red">
                         Rechazar reunión
                       </button>
                     </div>
@@ -84,7 +87,7 @@
             <!-- Botón activo si NO está en Inscripción -->
             <button 
               @click="downloadSchedule" 
-              class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
+              class="bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
               Descargar Cronograma
             </button>
           </div>
@@ -92,7 +95,7 @@
           <!-- Botón deshabilitado si está en Inscripción -->
           <div 
             v-else 
-            class="bg-green-600 text-white py-2 px-4 rounded-lg opacity-60 cursor-not-allowed"
+            class="bg-emerald-600 text-white py-2 px-4 rounded-lg opacity-60 cursor-not-allowed"
             title="Disponible cuando haya finalizado el periodo de coordinacion de reuniones">
             Descargar Cronograma
           </div>

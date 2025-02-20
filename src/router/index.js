@@ -14,6 +14,7 @@ import UserProfile from '@/views/UserProfile.vue';
 import EditProfile from '@/views/EditProfile.vue';
 import ParticipantsPage from '@/views/ParticipantsPage.vue';
 import ParticipantsMeetings from '@/views/ParticipantsMeetings.vue';
+import EventStatistics from '@/views/EventStatistics.vue';
 
 const routes = [
   
@@ -78,7 +79,15 @@ const routes = [
     name: 'participants-meetings',
     component: ParticipantsMeetings,
   },
-
+  {
+    path: '/event/:slug/statistics',
+    name: 'event-statistics',
+    component: EventStatistics,
+    /*meta: {
+      requiresAuth: true,
+      role: 'responsible' // Solo accesible por el responsable
+    }*/
+  }
 ];
 
 const router = createRouter({

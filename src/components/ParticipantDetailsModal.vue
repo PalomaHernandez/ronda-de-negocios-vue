@@ -2,8 +2,10 @@
     <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div class="flex flex-col items-center">
-          <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"
-            class="w-24 h-24 rounded-full object-cover shadow-md" />
+          <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
+            <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"/>
+            <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
+          </div>
           <h2 class="text-2xl font-bold text-gray-900 mt-3">{{ participant.name }}</h2>
           <p class="text-gray-500 font-bold text-lg">{{ participant.email }}</p>
           <p v-if="participant.activity" class="text-gray-500 text-lg">{{ participant.activity || 'No disponible' }}</p>
