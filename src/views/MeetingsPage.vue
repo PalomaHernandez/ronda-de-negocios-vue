@@ -3,9 +3,9 @@
     <template #default>
       <Loading v-if="loading" />
 
-      <div v-else-if="evento" class="flex space-x-6">
+      <div v-else-if="evento" class="flex flex-col md:flex-row space-x-6">
         <!-- 📌 Columna izquierda con información del evento -->
-        <div class="w-1/3 bg-white shadow-lg p-6 rounded-lg">
+        <div class="w-full md:w-1/3 bg-white shadow-lg p-6 rounded-lg mb-6 md:mb-0">
           <h2 class="text-xl font-bold text-gray-900">{{ evento.title }}</h2>
           <p class="text-gray-600"><strong>Ubicación:</strong> {{ evento.location }}</p>
           <p class="text-gray-600"><strong>Fecha:</strong> {{ evento.date }}</p>
@@ -13,7 +13,7 @@
 
           <!-- Botón "Mis reuniones e invitaciones" -->
           <RouterLink :to="{ name: 'event-invitations'}"
-            class="w-full flex justify-center bg-blue-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 mt-4">
+            class="w-full flex justify-center bg-sky-700 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-800 mt-4">
             Mis reuniones e invitaciones
           </RouterLink>
 
@@ -24,8 +24,8 @@
         </div>
 
         <!-- 📌 Contenedor de participantes y filtros -->
-        <div class="w-2/3">
-          <h2 class="text-2xl font-semibold">Participantes</h2>
+        <div class="w-full md:w-2/3">
+          <h2 class="text-2xl font-semibold mb-2">Participantes</h2>
 
           <!-- 🔎 Barra de búsqueda y filtro -->
           <div class="flex space-x-2 mb-2">
@@ -57,18 +57,18 @@
                       <p v-if="participant.product_services && filterType !== 'seeks'" class="text-lg font-medium">{{ 'Ofrece ' + (participant.product_services || '') }}</p>
                     </div>
                   </div>
-                  <div class="space-x-2">
+                  <div class="space-x-2 flex flex-col md:flex-row">
                     <button @click="openDetailsModal(participant)"
-                      class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+                      class="bg-sky-700 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-800 mb-2 md:mb-0">
                       Más detalles
                     </button>
                     <button v-if="evento?.status == 'Matcheo' && userRemainingMeetings>0"
                       @click="openMeetingRequest(participant)" 
-                      class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-green-700">
+                      class="bg-sky-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-700 mb-2 md:mb-0">
                       Solicitar reunión
                     </button>
                     <button v-if="evento?.status == 'Matcheo' && userRemainingMeetings<1"  
-                      class="bg-green-600 text-white text-lg font-semibold py-2 px-4 rounded-lg opacity-60 cursor-not-allowed"
+                      class="bg-sky-600 text-white text-lg font-semibold py-2 px-4 rounded-lg opacity-60 cursor-not-allowed mb-2 md:mb-0"
                       title="Ha agotado todas sus solicitudes">
                       Solicitar reunión
                     </button>
@@ -81,42 +81,19 @@
           </div>
         </div>
       </div>
-
-      <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
-      <!-- 📌 MODAL: Solicitud de reunión -->
-      <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-1/3">
-          <h2 class="text-xl font-bold mb-4">Solicitud de reunión</h2>
-
-          <!-- Objetivo de la reunión -->
-          <label class="block text-gray-700">Objetivo:</label>
-          <select v-model="meetingObjective" class="w-full p-2 border rounded-lg mb-4">
-            <option value="Demandante">Busco tus servicios</option>
-            <option value="Oferente">Ofrezco mis servicios</option>
-            <option value="Ambos">Busco tus servicios y oferto los míos</option>
-          </select>
-
-          <!-- Motivo -->
-          <label class="block text-gray-700">Motivo:</label>
-          <textarea v-model="meetingReason" rows="3" class="w-full p-2 border rounded-lg mb-4"
-            placeholder="Escribe el motivo de la reunión..."></textarea>
-
-          <!-- Botones -->
-          <div class="flex justify-end space-x-2">
-            <button @click="closeMeetingRequest" class="bg-gray-400 text-white py-2 px-4 rounded-lg">
-              Cancelar
-            </button>
-            <button @click="submitMeetingRequest" class="bg-blue-600 text-white py-2 px-4 rounded-lg">
-              Enviar solicitud
-            </button>
-          </div>
-        </div>
-      </div>
     </template>
   </LayoutPage>
+
   <ParticipantDetailsModal :show="showDetailsModal" :participant="selectedParticipantDetails"
-            @close="showDetailsModal = false" />
+    @close="showDetailsModal = false" />
+  <MeetingRequestModal :showModal="showModal" 
+    :selectedParticipant="selectedParticipant" 
+    :userId="authStore.user.id" 
+    :eventId="evento.id" 
+    @close="closeMeetingRequest" 
+    @submit="submitMeetingRequest" />
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
@@ -126,6 +103,7 @@ import { useAuthStore } from "@/stores/auth"; // Importamos la store de autentic
 import { useRouter, useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import Loading from "@/components/Loading.vue";
+import MeetingRequestModal from "@/components/MeetingRequestModal.vue";
 import ParticipantDetailsModal from "@/components/ParticipantDetailsModal.vue";
 
 // Estado y store
@@ -180,8 +158,8 @@ onMounted(async () => {
     return; // Detener la ejecución
   }
   if(evento.value) {
-    eventStore.fetchParticipants(evento.value.id); // Obtener participantes
-    eventStore.fetchUserMeetings(evento.value.id, authStore.user.id); // Obtener reuniones del usuario
+    await eventStore.fetchParticipants(evento.value.id); // Obtener participantes
+    await eventStore.fetchUserMeetings(evento.value.id, authStore.user.id); // Obtener reuniones del usuario
   }
 });
 
@@ -227,26 +205,20 @@ const sentRequests = computed(() => {
 });;
 
 // Enviar solicitud (falta lógica de backend)
-const submitMeetingRequest = async () => {
-  if (!selectedParticipant.value || !meetingObjective.value || !meetingReason.value) {
+const submitMeetingRequest = async (meetingData) => {
+  if (!meetingData) {
     console.error('Faltan campos');
     return;
   }
 
-  // Crear el objeto con los datos necesarios
-  const meetingData = {
-    requester_id: authStore.user.id, // ID del usuario autenticado
-    receiver_id: selectedParticipant.value.id, // ID del participante seleccionado
-    event_id: eventStore.evento.id, // ID del evento
-    reason: meetingReason.value, // Motivo de la reunión
-    status: 'Pendiente', // Estado de la solicitud (puedes cambiarlo según tu lógica)
-    requester_role: meetingObjective.value, // Objetivo de la reunión
-  };
   try {
+    // Enviar la solicitud al backend
     await eventStore.createMeeting(meetingData);
-
+    
+    // Añadir el ID del participante a la lista de solicitudes enviadas
     sentRequests.value.push(selectedParticipant.value.id);
 
+    // Cerrar el modal después de enviar la solicitud
     closeMeetingRequest();
   } catch (error) {
     console.error('Error al enviar la solicitud de reunión:', error);

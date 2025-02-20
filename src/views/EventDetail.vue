@@ -77,13 +77,13 @@
         </div>
 
         <div class="mt-5 flex justify-center">
-          <div v-if="!authStore.authenticated" class="space-x-4">
+          <div v-if="!authStore.authenticated" class="space-x-4 flex items-stretch">
             <button v-if="inscriptionStatus" @click="abrirModal"
-              class="bg-yellow-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-yellow-700 focus:outline-none">
+              class="bg-sky-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-600 focus:outline-none">
               Inscribirse al Evento
             </button>
             <RouterLink :to="{ name: 'login' }"
-              class="bg-blue-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none">
+              class="bg-sky-700 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-800 focus:outline-none">
               Acceder
             </RouterLink>
           </div>

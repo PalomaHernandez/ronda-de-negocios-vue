@@ -1,7 +1,6 @@
 <template>
     <div v-if="show" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <!-- Foto de perfil centrada -->
         <div class="flex flex-col items-center">
           <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"
             class="w-24 h-24 rounded-full object-cover shadow-md" />
@@ -10,7 +9,6 @@
           <p v-if="participant.activity" class="text-gray-500 text-lg">{{ participant.activity || 'No disponible' }}</p>
         </div>
   
-        <!-- Información en tarjetas -->
         <div class="mt-4 space-y-3">
           <div class="flex items-center bg-gray-100 p-3 rounded-lg">
             <i class="fa-solid fa-location-dot mr-2"></i>
@@ -36,7 +34,6 @@
           </div>
         </div>
   
-        <!-- Galería de imágenes -->
         <div v-if="participant.profile_images?.length" class="mt-4">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Galería</h3>
           <div class="grid grid-cols-3 gap-2">
@@ -50,7 +47,7 @@
   
         <!-- Botón de cierre -->
         <div class="flex justify-center mt-5">
-          <button @click="$emit('close')" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">
+          <button @click="$emit('close')" class="btn btn-primary">
             Cerrar
           </button>
         </div>

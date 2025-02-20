@@ -18,9 +18,9 @@
       <input type="file" accept="image/*" multiple @change="handleFileChange" class="file-input mb-4" />
       <div class="preview-container flex flex-row gap-2 mt-2">
         <div v-for="(img, index) in preview" :key="index" class="relative w-28 h-28">
-          <img :src="typeof img === 'string' ? img : img.path" alt="Vista previa" class="w-full h-full object-cover rounded-lg" />
+          <img :src="img.preview" alt="Vista previa" class="w-full h-full object-cover rounded-lg" />
           <button @click="removeImage(index, img)" type="button" class="remove-btn">
-              <i class="fa-solid fa-trash"></i>
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </div>
@@ -28,9 +28,8 @@
   </div>
 </template>
 
-
 <script>
-import { ref, onUnmounted, watch } from "vue";
+import { ref, watch, onUnmounted } from "vue";
 
 export default {
   name: "ImageUploader",
@@ -41,90 +40,63 @@ export default {
       validator: (value) => ["logo", "gallery"].includes(value),
     },
     uploadedFiles: {
-      type: [String, Array],
-      default: "",
+      type: Array,
+      default: () => [],
     },
   },
   emits: ["updateFiles", "deletedFiles"],
   setup(props, { emit }) {
-    const preview = ref(props.type === "logo" ? props.uploadedFiles : [...props.uploadedFiles]);
-    const fileList = ref(Array.isArray(props.uploadedFiles) ? [...props.uploadedFiles] : []);
+    const preview = ref([]);
+    const newFiles = ref([]); // Solo archivos nuevos
     const deletedFiles = ref([]);
 
     watch(
       () => props.uploadedFiles,
       (newUploadedFiles) => {
-        if (props.type === "logo") {
-          preview.value = newUploadedFiles;
-        } else if (Array.isArray(newUploadedFiles)) {
-          preview.value = [...newUploadedFiles];
-          fileList.value = [...newUploadedFiles];
-        }
+        preview.value = newUploadedFiles.map((file) => ({
+          preview: file.path, // Mantiene la ruta de la imagen ya subida
+          id: file.id,
+        }));
       },
       { immediate: true }
     );
 
     const handleFileChange = (event) => {
       const files = Array.from(event.target.files);
+      const newImages = files.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
 
-      if (props.type === "logo") {
-        const file = files[0];
-        if (file) {
-          cleanupBlobs();
-          const url = URL.createObjectURL(file);
-          preview.value = url;
-          fileList.value = [file];
-        }
-      } else if (props.type === "gallery") {
-        const newUrls = files.map((file) => URL.createObjectURL(file));
-        const newFiles = [...fileList.value, ...files];
-
-        preview.value = [...preview.value, ...newUrls];
-        fileList.value = newFiles;
-      }
-
-      emit("updateFiles", fileList.value);
+      newFiles.value.push(...files); // Solo los archivos nuevos
+      preview.value.push(...newImages); // Muestra las imágenes en la UI
+      emit("updateFiles", newFiles.value);
     };
 
-    const removeLogo = () => {
-      cleanupBlobs();
-      fileList.value = [];
-      preview.value = null;
-      emit("updateFiles", fileList.value);
-    };
-
-    const removeImage = (index, file) => {
-      if (file.id) {
-        // Es una URL (imagen ya subida), la agregamos a `deletedFiles`
-        deletedFiles.value.push(file.id);
+    const removeImage = (index, img) => {
+      if (img.id) {
+        // Si tiene ID, es una imagen ya subida y la mandamos a eliminar
+        deletedFiles.value.push(img.id);
         emit("deletedFiles", deletedFiles.value);
+      } else {
+        // Es una imagen nueva, la eliminamos del array
+        newFiles.value = newFiles.value.filter((file) => file !== img.file);
+        emit("updateFiles", newFiles.value);
       }
 
-      // Eliminamos la imagen de la lista
-      fileList.value.splice(index, 1);
+      // Eliminamos la imagen de la UI
       preview.value.splice(index, 1);
-
-      emit("updateFiles", fileList.value);
-    };
-
-    const cleanupBlobs = () => {
-      if (props.type === "logo" && preview.value) {
-        URL.revokeObjectURL(preview.value);
-      } else if (props.type === "gallery") {
-        preview.value.forEach((url) => URL.revokeObjectURL(url));
-      }
-      preview.value = props.type === "logo" ? null : [];
     };
 
     onUnmounted(() => {
-      cleanupBlobs();
+      preview.value.forEach((img) => {
+        if (!img.id) URL.revokeObjectURL(img.preview);
+      });
     });
 
     return {
       preview,
       handleFileChange,
-      deletedFiles,
-      removeLogo,
       removeImage,
     };
   },

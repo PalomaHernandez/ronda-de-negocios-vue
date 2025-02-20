@@ -23,7 +23,7 @@
 
                             <div class="hidden md:flex space-x-3">
                                 <button @click="openDetailsModal(participant)"
-                                    class="bg-yellow-600 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+                                    class="bg-sky-700 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-800">
                                     Más detalles
                                 </button>
                                 <button @click="downloadSchedule(participant)"
@@ -32,7 +32,7 @@
                                     Descargar cronograma
                                 </button>
                                 <button @click="confirmDelete(participant)"
-                                    class="bg-red-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-red-700">
+                                    class="bg-red-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-red-600">
                                     <i class="fa-solid fa-trash"></i>
                                     Eliminar
                                 </button>

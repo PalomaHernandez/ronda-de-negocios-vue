@@ -1,72 +1,73 @@
 <template>
-  <div class="bg-blue-500 min-h-screen">
+  <div class="bg-gray-100 min-h-screen">
     <!-- Barra de navegación -->
-    <nav class="bg-white shadow-md flex items-center px-6 py-3 h-[8vh] flex relative">
-      <div class="font-bold text-blue-600 text-xl sm:text-2xl w-full sm:w-auto">
-        Rondas UNS
-      </div>
-
+    <nav class="bg-sky-900 shadow-md flex items-center px-6 py-3 h-[8vh] flex relative">
+      <RouterLink :to="{name: 'event-detail'}" class="!p-1">
+				<div class="h-20 w-60 justify-center items-center">
+					<img alt="Rondas UNS Logo" class="h-15 w-60" src="@/assets/logos/rondas-uns.png">
+				</div>
+			</RouterLink>
       <div v-if="authStore.authenticated"
         class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto justify-end flex-wrap sm:justify-end">
 
         <!-- Menú en pantallas grandes -->
         <div v-if="isRegistered || isResponsible" class="hidden lg:flex space-x-4">
-          <RouterLink :to="{ name: 'event-detail' }" class="btn text-sm sm:text-lg">
+          <RouterLink :to="{ name: 'event-detail' }" class="nav-btn text-sm sm:text-lg">
             <i class="fa-solid fa-house"></i>
             Inicio
           </RouterLink>
             <!-- Botón activo si NO está en Inscripción -->
             <RouterLink v-if="evento?.status !== 'Inscripcion' && !isResponsible" :to="{ name: 'event-meetings' }"
-              class="btn text-sm sm:text-lg">
+              class="nav-btn text-sm sm:text-lg">
               <i class="fa-solid fa-handshake"></i>
               Reuniones
             </RouterLink>
 
             <!-- Botón deshabilitado si está en Inscripción -->
-            <button v-else-if="!isResponsible" class="btn text-sm sm:text-lg bg-gray-400 cursor-not-allowed opacity-60"
+            <button v-else-if="!isResponsible" class="nav-btn text-sm sm:text-lg cursor-not-allowed opacity-60"
               title="No disponible durante la fase de inscripción">
               <i class="fa-solid fa-handshake"></i>
               Reuniones
           </button>
           
-          <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="btn text-sm sm:text-lg">
+          <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="nav-btn text-sm sm:text-lg">
             <i class="fa-solid fa-handshake"></i>
             Reuniones
           </RouterLink>
-          <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }" class="btn text-sm sm:text-lg">
+          <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }" class="nav-btn text-sm sm:text-lg">
             <i class="fa-solid fa-bell"></i>
             Notificaciones
           </RouterLink>
-          <RouterLink v-if="isResponsible" :to="{ name: 'participants' }" class="btn text-sm sm:text-lg">
+          <RouterLink v-if="isResponsible" :to="{ name: 'participants' }" class="nav-btn text-sm sm:text-lg">
             <i class="fa-solid fa-users"></i> Participantes
           </RouterLink>
         </div>
 
         <!-- Menú desplegable en pantallas pequeñas -->
         <div v-if="isRegistered || isResponsible" class="lg:hidden">
-          <button @click="toggleMobileMenu" class="text-blue-500 text-lg">
+          <button @click="toggleMobileMenu" class="text-white text-lg">
             <i class="fa-solid fa-bars"></i> <!-- Icono de menú hamburguesa -->
           </button>
 
           <!-- Menú desplegable móvil -->
           <div v-if="mobileMenuOpen" class="absolute top-full right-0 w-48 bg-white rounded-lg shadow-lg z-10">
-            <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+            <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-house"></i> Inicio
             </RouterLink>
             <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }"
-              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
             <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }"
-              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
             <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }"
-              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-bell"></i> Notificaciones
             </RouterLink>
             <RouterLink v-if="isResponsible" :to="{ name: 'participants' }"
-              class="block px-4 py-2 text-blue-500 hover:bg-gray-100">
+              class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-users"></i> Participantes
             </RouterLink>
           </div>
@@ -75,16 +76,16 @@
         <!-- Botón de perfil con menú desplegable -->
         <div class="relative">
           <button @click="toggleMenu" class="dropdown-header">
-            <i class="fa-solid fa-user text-blue-500 text-lg"></i>
+            <i class="fa-solid fa-user text-white text-lg"></i>
           </button>
 
           <!-- Menú desplegable -->
           <div v-if="menuOpen" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-            <RouterLink v-if="!isResponsible && isRegistered" :to="{ name: 'profile' }" class="dropdown-link">
+            <RouterLink v-if="!isResponsible && isRegistered" :to="{ name: 'profile' }" class="dropdown-link text-sky-700">
               <i class="fa-solid fa-user"></i>
               Ver perfil
             </RouterLink>
-            <button @click="deslogearse" class="dropdown-link text-red-600">
+            <button @click="deslogearse" class="dropdown-link text-sky-700">
               <i class="fa-solid fa-right-from-bracket"></i>
               Cerrar sesión
             </button>

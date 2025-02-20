@@ -31,12 +31,12 @@
                                     <!-- Nombre del participante -->
                                     <div class="flex flex-wrap items-center justify-left space-x-3 w-2/3">
                                         <span
-                                            class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full border border-blue-500 text-lg font-medium">
+                                            class="px-3 py-1 bg-sky-100 text-sky-700 rounded-full border border-sky-500 text-lg font-medium">
                                             {{ getParticipant(meeting.requester_id)?.name || 'Desconocido' }}
                                         </span>
                                         <p class="text-gray-700 font-medium">desea reunirse con</p>
                                         <span
-                                            class="px-3 py-1 bg-green-100 text-green-700 rounded-full border border-green-500 text-lg font-medium">
+                                            class="px-3 py-1 bg-sky-100 text-sky-700 rounded-full border border-sky-500 text-lg font-medium">
                                             {{ getParticipant(meeting.receiver_id)?.name || 'Desconocido' }}
                                         </span>
                                     </div>
@@ -44,14 +44,14 @@
                                     <!-- Botón "Más detalles" centrado y alineado a la misma altura -->
                                     <div class="flex items-center justify-center w-1/3">
                                         <button @click="openMeetingDetails(meeting)"
-                                            class="bg-yellow-600 text-white text-sm md:text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700 my-2 md:my-0">
+                                            class="bg-sky-700 text-white text-sm md:text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-800 my-2 md:my-0">
                                             Más detalles
                                         </button>
                                     </div>
 
                                     <!-- Estado y botones a la derecha -->
                                     <div class="flex flex-wrap justify-center md:justify-end w-full md:w-1/3 space-x-2 mt-2 md:mt-0">
-                                        <div v-if="meeting.status === 'Aceptada'" class="flex bg-green-500 rounded-full items-center space-x-2 py-1 px-3 m-1">
+                                        <div v-if="meeting.status === 'Aceptada'" class="flex bg-emerald-600 rounded-full items-center space-x-2 py-1 px-3 m-1">
                                             <span class="text-white font-semibold">Aceptada</span>
                                         </div>
                                         <div v-else-if="meeting.status === 'Rechazada'"
@@ -81,14 +81,17 @@
                 <div class="flex justify-end space-x-4">
                     <button @click="acceptAllMeetings"
                         class="btn-green text-lg">
+                        <i class="fa-solid fa-check"></i>
                         Aceptar todas las reuniones pendientes
                     </button>
                     <button @click="cancelAllMeetings"
                         class="btn-red text-lg">
+                        <i class="fa-solid fa-xmark"></i>
                         Cancelar todas las reuniones pendientes
                     </button>
                     <button @click="finalizeMeetingPeriod"
                         class="bg-gray-600 text-lg text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+                        <i class="fa-solid fa-stop"></i>
                         Finalizar periodo de matcheo
                     </button>
                 </div>

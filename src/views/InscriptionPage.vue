@@ -9,7 +9,7 @@
 
         <div class="text-center">
           <h1 class="text-2xl font-bold text-center mb-4">{{ 'Inscripcion al evento: ' + evento.title }}</h1>
-          <p class="mt-2 text-lg text-gray-600">{{ 'El dia ' + new Date(evento.date).toLocaleDateString() + ' en '+evento.location || 'Informacion no disponible.' }}</p>
+          <p class="mt-2 text-lg text-gray-600">{{ 'El dia ' + new Date(evento.date).toLocaleDateString() + ' en '+ (evento.location || 'Ubicación no disponible.') }}</p>
         </div>
         <!-- Formulario -->
         <form class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4" ref="form" @submit.prevent="submitInscription">
@@ -18,14 +18,14 @@
             <LabeledObject>
               <template #label>Intereses</template>
               <textarea v-model="inscription.interests" rows="2" placeholder="Ingrese sus intereses"
-                class="resize-none border border-gray-300 rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"></textarea>
+                class="inscription-input"></textarea>
             </LabeledObject>
 
             <LabeledObject>
               <template #label>Servicios/productos que ofrece</template>
               <textarea v-model="inscription.products_services" rows="2"
                 placeholder="Ingrese los servicios o productos que ofrece"
-                class="resize-none border border-gray-300 rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"></textarea>
+                class="inscription-input"></textarea>
             </LabeledObject>
 
           </div>
@@ -76,8 +76,8 @@ const deleted_images = ref([]);
 
 const route = useRoute();
 
-onMounted(() => {
-  eventStore.fetch(route.params.slug);
+onMounted(async () => {
+  await eventStore.fetch(route.params.slug);
 });
 
 // Métodos
@@ -102,6 +102,8 @@ const submitInscription = async () => {
     gallery.value.forEach((image, index) => {
       formData.append(`gallery[${index}]`, image);
     });
+    console.log("Galería antes de enviar:", gallery.value);
+
   }
   if (deleted_images.value.length > 0) {
     deleted_images.value.forEach((img, index) => {

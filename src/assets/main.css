@@ -43,11 +43,15 @@
 }
 
 .btn {
-	@apply text-white bg-blue-600 font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none
+	@apply text-white bg-sky-700 font-semibold py-2 px-4 rounded-lg hover:bg-sky-800 focus:outline-none
+}
+
+.nav-btn {
+	@apply text-white font-semibold py-2 px-4 rounded-lg hover:text-gray-300 focus:outline-none
 }
 
 .btn-green { 
-	@apply text-white bg-green-600 font-semibold py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none
+	@apply text-white bg-emerald-600 font-semibold py-2 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none
 }
 
 .btn-red {
@@ -175,7 +179,7 @@ select {
 }
 
 .dropdown-header {
-	@apply w-10 h-10 border text-sky-700 flex justify-center items-center cursor-pointer rounded-full hover:bg-gray-100
+	@apply w-10 h-10 border flex justify-center items-center cursor-pointer rounded-full hover:bg-sky-800
 }
 
 .dropdown-menu {
@@ -228,7 +232,7 @@ select {
   }
   
   .file-input {
-	@apply file:rounded file:border-0 file:bg-blue-600 file:text-sm file:text-white file:font-medium file:px-3 file:py-2 file:hover:bg-blue-700;
+	@apply file:rounded file:border-0 file:bg-sky-700 file:text-sm file:text-white file:font-medium file:px-3 file:py-2 file:hover:bg-sky-800;
 	width: 100%; 
   }
   
@@ -272,5 +276,9 @@ select {
 
   .rounded-scroll {
 	clip-path: inset(0px 0px 0px 0px round 10px);
+  }
+
+  .inscription-input {
+	@apply border border-gray-300 rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400;
   }
   
