@@ -76,7 +76,6 @@ import { useAuthStore } from "@/stores/auth";
 
 import ImageModal from "@/components/ImageModal.vue";
 import Loading from "@/components/Loading.vue";
-import defaultAvatar from '@/assets/user-default.png';
 
 
 const authStore = useAuthStore();
