@@ -14,7 +14,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div class="flex items-center">
                                 <div class="w-10 h-10 rounded-full mr-3 object-cover">
-                                    <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"/>
+                                    <img v-if="participant.logo_url" :src="participant.logo_url" alt="Logo"/>
                                     <i v-else class="fa-solid fa-circle-user text-gray-400 text-4xl"></i>
                                 </div>
                                 <div>

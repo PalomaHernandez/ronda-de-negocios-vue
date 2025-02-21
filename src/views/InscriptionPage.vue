@@ -102,9 +102,8 @@ const submitInscription = async () => {
     gallery.value.forEach((image, index) => {
       formData.append(`gallery[${index}]`, image);
     });
-    console.log("Galería antes de enviar:", gallery.value);
-
   }
+  
   if (deleted_images.value.length > 0) {
     deleted_images.value.forEach((img, index) => {
       formData.append(`deleted_files[${index}]`, img);

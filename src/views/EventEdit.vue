@@ -1,5 +1,4 @@
 <template>
-  <router-view :key="$route.fullPath" />
   <LayoutPage>
     <template #default>
       <p v-if="loading">Cargando...</p>
@@ -15,9 +14,9 @@
 
             <div class="cursor-pointer" @click="$refs.logoInput.click()">
             <!--i class="fa-solid fa-camera text-4xl text-gray-500"></i-->
-            <img v-if="evento.logo_path" :src="evento.logo_path" alt="Event Logo"
+            <img v-if="evento.logo_url" :src="evento.logo_url" alt="Event Logo"
               class="h-64 w-full object-cover rounded-xl mb-4" />
-            <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" />
+            <input ref="logoInput" type="file" accept="image/*" class="hidden" @change="handleLogoChange" @deletedFiles="deleteLogo"/>
           </div>
 
         </div>
@@ -43,16 +42,16 @@
 
         <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Logo</h3>
-          <ImageUploader type="logo" :uploaded-files="evento.logo_path || ''" @updateFiles="handleLogoUpdate" />
+          <ImageUploader type="logo" :uploaded-files="evento.logo_url || ''" @updateFiles="handleLogoUpdate" />
         </div>
 
         <div class="mt-8 flex justify-end space-x-4">
           <RouterLink :to="{ name: 'event-detail', params: { slug: evento.slug } }"
-            class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-blue-700">
+            class="btn text-lg">
             Cancelar
           </RouterLink>
           <button @click="update"
-            class="bg-blue-600 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-blue-700">
+            class="btn text-lg">
             Guardar cambios
           </button>
         </div>
@@ -93,12 +92,17 @@ const fields = {
 const logoFile = ref(null);
 const documentFiles = ref([]);
 const deletedFiles = ref([]);
+const deletedLogo = ref([]);
 const originalEvento = ref(null);
 const props = defineProps(["slug"]);
 
 const handleLogoUpdate = (files) => {
   logoFile.value = files.length > 0 ? files[0] : null;
 };
+
+const deleteLogo = (logo) => {
+  deletedLogo.value = logo;
+}
 
 const handleDocumentsUpdate = (files) => {
   documentFiles.value = files;
@@ -120,13 +124,14 @@ const update = async () => {
 
   Object.keys(evento.value).forEach((key) => {
     if (evento.value[key] !== originalEvento.value[key]) {
-      console.log(`Cambio detectado en ${key}`);
       formData.append(key, evento.value[key]);
     }
   });
 
   if (logoFile.value) {
     formData.append("logo", logoFile.value);
+  } else if (deletedLogo.value){
+    formData.append("deleteLogo", true);
   }
 
   if (documentFiles.value.length > 0) {
@@ -146,32 +151,10 @@ const update = async () => {
   }
 
   try {
-    console.log([...formData.entries()]);
     await eventStore.update(formData);
   } catch (error) {
     console.error("Error actualizando evento:", error);
   }
 };
 
-const formatDate = computed(() => {
-  let dates = {};
-  Object.keys(fields).forEach((key) => {
-    if (fields[key].type === "date" && evento.value[key]) {
-      dates[key] = evento.value[key].split("T")[0];
-    } else if (fields[key].type === "datetime-local" && evento.value[key]) {
-      dates[key] = evento.value[key].substring(0, 16);
-    }
-  });
-  return dates;
-});
-
-const formatTime = computed(() => {
-  let times = {};
-  ["starts_at", "ends_at"].forEach((key) => {
-    if (evento.value[key]) {
-      times[key] = evento.value[key].substring(0, 5); // Extrae solo HH:MM
-    }
-  });
-  return times;
-});
 </script>

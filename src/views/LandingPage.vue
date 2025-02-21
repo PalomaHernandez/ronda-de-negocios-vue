@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Título y logo -->
       <div class="text-center">
-        <img v-if="event.logo_path" :src="event.logo_path" alt="Event Logo" class="mx-auto h-32 w-32 object-cover rounded-full mb-4" />
+        <img v-if="event.logo_url" :src="event.logo_url" alt="Event Logo" class="mx-auto h-32 w-32 object-cover rounded-full mb-4" />
         <h1 class="text-4xl font-extrabold text-gray-900">{{ event.title }}</h1>
         <p class="mt-2 text-lg text-gray-600">{{ event.description || 'La descripción no está disponible.' }}</p>
       </div>
@@ -64,7 +64,7 @@ export default {
       event: {
         title: 'Congreso Internacional de Innovación',
         description: 'Un evento para discutir las últimas innovaciones tecnológicas.',
-        logo_path: 'https://example.com/logo.png', // Path to your logo
+        logo_url: 'https://example.com/logo.png', // Path to your logo
         date: '2025-06-15',
         starts_at: '09:00',
         ends_at: '17:00',

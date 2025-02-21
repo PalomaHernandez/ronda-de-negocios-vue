@@ -158,7 +158,6 @@ export const useAuthStore = defineStore("auth", {
     async updateProfile(data) {
       try {
         data.append('_method', 'PATCH');
-        console.log(...data)
         const response = await axiosApiInstance.post(`/user/profile/${this.registration.id}`, data);
         this.user = response.data.user;
         this.registration = response.data.registration;

@@ -3,7 +3,7 @@
       <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div class="flex flex-col items-center">
           <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
-            <img v-if="participant.logo_path" :src="participant.logo_path" alt="Logo"/>
+            <img v-if="participant.logo_url" :src="participant.logo_url" alt="Logo"/>
             <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
           </div>
           <h2 class="text-2xl font-bold text-gray-900 mt-3">{{ participant.name }}</h2>
@@ -39,9 +39,9 @@
         <div v-if="participant.profile_images?.length" class="mt-4">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Galería</h3>
           <div class="grid grid-cols-3 gap-2">
-            <img v-for="image in participant.profile_images" :key="image.id" :src="image.path" alt="Gallery image"
+            <img v-for="image in participant.profile_images" :key="image.id" :src="image.url" alt="Gallery image"
               class="w-24 h-24 object-cover rounded-lg shadow cursor-pointer transition transform hover:scale-105"
-              @click="openImage(image.path)" />
+              @click="openImage(image.url)" />
           </div>
         </div>
   

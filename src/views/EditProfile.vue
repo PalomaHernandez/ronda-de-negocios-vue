@@ -9,7 +9,7 @@
         <!-- Imagen de perfil -->
         <div class="relative">
           <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
-                     <img v-if="previewImage || form.logo_path" :src="previewImage || form.logo_path" alt="User Logo">
+                     <img v-if="previewImage || form.logo_url" :src="previewImage || form.logo_url" alt="User Logo">
                     <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
                  </div>
           <label
@@ -97,7 +97,7 @@ const form = ref({
   location: user.value.location || "",
   activity: user.value.activity || "",
   website: user.value.website || "",
-  logo_path: user.value.logo_path || "",
+  logo_url: user.value.logo_url || "",
   interests: registration.value.interests || "",
   products_services: registration.value.products_services || "",
 });

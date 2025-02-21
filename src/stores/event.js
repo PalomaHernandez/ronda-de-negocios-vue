@@ -79,7 +79,6 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.get(`/events/${eventId}/meetings`);
-        console.log(response.data);
         this.meetings = response.data;
         router.push({ name: 'participants-meetings', params: { slug: this.evento.slug } });
       } catch (err) {
@@ -95,7 +94,6 @@ export const useEventStore = defineStore('eventStore', {
       router.push({ name: 'participants-meetings', params: { slug: this.evento.slug } });
       try {
         const response = await axiosApiInstance.post(`/meetings/${eventId}/accept-all`);
-        console.log(response.data);
         this.meetings = response.data;
         router.push
       } catch (err) {
@@ -111,7 +109,6 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.post(`/meetings/${eventId}/reject-all`);
-        console.log(response.data);
         this.meetings = response.data;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
@@ -126,7 +123,6 @@ export const useEventStore = defineStore('eventStore', {
 
       try {
         const response = await axiosApiInstance.post(`events/${eventId}/end-matching`);
-        console.log(response.data);
         this.success = response.data.message;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al obtener las reuniones.';

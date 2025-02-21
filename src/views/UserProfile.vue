@@ -11,7 +11,7 @@
             <div class="flex items-center space-x-4">
                 <!-- Logo -->
                  <div class="w-16 h-16 flex items-center justify-center">
-                    <img v-if="user.logo_path" :src="user.logo_path" alt="User Logo" class="rounded-full" />
+                    <img v-if="user.logo_url" :src="user.logo_url" alt="User Logo" class="rounded-full" />
                     <i v-else class="fa-solid fa-circle-user text-gray-400 text-6xl"></i>
                  </div>
                 <div>
@@ -55,9 +55,9 @@
             <div v-if="user.images.length > 0" class="mt-6">
                 <h3 class="text-lg font-semibold">Galería</h3>
                 <div class="grid grid-cols-3 gap-4 mt-2">
-                    <img v-for="(image, index) in user.images" :key="index" :src="image.path" alt="Gallery image"
+                    <img v-for="(image, index) in user.images" :key="index" :src="image.url" alt="Gallery image"
                         class="w-full h-52 object-cover rounded-lg cursor-pointer transition transform hover:scale-105"
-                        @click="openModal(image.path)" />
+                        @click="openModal(image.url)" />
                 </div>
             </div>
         </div>
