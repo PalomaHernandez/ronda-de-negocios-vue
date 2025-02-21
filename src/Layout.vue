@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 min-h-screen">
+  <div class="bg-gradient-to-br from-blue-200 via-blue-300 to-blue-500 min-h-screen">
     <!-- Barra de navegación -->
     <nav class="bg-sky-900 shadow-md flex items-center px-6 py-3 h-[8vh] flex relative">
       <RouterLink :to="{name: 'event-detail'}" class="!p-1">
