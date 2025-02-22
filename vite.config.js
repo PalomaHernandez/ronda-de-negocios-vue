@@ -16,4 +16,8 @@ export default defineConfig({
     server: {
         port: 5174, // Cambia al puerto deseado
     },
+    base: './', 
+    build: {
+        outDir: 'dist', // Asegura que el build se genere en la carpeta correcta
+    }
 })
