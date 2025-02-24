@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 
 const axiosApiInstance = axios.create({
-  baseURL: "https://rondas-uns.vercel.app/api",
+  baseURL: "https://rondas-uns-admin.vercel.app/api/api",
   withCredentials: true,
 });
 
