@@ -3,9 +3,9 @@
     <!-- Barra de navegación -->
     <nav class="bg-sky-900 shadow-md flex items-center px-6 py-3 h-[8vh] flex relative">
       <RouterLink :to="{name: 'event-detail'}" class="!p-1">
-				<div class="h-20 w-60 justify-center items-center">
+
 					<img alt="Rondas UNS Logo" class="h-15 w-60" src="@/assets/logos/rondas-uns.png">
-				</div>
+
 			</RouterLink>
       <div v-if="authStore.authenticated"
         class="ml-auto flex items-center space-x-4 sm:text-sm w-full sm:w-auto justify-end flex-wrap sm:justify-end">
