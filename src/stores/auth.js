@@ -48,9 +48,8 @@ export const useAuthStore = defineStore("auth", {
         console.error("Error al obtener el perfil del usuario:", error);
       }
     },   
-    async checkResponsibleUser(eventSlug) {
-      const eventStore = useEventStore();
-      await eventStore.fetch(eventSlug);
+    async checkResponsibleUser() {
+      const eventStore =  useEventStore();
       return this.responsible = eventStore.evento?.responsible_id === this.user.id;
     },
     async login(credentials, eventSlug) {
@@ -61,20 +60,19 @@ export const useAuthStore = defineStore("auth", {
 
         try {
           const { data } = await axiosApiInstance.post("login", credentials);
-          
+          const eventStore =  useEventStore();
           if (data.user) {
-            this.authenticated = true;
             this.user = data.user;
+            if(data.role.includes('responsible')) {
+              this.responsible = await this.checkResponsibleUser(eventStore.evento.slug);
+            }
+            else{
+              await this.checkEventRegistration(eventStore.evento.slug);
+            }
+
+            this.authenticated = true;
             this.token = data.token;
             this.currentEventSlug = eventSlug;
-            
-            if(data.role.includes('responsible')) {
-              this.responsible = await this.checkResponsibleUser(eventSlug);
-            }
-            
-            await this.checkEventRegistration(eventSlug);
-            const eventStore =  useEventStore();
-            await eventStore.fetch(eventSlug);
 
             if(this.registered || this.responsible){
               router.push({ name: "event-detail" });
