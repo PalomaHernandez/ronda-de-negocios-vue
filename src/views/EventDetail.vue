@@ -18,7 +18,7 @@
 
           <div>
             <div v-if="evento.logo_url"
-              class="bg-cover bg-blend-color bg-center bg-black rounded-lg h-screen text-white flex flex-col items-center justify-center text-center"
+              class="bg-cover grayscale-50 rounded-lg h-screen text-white flex flex-col items-center justify-center text-center"
               :style="{ backgroundImage: evento.logo_url ? `url(${evento.logo_url})` : null }">
               <h1 class="text-5xl font-bold">
                 {{ evento.title || "Bienvenidos al Evento" }}
@@ -40,13 +40,13 @@
               </div>
             </div>
             <div v-else>
-                <div class="mt-5 flex justify-center">
-                  <h1 class="text-5xl font-bold">
+                <h1 class="text-5xl font-bold">
                   {{ evento.title || "Bienvenidos al Evento" }}
                 </h1>
                 <p class="mt-4 text-lg">
                   {{ evento.description || "No disponible" }}
                 </p>
+                <div class="mt-5 flex justify-center">
                 <div v-if="!authStore.authenticated" class="space-x-4 flex items-stretch">
                   <button v-if="inscriptionStatus" @click="abrirModal"
                     class="bg-sky-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-600 focus:outline-none">
@@ -90,22 +90,6 @@
               </div>
             </div>
           </div>
-        
-
-        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key"
-            class="bg-white p-4 rounded-lg shadow-lg">
-            <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
-            <p class="text-gray-600">
-              {{
-                field.type === "date" ? formatDate(evento[key])
-                  : field.type === "time" ? formatTime(evento[key])
-                    : field.type === "datetime-local" ? formatDateTime(evento[key])
-                      : evento[key] || 'No disponible'
-              }}
-            </p>
-          </div>
-        </div>
 
         <div v-if="isAuthenticated && (isRegistered || isResponsible) && evento.files" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
           <h3 class="text-lg font-semibold text-gray-800">Documentos</h3>

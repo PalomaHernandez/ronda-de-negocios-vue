@@ -23,7 +23,7 @@
 
         <!-- Información del Evento -->
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="(field, key) in fields" :key="key" class="bg-white p-4 rounded-lg shadow-lg">
+          <div v-for="(field, key) in fields" :key="key" class="bg-gray-100 p-6 rounded-lg shadow">
             <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
             <input v-if="field.type === 'number'" type="number" v-model="evento[key]"
               @input="evento[key] = Math.max(0, evento[key])">
@@ -47,11 +47,11 @@
 
         <div class="mt-8 flex justify-end space-x-4">
           <RouterLink :to="{ name: 'event-detail', params: { slug: evento.slug } }"
-            class="btn text-lg">
+            class="btn text-base">
             Cancelar
           </RouterLink>
           <button @click="update"
-            class="btn text-lg">
+            class="btn text-base">
             Guardar cambios
           </button>
         </div>
