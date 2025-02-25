@@ -6,7 +6,6 @@
             <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
             <Loading v-if="loading" />
             <div v-else-if="meetings" class="flex flex-col space-y-6 p-4 md:p-6">
-                <!-- 📌 Columna izquierda con información del evento -->
                 <div class="w-full flex-grow">
                     <h2 class="text-2xl font-semibold">Reuniones</h2>
 
@@ -23,12 +22,10 @@
                         </select>
                     </div>
 
-                    <!-- 📌 Lista de reuniones -->
                     <div class="border rounded-lg shadow p-4 mt-2 flex-grow h-[50vh] overflow-y-auto bg-white">
                         <ul v-if="filteredMeetings.length > 0">
                             <li v-for="meeting in filteredMeetings" :key="meeting.id" class="p-3 border-b">
                                 <div class="flex items-center justify-between">
-                                    <!-- Nombre del participante -->
                                     <div class="flex flex-wrap items-center justify-left space-x-3 w-2/3">
                                         <span
                                             class="px-3 py-1 bg-sky-100 text-sky-700 rounded-full border border-sky-500 text-lg font-medium">
@@ -41,7 +38,6 @@
                                         </span>
                                     </div>
 
-                                    <!-- Botón "Más detalles" centrado y alineado a la misma altura -->
                                     <div class="flex items-center justify-center w-1/3">
                                         <button @click="openMeetingDetails(meeting)"
                                             class="bg-sky-700 text-white text-sm md:text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-800 my-2 md:my-0">
@@ -49,9 +45,10 @@
                                         </button>
                                     </div>
 
-                                    <!-- Estado y botones a la derecha -->
-                                    <div class="flex flex-wrap justify-center md:justify-end w-full md:w-1/3 space-x-2 mt-2 md:mt-0">
-                                        <div v-if="meeting.status === 'Aceptada'" class="flex bg-emerald-600 rounded-full items-center space-x-2 py-1 px-3 m-1">
+                                    <div
+                                        class="flex flex-wrap justify-center md:justify-end w-full md:w-1/3 space-x-2 mt-2 md:mt-0">
+                                        <div v-if="meeting.status === 'Aceptada'"
+                                            class="flex bg-emerald-600 rounded-full items-center space-x-2 py-1 px-3 m-1">
                                             <span class="text-white font-semibold">Aceptada</span>
                                         </div>
                                         <div v-else-if="meeting.status === 'Rechazada'"
@@ -60,12 +57,10 @@
                                         </div>
 
                                         <div v-if="meeting.status === 'Pendiente'" class="flex items-center space-x-2">
-                                            <button @click="acceptMeeting(meeting)"
-                                                class="btn-green">
+                                            <button @click="acceptMeeting(meeting)" class="btn-green">
                                                 Aceptar reunión
                                             </button>
-                                            <button @click="rejectMeeting(meeting)"
-                                                class="btn-red">
+                                            <button @click="rejectMeeting(meeting)" class="btn-red">
                                                 Rechazar reunión
                                             </button>
                                         </div>
@@ -78,19 +73,17 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end space-x-4">
-                    <button @click="acceptAllMeetings"
-                        class="btn-green text-lg">
+                <div class="flex justify-end space-x-4 sm:flex-col sm:space-y-2">
+                    <button @click="acceptAllMeetings" class="btn-green text-lg sm:w-full sm:w-auto">
                         <i class="fa-solid fa-check"></i>
                         Aceptar todas las reuniones pendientes
                     </button>
-                    <button @click="cancelAllMeetings"
-                        class="btn-red text-lg">
+                    <button @click="cancelAllMeetings" class="btn-red text-lg sm:w-full sm:w-auto">
                         <i class="fa-solid fa-xmark"></i>
                         Cancelar todas las reuniones pendientes
                     </button>
                     <button @click="finalizeMeetingPeriod"
-                        class="bg-gray-600 text-lg text-white py-2 px-4 rounded-lg hover:bg-gray-700">
+                        class="bg-gray-600 text-lg text-white py-2 px-4 rounded-lg hover:bg-gray-700 sm:w-full sm:w-auto">
                         <i class="fa-solid fa-stop"></i>
                         Finalizar periodo de matcheo
                     </button>
@@ -99,7 +92,7 @@
         </template>
     </LayoutPage>
     <MeetingDetailsModal :show="showMeetingDetailsModal" :meeting="selectedMeeting" :participants="participantsMap"
-                    @close="closeMeetingDetails" />
+        @close="closeMeetingDetails" />
 </template>
 
 <script setup>
@@ -111,14 +104,12 @@ import LayoutPage from "@/Layout.vue";
 import Loading from "@/components/Loading.vue";
 import MeetingDetailsModal from "@/components/MeetingDetailsModal.vue";
 
-// Estado y store
 const eventStore = useEventStore();
 const { evento, meetings, loading, participants, error, success, info } = storeToRefs(eventStore);
 const route = useRoute();
 const showMeetingDetailsModal = ref(false);
 const selectedMeeting = ref(null);
 
-// Estado de la barra de búsqueda y filtro
 const searchQuery = ref("");
 const filterType = ref("all");
 
@@ -128,38 +119,35 @@ const filteredMeetings = computed(() => {
     }
     return meetings.value
         .filter(meeting => {
-        // Filtrar por estado
-        if (filterType.value !== "all" && meeting.status !== filterType.value) {
-            return false;
-        }
+            if (filterType.value !== "all" && meeting.status !== filterType.value) {
+                return false;
+            }
 
-        // Filtrar por nombre de participante
-        const requester = getParticipant(meeting.requester_id);
-        const receiver = getParticipant(meeting.receiver_id);
-        const search = searchQuery.value.toLowerCase();
+            const requester = getParticipant(meeting.requester_id);
+            const receiver = getParticipant(meeting.receiver_id);
+            const search = searchQuery.value.toLowerCase();
 
-        return (
-            requester?.name.toLowerCase().includes(search) ||
-            receiver?.name.toLowerCase().includes(search)
-        );
+            return (
+                requester?.name.toLowerCase().includes(search) ||
+                receiver?.name.toLowerCase().includes(search)
+            );
         })
         .filter(meeting => {
             if (filterType.value === "Aceptada") {
-                return meeting.status === "Aceptada"; 
+                return meeting.status === "Aceptada";
             } else if (filterType.value === "Rechazada") {
-                return meeting.status === "Rechazada"; 
+                return meeting.status === "Rechazada";
             } else if (filterType.value === "Pendiente") {
                 return meeting.status === "Pendiente";
-            } 
+            }
             return true;
         });
-    
+
 });
 
 
-// Cargar datos al montar
 onMounted(async () => {
-    await eventStore.fetch(route.params.slug); // Obtener evento
+    await eventStore.fetch(route.params.slug);
 
     if (evento.value) {
         eventStore.fetchParticipants(evento.value.id);
@@ -168,26 +156,14 @@ onMounted(async () => {
 });
 
 const participantsMap = computed(() => {
-    // Mapeamos los participantes a un objeto donde las claves son los IDs
     const map = {};
-    if(participants.value.length > 0){
+    if (participants.value.length > 0) {
         participants.value.forEach(p => {
             map[p.id] = p;
         });
         return map;
     }
 });
-
-const cancelMeeting = async (meeting) => {
-
-    try {
-        await eventStore.deleteMeeting(meeting.id); // Llamar al método en el store
-        await eventStore.fetchMeetings(evento.value.id); // Recargar la lista de reuniones
-    } catch (error) {
-        console.error("Error al cancelar la reunión:", error);
-    }
-};
-
 
 const acceptMeeting = async (meeting) => {
     await eventStore.acceptMeeting(meeting.id);
