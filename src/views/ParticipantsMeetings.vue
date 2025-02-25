@@ -7,7 +7,7 @@
             <Loading v-if="loading" />
             <div v-else-if="meetings" class="flex flex-col space-y-6 p-4 md:p-6">
                 <div class="w-full flex-grow">
-                    <h2 class="text-2xl font-semibold">Reuniones</h2>
+                    <h2 class="text-2xl font-semibold mb-3">Reuniones</h2>
 
                     <div class="flex flex-col md:flex-row md:space-x-2 mb-4 space-y-2 md:space-y-0">
                         <input type="text" v-model="searchQuery" placeholder="Buscar por nombre..."
@@ -73,17 +73,17 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end space-x-4 sm:flex-col sm:space-y-2">
-                    <button @click="acceptAllMeetings" class="btn-green text-lg sm:w-full sm:w-auto">
+                <div class="flex flex-col sm:flex-row sm:justify-end sm:space-x-4 space-y-2 sm:space-y-0">
+                    <button @click="acceptAllMeetings" class="btn-green text-base w-full sm:w-auto">
                         <i class="fa-solid fa-check"></i>
                         Aceptar todas las reuniones pendientes
                     </button>
-                    <button @click="cancelAllMeetings" class="btn-red text-lg sm:w-full sm:w-auto">
+                    <button @click="cancelAllMeetings" class="btn-red text-base w-full sm:w-auto">
                         <i class="fa-solid fa-xmark"></i>
                         Cancelar todas las reuniones pendientes
                     </button>
                     <button @click="finalizeMeetingPeriod"
-                        class="bg-gray-600 text-lg text-white py-2 px-4 rounded-lg hover:bg-gray-700 sm:w-full sm:w-auto">
+                        class="btn-gray text-base w-full sm:w-auto">
                         <i class="fa-solid fa-stop"></i>
                         Finalizar periodo de matcheo
                     </button>

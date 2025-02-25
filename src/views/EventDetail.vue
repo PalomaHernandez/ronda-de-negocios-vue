@@ -40,13 +40,15 @@
               </div>
             </div>
             <div v-else>
+              <div class="items-center justify-center text-center">
                 <h1 class="text-5xl font-bold">
                   {{ evento.title || "Bienvenidos al Evento" }}
                 </h1>
                 <p class="mt-4 text-lg">
                   {{ evento.description || "No disponible" }}
                 </p>
-                <div class="mt-5 flex justify-center">
+              </div>
+              <div class="mt-5 flex justify-center">
                 <div v-if="!authStore.authenticated" class="space-x-4 flex items-stretch">
                   <button v-if="inscriptionStatus" @click="abrirModal"
                     class="bg-sky-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-600 focus:outline-none">

@@ -25,16 +25,16 @@
 
                             <div class="hidden md:flex space-x-3">
                                 <button @click="openDetailsModal(participant)"
-                                    class="bg-sky-700 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-sky-800">
+                                    class="bg-sky-700 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-sky-800">
                                     Más detalles
                                 </button>
                                 <button @click="downloadSchedule(participant)"
-                                    class="bg-gray-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-gray-700">
+                                    class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-700">
                                     <i class="fa-solid fa-file"></i>
                                     Descargar cronograma
                                 </button>
                                 <button @click="confirmDelete(participant)"
-                                    class="bg-red-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-red-600">
+                                    class="bg-red-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-red-600">
                                     <i class="fa-solid fa-trash"></i>
                                     Eliminar
                                 </button>
@@ -72,7 +72,7 @@
             <!-- 📌 Botón para descargar listado de asistencia -->
             <div class="flex justify-end mt-4">
                 <button @click="downloadAttendanceList()"
-                    class="bg-gray-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
+                    class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
                     <i class="fa-solid fa-download"></i>
                     Descargar listado de asistencia
                 </button>

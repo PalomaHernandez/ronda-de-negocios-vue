@@ -18,6 +18,6 @@ export default defineConfig({
     },
     base: './', 
     build: {
-        outDir: 'dist', // Asegura que el build se genere en la carpeta correcta
+        outDir: 'dist',
     }
 })

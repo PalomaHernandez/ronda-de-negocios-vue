@@ -101,6 +101,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const authStore = useAuthStore();
+  const eventStore = useEventStore();
   const eventSlug = to.params.slug;
 
   const isAuthenticated = authStore.isAuthenticated;
@@ -134,6 +135,10 @@ router.beforeEach(async (to, from) => {
   }
 
   if (to.name === 'event-detail' && from?.name === 'event-inscription' && !isRegistered && isAuthenticated) {
+    return false;
+  }
+
+  if(to.name === 'event-statistics' && !isResponsible && eventStore.evento.status !== "Terminado"){
     return false;
   }
   
