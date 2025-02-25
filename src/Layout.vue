@@ -50,7 +50,7 @@
           </button>
 
           <!-- Menú desplegable móvil -->
-          <div v-if="mobileMenuOpen" class="absolute top-full right-0 w-48 bg-white rounded-lg shadow-lg z-10">
+          <div v-if="mobileMenuOpen" class="absolute top-full right-0 w-48 bg-white rounded-lg shadow-lg z-10 pr-2">
             <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-house"></i> Inicio
             </RouterLink>
@@ -95,7 +95,7 @@
     </nav>
 
     <!-- Contenedor principal con título y contenido -->
-    <div class="flex-1 flex items-center justify-center h-[85vh] m-8">
+    <div class="flex-1 flex items-center justify-center h-[85vh] m-8 sm:h-auto">
       <div
         class="bg-white rounded-lg shadow-lg w-full sm:w-full md:w-full xl:max-w-full p-5 relative h-[85vh] overflow-y-auto pr-2 rounded-scroll">
         <slot />
