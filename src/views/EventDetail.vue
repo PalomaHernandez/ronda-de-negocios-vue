@@ -40,7 +40,13 @@
               </div>
             </div>
             <div v-else>
-              <div class="mt-5 flex justify-center">
+                <div class="mt-5 flex justify-center">
+                  <h1 class="text-5xl font-bold">
+                  {{ evento.title || "Bienvenidos al Evento" }}
+                </h1>
+                <p class="mt-4 text-lg">
+                  {{ evento.description || "No disponible" }}
+                </p>
                 <div v-if="!authStore.authenticated" class="space-x-4 flex items-stretch">
                   <button v-if="inscriptionStatus" @click="abrirModal"
                     class="bg-sky-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-600 focus:outline-none">
@@ -67,6 +73,18 @@
                       : field.type === "time" ? formatTime(evento[key])
                         : field.type === "datetime-local" ? formatDateTime(evento[key])
                           : evento[key] || "No disponible"
+                  }}
+                </p>
+              </div>
+              <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key"
+                class="bg-gray-100 p-6 rounded-lg shadow">
+                <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
+                <p class="text-gray-600">
+                  {{
+                    field.type === "date" ? formatDate(evento[key])
+                      : field.type === "time" ? formatTime(evento[key])
+                        : field.type === "datetime-local" ? formatDateTime(evento[key])
+                          : evento[key] || 'No disponible'
                   }}
                 </p>
               </div>

@@ -63,6 +63,7 @@ export const useAuthStore = defineStore("auth", {
           const eventStore =  useEventStore();
           if (data.user) {
             this.user = data.user;
+            this.token = data.token;
             if(data.role.includes('responsible')) {
               this.responsible = await this.checkResponsibleUser(eventStore.evento.slug);
             }
@@ -71,7 +72,6 @@ export const useAuthStore = defineStore("auth", {
             }
 
             this.authenticated = true;
-            this.token = data.token;
             this.currentEventSlug = eventSlug;
 
             if(this.registered || this.responsible){

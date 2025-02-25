@@ -72,7 +72,7 @@
             <!-- 📌 Botón para descargar listado de asistencia -->
             <div class="flex justify-end mt-4">
                 <button @click="downloadAttendanceList()"
-                    class="bg-gray-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-yellow-700">
+                    class="bg-gray-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
                     <i class="fa-solid fa-download"></i>
                     Descargar listado de asistencia
                 </button>
