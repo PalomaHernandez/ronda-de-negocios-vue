@@ -25,12 +25,31 @@
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div v-for="(field, key) in fields" :key="key" class="bg-gray-100 p-6 rounded-lg shadow">
             <h3 class="text-lg font-semibold text-gray-800">{{ field.label }}</h3>
-            <input v-if="field.type === 'number'" type="number" v-model="evento[key]"
-              @input="evento[key] = Math.max(0, evento[key])">
-            <input v-if="field.type === 'text'" type="text" v-model="evento[key]">
-            <input v-if="field.type === 'date'" type="date" v-model="evento[key]">
-            <input v-if="field.type === 'datetime-local'" type="datetime-local" v-model="evento[key]">
-            <input v-if="field.type === 'time'" type="time" v-model="evento[key]">
+            <input v-if="key === 'max_participants'" type="number" v-model="evento[key]" disabled class=""/>
+
+            <input v-else-if="key === 'starts_at' && evento.status !== 'Inscripcion'" type="time" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'starts_at'" type="time" v-model="evento[key]">
+
+            <input v-else-if="key === 'ends_at' && evento.status !== 'Inscripcion'" type="time" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'ends_at'" type="time" v-model="evento[key]">
+
+            <input v-else-if="key === 'inscription_end_date' && evento.status !== 'Inscripcion'" type="datetime-local" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'inscription_end_date'" type="datetime-local" v-model="evento[key]">
+
+            <input v-else-if="key === 'matching_end_date' && evento.status === 'Terminado'" type="datetime-local" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'matching_end_date'" type="datetime-local" v-model="evento[key]">
+
+            <input v-else-if="field.type === 'text'" type="text" v-model="evento[key]">
+            <input v-else-if="field.type === 'date'" type="date" v-model="evento[key]">
+
+            <input v-else-if="key === 'meeting_duration' && evento.status !== 'Inscripcion'" type="number" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'meeting_duration'" type="number" v-model="evento[key]">
+
+            <input v-else-if="key === 'time_between_meetings' && evento.status !== 'Inscripcion'" type="number" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'time_between_meetings'" type="number" v-model="evento[key]">
+
+            <input v-else-if="key === 'meetings_per_user' && evento.status !== 'Inscripcion'" type="number" v-model="evento[key]" disabled class="">
+            <input v-else-if="key === 'meetings_per_user'" type="number" v-model="evento[key]" @input="evento[key] = Math.max(0, evento[key])">
           </div>
         </div>
 

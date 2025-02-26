@@ -73,7 +73,7 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row sm:justify-end sm:space-x-4 space-y-2 sm:space-y-0">
+                <div v-if="evento.status === 'Matcheo'" class="flex flex-col sm:flex-row sm:justify-end sm:space-x-4 space-y-2 sm:space-y-0">
                     <button @click="acceptAllMeetings" class="btn-green text-base w-full sm:w-auto">
                         <i class="fa-solid fa-check"></i>
                         Aceptar todas las reuniones pendientes

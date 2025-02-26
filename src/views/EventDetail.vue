@@ -17,28 +17,31 @@
           </div>
 
           <div>
-            <div v-if="evento.logo_url"
-              class="bg-cover grayscale-50 rounded-lg h-screen text-white flex flex-col items-center justify-center text-center"
-              :style="{ backgroundImage: evento.logo_url ? `url(${evento.logo_url})` : null }">
-              <h1 class="text-5xl font-bold">
-                {{ evento.title || "Bienvenidos al Evento" }}
-              </h1>
-              <p class="mt-4 text-lg">
-                {{ evento.description || "No disponible" }}
-              </p>
-              <div class="mt-5 flex justify-center">
-                <div v-if="!authStore.authenticated" class="space-x-4 flex items-stretch">
-                  <button v-if="inscriptionStatus" @click="abrirModal"
-                    class="bg-sky-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-600 focus:outline-none">
-                    Inscribirse al Evento
-                  </button>
-                  <RouterLink :to="{ name: 'login' }"
-                    class="bg-sky-700 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-800 focus:outline-none">
-                    Acceder
-                  </RouterLink>
-                </div>
-              </div>
-            </div>
+            <div v-if="evento.logo_url" 
+  class="relative h-screen text-white flex flex-col items-center justify-center text-center bg-cover bg-center before:absolute before:inset-0 before:bg-black before:bg-opacity-50 before:rounded-lg" 
+  :style="{ backgroundImage: `url(${evento.logo_url})` }">
+
+  <h1 class="relative z-10 text-5xl font-bold">
+    {{ evento.title || "Bienvenidos al Evento" }}
+  </h1>
+  <p class="relative z-10 mt-4 text-lg">
+    {{ evento.description || "No disponible" }}
+  </p>
+  <div class="relative z-10 mt-5 flex justify-center">
+    <div v-if="!authStore.authenticated" class="space-x-4 flex items-stretch">
+      <button v-if="inscriptionStatus" @click="abrirModal"
+        class="bg-sky-500 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-600 focus:outline-none">
+        Inscribirse al Evento
+      </button>
+      <RouterLink :to="{ name: 'login' }"
+        class="bg-sky-700 text-white text-lg font-semibold py-3 px-6 rounded-lg hover:bg-sky-800 focus:outline-none">
+        Acceder
+      </RouterLink>
+    </div>
+  </div>
+
+</div>
+
             <div v-else>
               <div class="items-center justify-center text-center">
                 <h1 class="text-5xl font-bold">

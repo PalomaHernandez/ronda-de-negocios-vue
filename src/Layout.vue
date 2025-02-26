@@ -16,24 +16,24 @@
             <i class="fa-solid fa-house"></i>
             Inicio
           </RouterLink>
-            <!-- Botón activo si NO está en Inscripción -->
-            <RouterLink v-if="evento?.status !== 'Inscripcion' && !isResponsible" :to="{ name: 'event-meetings' }"
-              class="nav-btn text-sm sm:text-lg">
-              <i class="fa-solid fa-handshake"></i>
-              Reuniones
-            </RouterLink>
-
-            <!-- Botón deshabilitado si está en Inscripción -->
-            <button v-else-if="!isResponsible" class="nav-btn text-sm sm:text-lg cursor-not-allowed opacity-60"
-              title="No disponible durante la fase de inscripción">
-              <i class="fa-solid fa-handshake"></i>
-              Reuniones
-          </button>
           
-          <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }" class="nav-btn text-sm sm:text-lg">
+          <button v-if="evento?.status == 'Inscripcion'" class="nav-btn text-sm sm:text-lg cursor-not-allowed opacity-60"
+            title="No disponible durante la fase de inscripción">
+            <i class="fa-solid fa-handshake"></i>
+            Reuniones
+          </button>
+
+          <RouterLink v-else-if="!isResponsible" :to="{ name: 'event-meetings' }"
+            class="nav-btn text-sm sm:text-lg">
             <i class="fa-solid fa-handshake"></i>
             Reuniones
           </RouterLink>
+          
+          <RouterLink v-else :to="{ name: 'participants-meetings' }" class="nav-btn text-sm sm:text-lg">
+            <i class="fa-solid fa-handshake"></i>
+            Reuniones
+          </RouterLink>
+          
           <RouterLink v-if="!isResponsible" :to="{ name: 'event-notifications' }" class="nav-btn text-sm sm:text-lg">
             <i class="fa-solid fa-bell"></i>
             Notificaciones
@@ -54,11 +54,15 @@
             <RouterLink :to="{ name: 'event-detail' }" class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-house"></i> Inicio
             </RouterLink>
-            <RouterLink v-if="!isResponsible" :to="{ name: 'event-meetings' }"
+            <button v-if="evento?.status == 'Inscripcion'" class="block px-4 py-2 text-sky-700 cursor-not-allowed opacity-60" 
+              title="No disponible durante la fase de inscripción">
+              <i class="fa-solid fa-handshake"></i> Reuniones
+            </button>
+            <RouterLink v-else-if="!isResponsible" :to="{ name: 'event-meetings' }"
               class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>
-            <RouterLink v-if="isResponsible" :to="{ name: 'participants-meetings' }"
+            <RouterLink v-else :to="{ name: 'participants-meetings' }"
               class="block px-4 py-2 text-sky-700 hover:bg-gray-100">
               <i class="fa-solid fa-handshake"></i> Reuniones
             </RouterLink>

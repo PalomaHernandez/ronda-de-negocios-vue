@@ -309,7 +309,7 @@ export const useEventStore = defineStore('eventStore', {
     },
 
     downloadAttendanceList() {
-      if (this.evento && this.evento.status === "Terminado") {
+      if (this.evento && this.evento.status !== "Inscripcion") {
         const participantsData = this.participants.map(participant => ({
           Nombre: participant.name,
           Email: participant.email,

@@ -28,8 +28,13 @@
                                     class="bg-sky-700 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-sky-800">
                                     Más detalles
                                 </button>
-                                <button @click="downloadSchedule(participant)"
+                                <button v-if="evento?.status == 'Terminado'" @click="downloadSchedule(participant)"
                                     class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-700">
+                                    <i class="fa-solid fa-file"></i>
+                                    Descargar cronograma
+                                </button>
+                                <button v-else class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-700 cursor-not-allowed opacity-60"
+                                    title="Disponible cuando el periodo de coordinacion de reuniones haya finalizado">
                                     <i class="fa-solid fa-file"></i>
                                     Descargar cronograma
                                 </button>
@@ -53,8 +58,12 @@
                                         class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
                                         Más detalles
                                     </button>
-                                    <button @click="downloadSchedule(participant)"
+                                    <button v-if="evento?.status == 'Terminado'" @click="downloadSchedule(participant)"
                                         class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                        <i class="fa-solid fa-file"></i> Descargar cronograma
+                                    </button>
+                                    <button v-else class="block w-full text-left px-4 py-2 text-gray-400 cursor-not-allowed opacity-60"
+                                        title="Disponible cuando el periodo de coordinacion de reuniones haya finalizado">
                                         <i class="fa-solid fa-file"></i> Descargar cronograma
                                     </button>
                                     <button @click="confirmDelete(participant)"
@@ -70,11 +79,26 @@
             </div>
 
             <!-- 📌 Botón para descargar listado de asistencia -->
-            <div class="flex justify-end mt-4">
-                <button @click="downloadAttendanceList()"
+            <div class="flex justify-end mt-4 space-x-2" >
+                <button v-if="evento?.status != 'Inscripcion'" @click="downloadAttendanceList()"
                     class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
                     <i class="fa-solid fa-download"></i>
                     Descargar listado de asistencia
+                </button>
+                <button  v-else class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 opacity-60 cursor-not-allowed"
+                    title="Disponible a partir del periodo de coordinacion de reuniones">
+                    <i class="fa-solid fa-download"></i>
+                    Descargar listado de asistencia
+                </button>
+                <button v-if="evento?.status == 'Terminado'" @click="downloadAttendanceList()"
+                    class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
+                    <i class="fa-solid fa-file"></i>
+                    Descargar cronograma general
+                </button>
+                <button  v-else class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 opacity-60 cursor-not-allowed"
+                    title="Disponible cuando el periodo de coordinacion de reuniones haya finalizado">
+                    <i class="fa-solid fa-file"></i>
+                    Descargar cronograma general
                 </button>
             </div>
         </div>
