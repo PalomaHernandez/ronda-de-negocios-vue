@@ -8,15 +8,12 @@
                     <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
                     <h2 class="text-3xl font-bold mb-6">Estadísticas del evento</h2>
 
-                    <!-- 📊 Estadísticas principales -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                        <!-- Total de inscriptos -->
                         <div class="bg-white p-4 rounded-lg shadow-md">
                             <h3 class="text-xl font-semibold mb-2">Inscripciones al evento</h3>
                             <p class="text-3xl">{{ statistics.totalInscriptions }}</p>
                         </div>
 
-                        <!-- Total de reuniones organizadas -->
                         <div class="bg-white p-4 rounded-lg shadow-md">
                             <h3 class="text-xl font-semibold mb-2">Reuniones organizadas</h3>
                             <p class="text-3xl">{{ statistics.totalMeetings }}</p>
@@ -44,7 +41,6 @@ import LayoutPage from '@/Layout.vue';
 const eventStore = useEventStore();
 const { evento, statistics, loading, error, info } = storeToRefs(eventStore);
 
-// Registrar los elementos y escalas necesarios
 Chart.register(
   CategoryScale,
   LinearScale,
@@ -55,7 +51,6 @@ Chart.register(
   BarController
 );
 
-// Renderizar gráfico de barras con Chart.js
 const renderChart = () => {
     if (!statistics.value || !statistics.value.inscriptionsPerDay || statistics.value.inscriptionsPerDay.length === 0) {
         console.error('No hay datos disponibles para el gráfico.');
@@ -68,14 +63,14 @@ const renderChart = () => {
     const maxValue = Math.max(...data); 
 
     new Chart(ctx, {
-        type: 'bar',  // Tipo de gráfico de barras
+        type: 'bar', 
         data: {
             labels: labels,
             datasets: [{
                 label: 'Inscriptos por día',
                 data: data,
-                backgroundColor: '#0369A1',  // Color de fondo de las barras
-                borderColor: '#0369A1',      // Color del borde de las barras
+                backgroundColor: '#0369A1',
+                borderColor: '#0369A1',    
                 borderWidth: 1,
                 barThickness: 100, 
             }]
@@ -86,7 +81,7 @@ const renderChart = () => {
             scales: {
                 x: {
                     title: { display: true, text: 'Fecha' },
-                    type: 'category'  // Tipo 'category' para eje X
+                    type: 'category' 
                 },
                 y: {
                     title: { display: true, text: 'Cantidad' },

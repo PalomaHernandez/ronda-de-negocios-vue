@@ -3,6 +3,7 @@
     <div class="w-full mx-auto p-6 bg-white rounded-lg shadow-md">
       <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
       <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
+      <div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
       <h2 class="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
 
       <div class="flex flex-col items-center space-y-4">
@@ -85,7 +86,7 @@ import ImageUploader from "@/components/ImageUploader.vue";
 import LabeledObject from "@/components/LabeledObject.vue";
 
 const authStore = useAuthStore();
-const { success, error } = storeToRefs(authStore);
+const { success, error, info } = storeToRefs(authStore);
 const user = computed(() => authStore.user ? authStore.user : {});
 const registration = computed(() => authStore.registration ? authStore.registration : {});
 

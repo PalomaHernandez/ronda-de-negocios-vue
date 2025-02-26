@@ -58,16 +58,16 @@ export const useEventStore = defineStore('eventStore', {
     async inscription(eventId, formData) {
       this.loading = true;
       this.error = null;
-
+      const authStore = useAuthStore();
       try {
         const response = await axiosApiInstance.post(`/events/${eventId}/registration`, formData);
-        this.success = response.data;
-        const authStore = useAuthStore();
-        await authStore.checkEventRegistration(this.evento.slug);
+        this.success = response.data.message;
+        authStore.registered = response.data.registered;
+        authStore.registration = response.data.registration;
         await authStore.fetchUpdatedUserProfile();
         router.push({ name: 'event-detail', params: { slug: this.evento.slug } });
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
+        this.error = err.response?.data?.message;
         console.error("Error creating registration:", this.error);
       } finally {
         this.loading = false;
@@ -82,7 +82,6 @@ export const useEventStore = defineStore('eventStore', {
         this.meetings = response.data;
         router.push({ name: 'participants-meetings', params: { slug: this.evento.slug } });
       } catch (err) {
-        this.error = err.response?.data?.message || 'Error al obtener las reuniones.';
         console.error("Error fetching meetings:", this.error);
       } finally {
         this.loading = false;

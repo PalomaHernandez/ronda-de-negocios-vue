@@ -6,6 +6,7 @@
   
 		<!-- Mensajes de estado -->
 		<div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
+		<div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
   
 		<!-- Formulario de login -->
 		<form class="flex flex-col gap-3 p-4" ref="form" @submit.prevent="login">
@@ -41,7 +42,7 @@
   // Estado y store
   const authStore = useAuthStore()
   const eventStore = useEventStore()
-  const { error } = storeToRefs(authStore);
+  const { error, info } = storeToRefs(authStore);
   const credentials = ref({
 	email: '',
 	password: '',

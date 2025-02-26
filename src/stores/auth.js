@@ -26,20 +26,6 @@ export const useAuthStore = defineStore("auth", {
       this.info = null;
       this.success = null;
     },
-    async checkEventRegistration(eventSlug) {
-      try {
-        const response = await axiosApiInstance.get(`/events/${eventSlug}/is-registered`);
-        this.registered = response.data.registered;
-        if(response.data.registration){
-          this.registration = response.data.registration;
-        }
-        return this.registered;
-      } catch (error) {
-        console.error("Error al verificar inscripción:", error);
-        this.registered = false;
-        return false;
-      }
-    },
     async fetchUpdatedUserProfile () {
       try {
         const response = await axiosApiInstance.get("/user");
@@ -56,21 +42,20 @@ export const useAuthStore = defineStore("auth", {
       if (!this.loggingIn) {
         this.loggingIn = true;
         this.clearMessages();
-        this.info = "Logging in...";
+        this.info = "Iniciando sesión...";
 
         try {
-          const { data } = await axiosApiInstance.post("login", credentials);
+          const { data } = await axiosApiInstance.post("login", {
+            email: credentials.email, 
+            password: credentials.password, 
+            eventSlug: eventSlug
+          });
           const eventStore =  useEventStore();
           if (data.user) {
             this.user = data.user;
             this.token = data.token;
-            if(data.role.includes('responsible')) {
-              this.responsible = await this.checkResponsibleUser(eventStore.evento.slug);
-            }
-            else{
-              await this.checkEventRegistration(eventStore.evento.slug);
-            }
-
+            this.responsible = data.isResponsible;
+            this.registered = data.isRegistered;
             this.authenticated = true;
             this.currentEventSlug = eventSlug;
 
