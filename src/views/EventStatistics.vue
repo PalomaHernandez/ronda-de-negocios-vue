@@ -39,6 +39,7 @@ import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from 'pinia';
 import { Chart, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, BarController } from 'chart.js';
 import LayoutPage from '@/Layout.vue';
+import Loading from "@/components/Loading.vue";
 
 const eventStore = useEventStore();
 const { evento, statistics, loading, error, info } = storeToRefs(eventStore);
