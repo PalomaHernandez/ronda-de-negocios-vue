@@ -2,7 +2,9 @@
 	<LayoutPage>
 	  <template #default>
 		<!-- Encabezado "Log in" -->
-		<h1 class="text-2xl font-bold text-center mb-4">Iniciar sesión</h1>
+		<h1 class="text-center mb-4 event-title">Iniciar sesión</h1>
+  
+		<!-- Mensajes de estado -->
 		<div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
 		<div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
   
@@ -16,7 +18,7 @@
 			<template #label>Contraseña</template>
 			<input type="password" v-model="credentials.password" required>
 		  </LabeledObject>
-		  <button type="submit" class="btn">
+		  <button type="submit" class="big-btn btn-primary">
 			Iniciar sesión
 		  </button>
 		  <RouterLink v-if="inscriptionStatus" :to="{ name: 'register' }" class="font-medium text-sky-700">

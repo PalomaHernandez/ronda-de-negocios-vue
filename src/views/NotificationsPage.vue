@@ -5,7 +5,7 @@
       <Loading v-if="loading" />
       <div v-else-if="evento">
         <div class="text-center">
-          <h1 class="text-4xl font-extrabold text-gray-900">Notificaciones</h1>
+          <h1 class="event-title">Notificaciones</h1>
         </div>
         
         <!-- 📌 Lista de notificaciones -->

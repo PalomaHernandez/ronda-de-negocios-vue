@@ -46,6 +46,10 @@
 	@apply text-white bg-sky-700 font-semibold py-2 px-4 rounded-lg hover:bg-sky-800 focus:outline-none
 }
 
+.big-btn {
+	@apply  text-lg font-semibold py-3 px-6 rounded-lg focus:outline-none
+}
+
 .nav-btn {
 	@apply text-white font-semibold py-2 px-4 rounded-lg hover:text-gray-300 focus:outline-none
 }
@@ -73,6 +77,10 @@
 
 .btn-primary {
 	@apply border-sky-700 bg-sky-700 hover:bg-sky-800 text-white
+}
+
+.btn-secondary {
+	@apply border-sky-500 bg-sky-500 hover:bg-sky-600 text-white
 }
 
 .btn-accepted {
@@ -289,5 +297,71 @@ select {
 
   .inscription-input {
 	@apply border border-gray-300 rounded-lg p-1 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400;
+  }
+  
+  .text-primary {
+	@apply text-sky-700 font-bold;
+  }
+
+  .text-secondary {
+	@apply italic;
+  }
+  
+  .event-container {
+	@apply w-11/12 md:w-5/6 mx-auto;
+  }
+  
+  .event-card {
+	@apply bg-gray-100 p-5 md:p-6 rounded-lg shadow-lg  mx-3;
+  }
+  
+  .event-title {
+	@apply text-4xl md:text-5xl font-bold text-primary;
+  }
+  
+  .event-subtitle {
+	@apply text-2xl md:text-3xl text-primary;
+  }
+  
+  .event-text {
+	@apply text-lg md:text-xl text-gray-700;
+  }
+  
+  .file-card {
+	@apply border rounded-lg p-3 text-center transition transform hover:scale-105;
+  }
+  
+  .file-text {
+	@apply text-base md:text-lg text-gray-600 mb-3;
+  }
+  
+  .btn-download {
+	@apply btn text-base md:text-lg;
+  }
+  
+  .hero-section {
+	@apply relative h-screen flex flex-col items-center justify-center text-center bg-cover bg-center text-white;
+  }
+  
+  .hero-section::before {
+	@apply absolute inset-0 bg-black bg-opacity-50 rounded-lg;
+	content: "";
+  }
+  
+  .hero-title {
+	@apply relative z-10 text-6xl md:text-7xl font-extrabold mt-24;
+  }
+  
+  .hero-description {
+	@apply relative z-10 text-xl md:text-2xl text-secondary mt-8 max-w-3xl;
+  }
+  
+  .hero-buttons {
+	@apply relative z-10 flex justify-center mt-10;
+  }
+  
+  
+  .button-group {
+	@apply space-x-4 flex items-stretch;
   }
   

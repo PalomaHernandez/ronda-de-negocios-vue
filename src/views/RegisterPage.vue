@@ -1,6 +1,8 @@
 <template>
   <LayoutPage>
     <template #default>
+      <h1 class="event-title text-center mb-4">Creación de cuenta </h1>
+
       <!-- Mensajes de estado -->
       <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
       <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
