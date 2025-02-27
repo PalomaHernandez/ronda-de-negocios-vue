@@ -307,8 +307,8 @@ select {
 	@apply italic;
   }
   
-  .event-container {
-	@apply w-11/12 md:w-5/6 mx-auto;
+  .document-container {
+	@apply mt-6 ml-3 mr-3 bg-gray-100 p-4 rounded-lg shadow-lg mx-auto;
   }
   
   .event-card {
@@ -320,7 +320,7 @@ select {
   }
   
   .event-subtitle {
-	@apply md:text-2xl text-primary;
+	@apply md:text-xl text-primary;
   }
   
   .event-text {
@@ -328,7 +328,7 @@ select {
   }
   
   .file-card {
-	@apply border rounded-lg p-3 text-center transition transform hover:scale-105;
+	@apply border rounded-lg p-5 text-center transition transform hover:scale-105;
   }
   
   .file-text {

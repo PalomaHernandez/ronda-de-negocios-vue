@@ -7,17 +7,16 @@
         <div class="text-center">
           <h1 class="event-title">Notificaciones</h1>
         </div>
-        
-        <!-- 📌 Lista de notificaciones -->
-        <div class="border rounded-lg shadow p-4 mt-2 flex-grow h-[50vh] overflow-y-auto bg-white">
-          <ul v-if="notifications.length > 0">
-            <li v-for="notification in sortedNotifications" :key="notification.id" class="p-3 border-b">
-              <p class="text-lg font-medium">
-                {{ notification.message }}
-              </p>
+
+        <!-- 📌 Lista de notificaciones mejorada -->
+        <div class="border rounded-lg shadow p-4 mt-2 h-[70vh] flex-grow overflow-y-auto bg-white">
+          <ul v-if="notifications.length > 0" class="space-y-3">
+            <li v-for="notification in sortedNotifications" :key="notification.id"
+              class="p-2 bg-blue-400/30 items-center text-sky-900 leading-none rounded-full flex" role="alert">
+             <span class="font-bold m-2 text-left flex-auto">{{ notification.message }}</span>
             </li>
           </ul>
-          <p v-else class="text-gray-500">No hay notificaciones registradas para este evento.</p>
+          <p v-else class="text-white text-center">No hay notificaciones registradas para este evento.</p>
         </div>
       </div>
     </template>
@@ -46,7 +45,7 @@ const sortedNotifications = computed(() => {
 
 // Cargar evento y notificaciones al montar
 onMounted(async () => {
-  await eventStore.fetch(route.params.slug); 
+  await eventStore.fetch(route.params.slug);
   if (evento.value?.id) {
     const userId = authStore.user.id;
     await eventStore.fetchNotifications(evento.value.id, userId);

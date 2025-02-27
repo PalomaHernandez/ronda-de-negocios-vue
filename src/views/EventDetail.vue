@@ -80,7 +80,7 @@
               </div>
             </div>
 
-          <div v-if="isAuthenticated && (isRegistered || isResponsible) && evento.files" class="mt-6 bg-white p-4 rounded-lg shadow-lg event-container">
+          <div v-if="isAuthenticated && (isRegistered || isResponsible) && evento.files" class="document-container">
             <h3 class="event-subtitle">Documentos</h3>
             <ul>
               <div class="mt-4 grid grid-cols-2 gap-4">

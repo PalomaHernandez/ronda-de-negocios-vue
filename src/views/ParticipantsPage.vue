@@ -11,7 +11,7 @@
             <div class="border rounded-lg shadow p-4 mt-2 flex-grow h-[60vh] overflow-y-auto bg-white">
                 <ul v-if="participants.length > 0">
                     <li v-for="participant in participants" :key="participant.id" class="p-3 border-b">
-                        <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center justify-between gap-3">
                             <div class="flex items-center">
                                 <div class="w-10 h-10 rounded-full mr-3 object-cover">
                                     <img v-if="participant.logo_url" :src="participant.logo_url" alt="Logo"/>
@@ -46,14 +46,14 @@
                             </div>
 
                             <!-- Menú desplegable en pantallas pequeñas -->
-                            <div class="md:hidden relative">
+                            <div class="md:hidden relative flex inline-flex justify-end ml-auto">
                                 <button @click="toggleDropdown(participant.id)"
                                     class="bg-gray-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-gray-700">
                                     <i class="fa-solid fa-ellipsis-v"></i>
                                 </button>
 
                                 <div v-if="dropdownOpen === participant.id"
-                                    class="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
+                                    class="absolute min-w-[10rem] mt-2 bg-white border rounded-lg shadow-lg z-20">
                                     <button @click="openDetailsModal(participant)"
                                         class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
                                         Más detalles

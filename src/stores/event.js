@@ -16,6 +16,7 @@ export const useEventStore = defineStore('eventStore', {
     error: null,
     info: null,
     success: null,
+    lastFetchTime: null, 
   }),
   persist: true,
   actions: {
@@ -25,12 +26,23 @@ export const useEventStore = defineStore('eventStore', {
       this.success = null;
     },
     async fetch(slug) {
+      const currentTime = new Date().getTime();
+      const timeSinceLastFetch = currentTime - (this.lastFetchTime || 0);
+      const fetchInterval = 30000; 
+
+      if (timeSinceLastFetch < fetchInterval) {
+        return;
+      }
+
       this.loading = true;
       this.error = null;
+      const authStore = useAuthStore();
+      authStore.clearMessages();
 
       try {
         const response = await axiosApiInstance.get(`/events/${slug}`);
         this.evento = await response.data;
+        this.lastFetchTime = currentTime;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al cargar el evento.';
         console.error("Error fetching event:", this.error);
@@ -374,6 +386,8 @@ export const useEventStore = defineStore('eventStore', {
       }
     },
     async getStatistics() {
+      this.loading = true;
+      this.error = null;
       try {
         const response = await axiosApiInstance.get(`/events/${this.evento.id}/statistics`);
         this.statistics = response.data;
@@ -381,6 +395,8 @@ export const useEventStore = defineStore('eventStore', {
         console.error('Error al obtener estadísticas:', error);
         this.info = error.response.data;
         console.log(error.response);
+      } finally {
+        this.loading = false;
       }
     },
 

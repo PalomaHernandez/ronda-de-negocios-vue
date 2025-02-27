@@ -72,14 +72,14 @@ export const useAuthStore = defineStore("auth", {
               this.auth_info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
             }
           } else {
-            this.error = data.text;
+            this.error = error.data.message;
           }
         } catch (error) {
           console.error("Login error:", error);
-          this.auth_info = "El email o la contraseña son incorrectos.";
+          this.clearMessages();
+          this.auth_info = error.response.data.message;
         } finally {
           this.loggingIn = false;
-          this.clearMessages();
         }
       }
     },
