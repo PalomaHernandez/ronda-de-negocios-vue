@@ -1,6 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
+      <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
       <Loading v-if="loading" />
       <div v-else-if="evento">
         <div class="text-center">
@@ -24,7 +25,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watchEffect,computed,watch } from "vue";
+import { onMounted, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
 import { useRoute } from "vue-router";
@@ -34,9 +35,10 @@ import Loading from "@/components/Loading.vue";
 
 // Estado y store
 const eventStore = useEventStore();
-const { evento, loading, error, notifications } = storeToRefs(eventStore);
+const { evento, loading, notifications } = storeToRefs(eventStore);
 const route = useRoute();
 const authStore = useAuthStore();
+const { auth_info } = storeToRefs(authStore);
 
 const sortedNotifications = computed(() => {
   return notifications.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Cambia 'created_at' por el campo de tu notificación

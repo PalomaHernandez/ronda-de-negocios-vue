@@ -1,12 +1,12 @@
 <template>
     <LayoutPage>
+        <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
+        <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
+        <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
+        <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
         <Loading v-if="loading" />
         <div v-else class="w-full">
             <h2 class="text-2xl font-semibold">Participantes</h2>
-
-            <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
-            <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
-            <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
 
             <div class="border rounded-lg shadow p-4 mt-2 flex-grow h-[60vh] overflow-y-auto bg-white">
                 <ul v-if="participants.length > 0">
@@ -81,21 +81,21 @@
             <!-- 📌 Botón para descargar listado de asistencia -->
             <div class="flex justify-end mt-4 space-x-2" >
                 <button v-if="evento?.status != 'Inscripcion'" @click="downloadAttendanceList()"
-                    class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
+                    class="btn-gray">
                     <i class="fa-solid fa-download"></i>
                     Descargar listado de asistencia
                 </button>
-                <button  v-else class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 opacity-60 cursor-not-allowed"
+                <button  v-else class="btn-gray-disabled"
                     title="Disponible a partir del periodo de coordinacion de reuniones">
                     <i class="fa-solid fa-download"></i>
                     Descargar listado de asistencia
                 </button>
-                <button v-if="evento?.status == 'Terminado'" @click="downloadAttendanceList()"
-                    class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600">
+                <button v-if="evento?.status == 'Terminado'" @click="downloadGeneralSchedule()"
+                    class="btn-gray">
                     <i class="fa-solid fa-file"></i>
                     Descargar cronograma general
                 </button>
-                <button  v-else class="bg-gray-500 text-white text-base font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 opacity-60 cursor-not-allowed"
+                <button  v-else class="btn-gray-disabled"
                     title="Disponible cuando el periodo de coordinacion de reuniones haya finalizado">
                     <i class="fa-solid fa-file"></i>
                     Descargar cronograma general
@@ -114,6 +114,7 @@
 import { ref, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
+import { useAuthStore } from "@/stores/auth";
 import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import ParticipantDetailsModal from "@/components/ParticipantDetailsModal.vue";
@@ -124,6 +125,8 @@ const eventStore = useEventStore();
 const { evento, participants, loading, error, success, info } = storeToRefs(eventStore);
 const route = useRoute();
 const dropdownOpen = ref(null);
+const authStore = useAuthStore();
+const { auth_info } = storeToRefs(authStore);
 
 onMounted(async () => {
     await eventStore.fetch(route.params.slug);
@@ -166,6 +169,10 @@ const downloadSchedule = (participant) => {
 
 const downloadAttendanceList = async () => {
     eventStore.downloadAttendanceList();
+};
+
+const downloadGeneralSchedule = () => {
+    eventStore.downloadGeneralSchedule();
 };
 
 const toggleDropdown = (id) => {

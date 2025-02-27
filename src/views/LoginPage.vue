@@ -3,10 +3,8 @@
 	  <template #default>
 		<!-- Encabezado "Log in" -->
 		<h1 class="text-2xl font-bold text-center mb-4">Iniciar sesión</h1>
-  
-		<!-- Mensajes de estado -->
 		<div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
-		<div v-if="info" class="alert alert-info" @click="authStore.clearMessages()">{{ info }}</div>
+		<div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
   
 		<!-- Formulario de login -->
 		<form class="flex flex-col gap-3 p-4" ref="form" @submit.prevent="login">
@@ -42,7 +40,7 @@
   // Estado y store
   const authStore = useAuthStore()
   const eventStore = useEventStore()
-  const { error, info } = storeToRefs(authStore);
+  const { error, auth_info } = storeToRefs(authStore);
   const credentials = ref({
 	email: '',
 	password: '',

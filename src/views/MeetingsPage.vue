@@ -1,6 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
+      <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
       <Loading v-if="loading" />
 
       <div v-else-if="evento" class="flex flex-col md:flex-row space-x-6">
@@ -56,7 +57,7 @@
                       <p class="text-lg font-medium">{{ participant.name }}</p>
                       <p v-if="participant.activity" class="text-sm text-gray-500">{{ participant.activity }}</p>
                       <p v-if="participant.interests && filterType !== 'offers'" class="text-lg font-medium">{{ 'Busca ' + (participant.interests || '') }}</p>
-                      <p v-if="participant.product_services && filterType !== 'seeks'" class="text-lg font-medium">{{ 'Ofrece ' + (participant.product_services || '') }}</p>
+                      <p v-if="participant.products_services && filterType !== 'seeks'" class="text-lg font-medium">{{ 'Ofrece ' + (participant.products_services || '') }}</p>
                     </div>
                   </div>
                   <div class="space-x-2 flex flex-col md:flex-row">
@@ -112,6 +113,7 @@ import ParticipantDetailsModal from "@/components/ParticipantDetailsModal.vue";
 const eventStore = useEventStore();
 const authStore = useAuthStore(); // Store del usuario actual
 const { evento, participants, loading, error, meetings } = storeToRefs(eventStore);
+const { auth_info } = storeToRefs(authStore);
 const route = useRoute();
 const router = useRouter();
 
@@ -132,7 +134,7 @@ const filteredParticipants = computed(() => {
     )
   )
     .filter(participant =>
-      participant.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    (participant.name?.toLowerCase() || "").includes(searchQuery.value.toLowerCase())
     )
     .filter(participant => {
       if (filterType.value === "offers") {

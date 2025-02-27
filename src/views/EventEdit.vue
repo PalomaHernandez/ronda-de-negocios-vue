@@ -1,6 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
+      <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
       <p v-if="loading">Cargando...</p>
       <div v-else-if="evento">
         <div class="text-center flex flex-col items-center space-y-6">
@@ -82,9 +83,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
+import { useAuthStore } from "@/stores/auth";
 import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
@@ -93,6 +95,8 @@ import FileUploader from "@/components/FileUploader.vue";
 // Estado y store
 const eventStore = useEventStore();
 const { evento, loading, error } = storeToRefs(eventStore);
+const authStore = useAuthStore();
+const { auth_info } = storeToRefs(authStore);
 const route = useRoute();
 
 const fields = {

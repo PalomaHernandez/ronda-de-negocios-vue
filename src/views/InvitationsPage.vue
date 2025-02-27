@@ -1,6 +1,7 @@
 <template>
   <LayoutPage>
     <template #default>
+      <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
       <Loading v-if="loading" />
       <div v-else-if="evento" class="flex flex-col space-y-10">
         <div class="w-full flex-grow">
@@ -111,7 +112,7 @@
 import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
-import { useAuthStore } from "@/stores/auth"; // Importamos la store de autenticación
+import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import Loading from "@/components/Loading.vue";
@@ -121,6 +122,7 @@ import MeetingDetailsModal from "@/components/MeetingDetailsModal.vue";
 const eventStore = useEventStore();
 const authStore = useAuthStore(); // Store del usuario actual
 const { evento, meetings, loading, error, participants } = storeToRefs(eventStore);
+const { auth_info } = storeToRefs(authStore);
 const route = useRoute();
 const router = useRouter();
 const showMeetingDetailsModal = ref(false);

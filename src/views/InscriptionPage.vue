@@ -6,6 +6,7 @@
         <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
         <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
         <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
+        <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
 
         <div class="text-center">
           <h1 class="text-2xl font-bold text-center mb-4">{{ 'Inscripcion al evento: ' + evento.title }}</h1>
@@ -65,7 +66,7 @@ import Loading from "@/components/Loading.vue";
 
 const eventStore = useEventStore();
 const { evento, loading, error, info, success } = storeToRefs(eventStore);
-const { user } = useAuthStore();
+const { user, auth_info } = useAuthStore();
 
 const inscription = ref({
   interests: "",

@@ -4,6 +4,7 @@
             <div v-if="success" class="alert alert-success" @click="eventStore.clearMessages()">{{ success }}</div>
             <div v-if="error" class="alert alert-danger" @click="eventStore.clearMessages()">{{ error }}</div>
             <div v-if="info" class="alert alert-info" @click="eventStore.clearMessages()">{{ info }}</div>
+            <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
             <Loading v-if="loading" />
             <div v-else-if="meetings" class="flex flex-col space-y-6 p-4 md:p-6">
                 <div class="w-full flex-grow">
@@ -99,6 +100,7 @@
 import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useEventStore } from "@/stores/event";
+import { useAuthStore } from "@/stores/auth";
 import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import Loading from "@/components/Loading.vue";
@@ -109,6 +111,8 @@ const { evento, meetings, loading, participants, error, success, info } = storeT
 const route = useRoute();
 const showMeetingDetailsModal = ref(false);
 const selectedMeeting = ref(null);
+const authStore = useAuthStore()
+const { auth_info } = storeToRefs(authStore);
 
 const searchQuery = ref("");
 const filterType = ref("all");

@@ -1,6 +1,7 @@
 <template>
     <LayoutPage>
         <template #default>
+            <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
             <Loading v-if="loading" />
             <div v-else-if="statistics">
                 <div class="p-6">
@@ -32,14 +33,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useEventStore } from '@/stores/event';
+import { useAuthStore } from "@/stores/auth";
 import { storeToRefs } from 'pinia';
 import { Chart, CategoryScale, LinearScale, Title, Tooltip, Legend, BarElement, BarController } from 'chart.js';
 import LayoutPage from '@/Layout.vue';
 
 const eventStore = useEventStore();
 const { evento, statistics, loading, error, info } = storeToRefs(eventStore);
+const authStore = useAuthStore();
+const { auth_info } = storeToRefs(authStore);
 
 Chart.register(
   CategoryScale,

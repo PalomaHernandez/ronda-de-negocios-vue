@@ -15,7 +15,7 @@ export const useAuthStore = defineStore("auth", {
     loggingIn: false,
     loggingOut: false,
     error: null,
-    info: null,
+    auth_info: null,
     success: null,
     registered: useStorage("registered", false),
     registration: useStorage("registration", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
@@ -23,7 +23,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     clearMessages() {
       this.error = null;
-      this.info = null;
+      this.auth_info = null;
       this.success = null;
     },
     async fetchUpdatedUserProfile () {
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("auth", {
       if (!this.loggingIn) {
         this.loggingIn = true;
         this.clearMessages();
-        this.info = "Iniciando sesión...";
+        this.auth_info = "Iniciando sesión...";
 
         try {
           const { data } = await axiosApiInstance.post("login", {
@@ -56,6 +56,7 @@ export const useAuthStore = defineStore("auth", {
             this.token = data.token;
             this.responsible = data.isResponsible;
             this.registered = data.isRegistered;
+            this.registration = data.registration;
             this.authenticated = true;
             this.currentEventSlug = eventSlug;
 
@@ -68,16 +69,17 @@ export const useAuthStore = defineStore("auth", {
             else{
               await this.logout();
               router.push({ name: "event-detail" });
-              eventStore.info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
+              this.auth_info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
             }
           } else {
             this.error = data.text;
           }
         } catch (error) {
           console.error("Login error:", error);
-          this.info = "El email o la contraseña son incorrectos.";
+          this.auth_info = "El email o la contraseña son incorrectos.";
         } finally {
           this.loggingIn = false;
+          this.clearMessages();
         }
       }
     },
@@ -85,6 +87,7 @@ export const useAuthStore = defineStore("auth", {
       if (!this.loggingOut) {
         this.loggingOut = true;
         this.clearMessages();
+        this.auth_info = "Cerrando sesión...";
     
         try {
           await axiosApiInstance.post("logout");
@@ -102,6 +105,7 @@ export const useAuthStore = defineStore("auth", {
           console.error("Logout error:", error);
         } finally {
           this.loggingOut = false;
+          this.clearMessages();
         }
       }
     },
@@ -109,10 +113,7 @@ export const useAuthStore = defineStore("auth", {
       if (!this.registering) {
         this.registering = true;
         this.clearMessages();
-        this.info = "Registrando tu cuenta...";
-    
-        const eventStore =  useEventStore();
-
+        this.auth_info = "Registrando tu cuenta...";
         try {
           if(eventStore.evento.status === "Inscripcion"){
             const { data } = await axiosApiInstance.post("register", formData);
@@ -127,7 +128,7 @@ export const useAuthStore = defineStore("auth", {
               this.error = "No se pudo registrar.";
             }
           } else {
-            eventStore.info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
+            this.auth_info = "Lo lamentamos, el periodo de inscripción para este evento ya ha finalizado."
             router.push({ name: "event-inscription" });
           }
         } catch (error) {
@@ -135,6 +136,7 @@ export const useAuthStore = defineStore("auth", {
           this.error = "Hubo un problema con el registro.";
         } finally {
           this.registering = false;
+          this.clearMessages();
         }
       }
     },

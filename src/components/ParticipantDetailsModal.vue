@@ -32,7 +32,7 @@
           <div class="flex items-center bg-gray-100 p-3 rounded-lg">
             <i class="fa-solid fa-store mr-2"></i>
             <p class="text-gray-700"><strong>Productos o Servicios:</strong> {{
-              participant.product_services || 'No disponible' }}</p>
+              participant.products_services || 'No disponible' }}</p>
           </div>
         </div>
   

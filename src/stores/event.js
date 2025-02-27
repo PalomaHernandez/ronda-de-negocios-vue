@@ -348,6 +348,31 @@ export const useEventStore = defineStore('eventStore', {
         this.info = 'El cronograma no estará disponible hasta que no finalice la etapa de matcheo.'
       }
     },
+    async downloadGeneralSchedule() {
+      if (this.evento && this.evento.status === "Terminado") {
+        const eventId = this.evento.id;
+        const url = `/cronograma/${eventId}`;
+
+        try {
+          const response = await axiosApiInstance.get(url, {
+            responseType: "blob",
+          });
+
+          const blob = new Blob([response.data], { type: "application/pdf" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = `cronograma_${this.evento.title}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (error) {
+          this.error = "Error al descargar el cronograma."
+        }
+      }
+      else {
+        this.info = 'El cronograma no estará disponible hasta que no finalice la etapa de matcheo.'
+      }
+    },
     async getStatistics() {
       try {
         const response = await axiosApiInstance.get(`/events/${this.evento.id}/statistics`);
@@ -358,5 +383,6 @@ export const useEventStore = defineStore('eventStore', {
         console.log(error.response);
       }
     },
+
   },
 });
