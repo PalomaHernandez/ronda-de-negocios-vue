@@ -316,11 +316,11 @@ select {
   }
   
   .event-title {
-	@apply text-4xl md:text-5xl font-bold text-primary;
+	@apply md:text-4xl font-bold text-primary;
   }
   
   .event-subtitle {
-	@apply text-2xl md:text-3xl text-primary;
+	@apply md:text-2xl text-primary;
   }
   
   .event-text {
@@ -340,7 +340,7 @@ select {
   }
   
   .hero-section {
-	@apply relative h-screen flex flex-col items-center justify-center text-center bg-cover bg-center text-white;
+	@apply relative h-screen flex flex-col items-center justify-center text-center bg-cover bg-center text-white rounded-lg;
   }
   
   .hero-section::before {

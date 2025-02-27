@@ -1,13 +1,11 @@
 <template>
   <LayoutPage>
     <template #default>
-      <h1 class="event-title text-center mb-4">Creación de cuenta </h1>
-
       <!-- Mensajes de estado -->
       <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
       <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
       <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
-      <h1 class="text-2xl font-bold text-center mb-4">Creación de cuenta </h1>
+      <h1 class="event-title text-center mb-4">Creación de cuenta </h1>
       <!-- Formulario de registro en 2 columnas -->
       <form class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4" ref="form" @submit.prevent="register">
         <!-- Primera columna -->

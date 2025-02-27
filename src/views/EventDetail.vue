@@ -20,7 +20,7 @@
         <div>
           <div v-if="evento.logo_url" @click="openImage()" class="hero-section" :style="{ backgroundImage: `url(${evento.logo_url})` }" >
             <h1 class="hero-title"> {{ evento.title || "Bienvenidos al Evento" }} </h1>
-            <p class="hero-description"> {{ evento.description || "No disponible" }} </p>
+            <p class="hero-description"> {{ evento.description || "" }} </p>
             <div class="hero-buttons">
               <div v-if="!authStore.authenticated" class="button-group">
                 <button v-if="inscriptionStatus" @click="openModal" class="big-btn btn-secondary">
@@ -33,20 +33,19 @@
             </div>
           </div>
 
-            <div v-else>
-              <div class="text-center hero-section">
-                <h1 class="hero-title">{{ evento.title || "Bienvenidos al Evento" }}</h1>
-                <p class="hero-description">{{ evento.description || "No disponible" }}</p>
-                
-                <div class="hero-buttons">
-                  <div v-if="!authStore.authenticated" class="button-group">
-                    <button v-if="inscriptionStatus" @click="openModal" class="big-btn btn-secondary">
-                      Inscribirse al Evento
-                    </button>
-                    <RouterLink :to="{ name: 'login' }" class="big-btn btn-primary">
-                      Acceder
-                    </RouterLink>
-                  </div>
+          <div v-else>
+            <div class="text-center hero-section">
+              <h1 class="hero-title">{{ evento.title || "Bienvenidos al Evento" }}</h1>
+              <p class="hero-description">{{ evento.description || "" }}</p>
+              
+              <div class="hero-buttons">
+                <div v-if="!authStore.authenticated" class="button-group">
+                  <button v-if="inscriptionStatus" @click="openModal" class="big-btn btn-secondary">
+                    Inscribirse al Evento
+                  </button>
+                  <RouterLink :to="{ name: 'login' }" class="big-btn btn-primary">
+                    Acceder
+                  </RouterLink>
                 </div>
               </div>
             </div>
@@ -80,7 +79,6 @@
                 </p>
               </div>
             </div>
-          </div>
 
           <div v-if="isAuthenticated && (isRegistered || isResponsible) && evento.files" class="mt-6 bg-white p-4 rounded-lg shadow-lg event-container">
             <h3 class="event-subtitle">Documentos</h3>
@@ -97,6 +95,8 @@
               </div>
             </ul>
           </div>
+        </div>
+      </div>
 
       </template>
     </LayoutPage>
