@@ -66,7 +66,8 @@ import Loading from "@/components/Loading.vue";
 
 const eventStore = useEventStore();
 const { evento, loading, error, info, success } = storeToRefs(eventStore);
-const { user, auth_info } = useAuthStore();
+const authStore = useAuthStore();
+const { user, auth_info } = storeToRefs(authStore);
 
 const inscription = ref({
   interests: "",

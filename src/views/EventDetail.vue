@@ -18,7 +18,8 @@
         </div>
 
         <div>
-          <div v-if="evento.logo_url" @click="openImage()" class="hero-section" :style="{ backgroundImage: `url(${evento.logo_url})` }" >
+          <div v-if="evento.logo_url" @click="openImage()" class="hero-section"
+            :style="{ backgroundImage: `url(${evento.logo_url})` }">
             <h1 class="hero-title"> {{ evento.title || "Bienvenidos al Evento" }} </h1>
             <p class="hero-description"> {{ evento.description || "" }} </p>
             <div class="hero-buttons">
@@ -37,7 +38,7 @@
             <div class="text-center hero-section">
               <h1 class="hero-title">{{ evento.title || "Bienvenidos al Evento" }}</h1>
               <p class="hero-description">{{ evento.description || "" }}</p>
-              
+
               <div class="hero-buttons">
                 <div v-if="!authStore.authenticated" class="button-group">
                   <button v-if="inscriptionStatus" @click="openModal" class="big-btn btn-secondary">
@@ -52,35 +53,36 @@
           </div>
         </div>
 
-          <!-- Información del Evento -->
-          <div id="informacion" class="py-12 bg-white text-center">
-            <h2 class="event-title">Información del Evento</h2>
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto">
-              <div v-for="(field, key) in fields" :key="key" class="event-card ">
-                <h3 class="event-subtitle">{{ field.label }}</h3>
-                <p class="event-text">
-                  {{
-                    field.type === "date" ? formatDate(evento[key])
-                      : field.type === "time" ? formatTime(evento[key])
-                        : field.type === "datetime-local" ? formatDateTime(evento[key])
-                          : evento[key] || "No disponible"
-                  }}
-                </p>
-              </div>
-              <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key" class="event-card">
-                <h3 class="event-subtitle">{{ field.label }}</h3>
-                <p class="event-text">
-                  {{
-                    field.type === "date" ? formatDate(evento[key])
-                      : field.type === "time" ? formatTime(evento[key])
-                        : field.type === "datetime-local" ? formatDateTime(evento[key])
-                          : evento[key] || 'No disponible'
-                  }}
-                </p>
-              </div>
+        <!-- Información del Evento -->
+        <div id="informacion" class="py-12 bg-white text-center">
+          <h2 class="event-title">Información del Evento</h2>
+          <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto">
+            <div v-for="(field, key) in fields" :key="key" class="event-card ">
+              <h3 class="event-subtitle">{{ field.label }}</h3>
+              <p class="event-text">
+                {{
+                  field.type === "date" ? formatDate(evento[key])
+                    : field.type === "time" ? formatTime(evento[key])
+                      : field.type === "datetime-local" ? formatDateTime(evento[key])
+                        : evento[key] || "No disponible"
+                }}
+              </p>
             </div>
+            <div v-if="isResponsible" v-for="(field, key) in responsibleOnlyFields" :key="key" class="event-card">
+              <h3 class="event-subtitle">{{ field.label }}</h3>
+              <p class="event-text">
+                {{
+                  field.type === "date" ? formatDate(evento[key])
+                    : field.type === "time" ? formatTime(evento[key])
+                      : field.type === "datetime-local" ? formatDateTime(evento[key])
+                        : evento[key] || 'No disponible'
+                }}
+              </p>
+            </div>
+          </div>
 
-          <div v-if="isAuthenticated && (isRegistered || isResponsible) && evento.files" class="document-container">
+          <div v-if="(evento.files.length > 0) && isAuthenticated && (isRegistered || isResponsible)"
+            class="document-container">
             <h3 class="event-subtitle">Documentos</h3>
             <ul>
               <div class="mt-4 grid grid-cols-2 gap-4">
@@ -98,12 +100,12 @@
         </div>
       </div>
 
-      </template>
-    </LayoutPage>
-    <!-- Modal -->
-    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
-        <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
+    </template>
+  </LayoutPage>
+  <!-- Modal -->
+  <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-10 rounded-lg shadow-lg w-[600px] h-[300px] flex flex-col relative">
+      <h2 class="text-2xl font-bold text-center">¿Ya tenés una cuenta de Rondas UNS?</h2>
 
       <div class="flex flex-col items-center space-y-4 mt-6 flex-grow">
         <RouterLink :to="{ name: 'login' }" class="btn text-xl">
@@ -180,8 +182,8 @@ onMounted(async () => {
 });
 
 const openImage = () => {
-    showImage.value = true;
-  };
+  showImage.value = true;
+};
 
 const openModal = () => {
   showModal.value = true;
