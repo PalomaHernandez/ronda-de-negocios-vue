@@ -7,18 +7,18 @@ import { useRoute } from "vue-router";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    authenticated: useStorage("authenticated", false),
-    user: useStorage("user", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
-    token: useStorage("token", null),
-    responsible: useStorage("responsible", false),
-    currentEventSlug: useStorage("currentEventSlug", null),
+    authenticated: useStorage("authenticated", false, sessionStorage),
+    user: useStorage("user", null, sessionStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
+    token: useStorage("token", null, sessionStorage),
+    responsible: useStorage("responsible", false, sessionStorage),
+    currentEventSlug: useStorage("currentEventSlug", null, sessionStorage),
     loggingIn: false,
     loggingOut: false,
     error: null,
     auth_info: null,
     success: null,
-    registered: useStorage("registered", false),
-    registration: useStorage("registration", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
+    registered: useStorage("registered", false, sessionStorage),
+    registration: useStorage("registration", null, sessionStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
   }),
   actions: {
     clearMessages() {

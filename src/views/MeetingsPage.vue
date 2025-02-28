@@ -19,7 +19,7 @@
           </RouterLink>
 
           <!-- 📌 Remaining meetings del usuario actual -->
-          <p class="text-gray-600 mt-4">
+          <p v-if="evento?.status == 'Matcheo'" class="text-gray-600 mt-4">
             <strong>Cantidad de solicitudes restantes:</strong> {{ userRemainingMeetings ?? 'No disponible' }}
           </p>
         </div>

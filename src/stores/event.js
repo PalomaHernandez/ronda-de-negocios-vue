@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
-    evento: useStorage("evento", null, localStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
+    evento: useStorage("evento", null, sessionStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
     participants: [],
     meetings: [],
     notifications: [],
