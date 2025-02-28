@@ -340,7 +340,7 @@ select {
   }
   
   .hero-section {
-	@apply relative h-screen cursor-pointer flex flex-col items-center justify-center text-center bg-cover bg-center text-white rounded-lg;
+	@apply relative h-screen flex flex-col items-center justify-center text-center bg-cover bg-center text-white rounded-lg;
   }
   
   .hero-section::before {

@@ -1,76 +1,79 @@
 <template>
   <LayoutPage>
-    <div class="w-full mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
-      <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
-      <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
-      <h2 class="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
+    <Loading v-if="loading" />
+    <div v-else>
+      <div class="w-full mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div v-if="success" class="alert alert-success" @click="authStore.clearMessages()">{{ success }}</div>
+        <div v-if="error" class="alert alert-danger" @click="authStore.clearMessages()">{{ error }}</div>
+        <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
+        <h2 class="text-2xl font-semibold text-center mb-4">Editar Perfil</h2>
 
-      <div class="flex flex-col items-center space-y-4">
-        <!-- Imagen de perfil -->
-        <div class="relative">
-          <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
-                     <img v-if="previewImage || form.logo_url" :src="previewImage || form.logo_url" alt="User Logo">
-                    <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
-                 </div>
-          <label
-            class="absolute bottom-0 right-0 h-8 w-8 flex items-center justify-center bg-gray-800 text-white p-1 rounded-full cursor-pointer">
-            <i class="fa-solid fa-camera"></i>
-            <input type="file" @change="onFileChange" class="hidden" accept="image/*" />
-          </label>
-        </div>
-
-        <!-- Campos del perfil -->
-        <div class="w-full space-y-3">
-          <LabeledObject required>
-            <template #label>Nombre</template>
-            <input type="text" v-model="form.name" required>
-          </LabeledObject>
-          <LabeledObject>
-            <template #label>Email</template>
-            <input type="email" v-model="form.email" disabled>
-          </LabeledObject>
-          <LabeledObject required>
-            <template #label>Actividad/sector</template>
-            <input type="text" v-model="form.activity" required>
-          </LabeledObject>
-          <LabeledObject required>
-            <template #label>Ubicacion</template>
-            <input type="text" v-model="form.location" required>
-          </LabeledObject>
-          <LabeledObject>
-            <template #label>Sitio web</template>
-            <input type="url" v-model="form.website" placeholder="https://">
-          </LabeledObject>
-          <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow">
-            <h3 class="text-lg font-semibold mb-2 text-gray-700">Tus intereses y ofertas en este evento
-            </h3>
-            <div class="grid grid-cols-2 gap-4">
-              <LabeledObject>
-                <template #label>Intereses</template>
-                <input type="text" v-model="form.interests">
-              </LabeledObject>
-              <LabeledObject>
-                <template #label>Productos/servicios</template>
-                <input type="text" v-model="form.products_services">
-              </LabeledObject>
+        <div class="flex flex-col items-center space-y-4">
+          <!-- Imagen de perfil -->
+          <div class="relative">
+            <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
+              <img v-if="previewImage || form.logo_url" :src="previewImage || form.logo_url" class="w-24 h-24 rounded-full" alt="User Logo">
+              <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
             </div>
+            <label
+              class="absolute bottom-0 right-0 h-8 w-8 flex items-center justify-center bg-gray-800 text-white p-1 rounded-full cursor-pointer">
+              <i class="fa-solid fa-camera"></i>
+              <input type="file" @change="onFileChange" class="rounded-full hidden" accept="image/*" />
+            </label>
           </div>
-          <LabeledObject>
-            <template #label>Galeria</template>
-            <ImageUploader type="gallery" :uploaded-files="user.images || []" @updateFiles="handleImagesUpdate"
-              @deletedFiles="handleDeletedImages" />
-          </LabeledObject>
-        </div>
 
-        <div class="flex justify-center space-x-4">
-          <RouterLink :to="{ name: 'profile' }" class="btn">
-            Cancelar
-          </RouterLink>
-          <button @click="guardarCambios"
-            class="bg-blue-600 btn text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-            Guardar Cambios
-          </button>
+          <!-- Campos del perfil -->
+          <div class="w-full space-y-3">
+            <LabeledObject required>
+              <template #label>Nombre</template>
+              <input type="text" v-model="form.name" required>
+            </LabeledObject>
+            <LabeledObject>
+              <template #label>Email</template>
+              <input type="email" v-model="form.email" disabled>
+            </LabeledObject>
+            <LabeledObject required>
+              <template #label>Actividad/sector</template>
+              <input type="text" v-model="form.activity" required>
+            </LabeledObject>
+            <LabeledObject required>
+              <template #label>Ubicacion</template>
+              <input type="text" v-model="form.location" required>
+            </LabeledObject>
+            <LabeledObject>
+              <template #label>Sitio web</template>
+              <input type="url" v-model="form.website" placeholder="https://">
+            </LabeledObject>
+            <div class="mt-6 p-4 bg-gray-100 rounded-lg shadow">
+              <h3 class="text-lg font-semibold mb-2 text-gray-700">Tus intereses y ofertas en este evento
+              </h3>
+              <div class="grid grid-cols-2 gap-4">
+                <LabeledObject>
+                  <template #label>Intereses</template>
+                  <input type="text" v-model="form.interests">
+                </LabeledObject>
+                <LabeledObject>
+                  <template #label>Productos/servicios</template>
+                  <input type="text" v-model="form.products_services">
+                </LabeledObject>
+              </div>
+            </div>
+            <LabeledObject>
+              <template #label>Galeria</template>
+              <ImageUploader type="gallery" :uploaded-files="user.images || []" @updateFiles="handleImagesUpdate"
+                @deletedFiles="handleDeletedImages" />
+            </LabeledObject>
+          </div>
+
+          <div class="flex justify-center space-x-4">
+            <RouterLink :to="{ name: 'profile' }" class="btn">
+              Cancelar
+            </RouterLink>
+            <button @click="guardarCambios"
+              class="bg-blue-600 btn text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+              Guardar Cambios
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -84,9 +87,10 @@ import { useAuthStore } from "@/stores/auth";
 import LayoutPage from "@/Layout.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
 import LabeledObject from "@/components/LabeledObject.vue";
+import Loading from "@/components/Loading.vue";
 
 const authStore = useAuthStore();
-const { success, error, auth_info } = storeToRefs(authStore);
+const { success, error, auth_info, loading } = storeToRefs(authStore);
 const user = computed(() => authStore.user ? authStore.user : {});
 const registration = computed(() => authStore.registration ? authStore.registration : {});
 

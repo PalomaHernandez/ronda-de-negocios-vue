@@ -15,10 +15,10 @@
           placeholder="Escribe el motivo de la reunión..."></textarea>
   
         <div class="flex justify-end space-x-2">
-          <button @click="closeModal" class="bg-gray-400 text-white py-2 px-4 rounded-lg">
+          <button @click="closeModal" class="btn-gray">
             Cancelar
           </button>
-          <button @click="submitMeetingRequest" class="bg-blue-600 text-white py-2 px-4 rounded-lg">
+          <button @click="submitMeetingRequest" class="btn">
             Enviar solicitud
           </button>
         </div>

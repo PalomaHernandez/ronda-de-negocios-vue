@@ -12,7 +12,7 @@
             <div class="flex items-center space-x-4">
                 <!-- Logo -->
                  <div class="w-16 h-16 flex items-center justify-center">
-                    <img v-if="user.logo_url" :src="user.logo_url" alt="User Logo" class="rounded-full" />
+                    <img v-if="user.logo_url" :src="user.logo_url" alt="User Logo" class="w-16 h-16 rounded-full" />
                     <i v-else class="fa-solid fa-circle-user text-gray-400 text-6xl"></i>
                  </div>
                 <div>

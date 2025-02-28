@@ -37,6 +37,10 @@
                 class="flex bg-red-500 rounded-full items-center space-x-2 py-1 px-3">
                 <span class="text-white font-semibold">Rechazada</span>
             </div>
+            <div v-else-if="meeting.status === 'Pendiente'"
+                class="flex bg-gray-500 rounded-full items-center space-x-2 py-1 px-3">
+                <span class="text-white font-semibold">Pendiente</span>
+            </div>
           </div>
           <div class="flex flex-col items-center">
             <p class="text-sm text-gray-500">Rol</p>
@@ -44,7 +48,7 @@
           </div>
         </div>
 
-        <p class="mt-6 px-4 text-justify break-words bg-gray-200 p-2 rounded-full">
+        <p class="mt-6 px-4 text-justify break-words p-2 rounded-full">
           <strong>Motivo:</strong> {{ meeting.reason || 'No especificado' }}
         </p>
   

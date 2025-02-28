@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
     evento: useStorage("evento", null, sessionStorage, { serializer: { read: JSON.parse, write: JSON.stringify } }),
+    eventos: [],
     participants: [],
     meetings: [],
     notifications: [],
@@ -45,6 +46,22 @@ export const useEventStore = defineStore('eventStore', {
         this.lastFetchTime = currentTime;
       } catch (err) {
         this.error = err.response?.data?.message || 'Error al cargar el evento.';
+        console.error("Error fetching event:", this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async fetchAllEvents() {
+      this.loading = true;
+      this.error = null;
+      const authStore = useAuthStore();
+      authStore.clearMessages();
+
+      try {
+        const response = await axiosApiInstance.get(`/events`);
+        this.eventos = await response.data.events;
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Error al cargar el eventos.';
         console.error("Error fetching event:", this.error);
       } finally {
         this.loading = false;

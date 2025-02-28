@@ -14,6 +14,7 @@ export const useAuthStore = defineStore("auth", {
     currentEventSlug: useStorage("currentEventSlug", null, sessionStorage),
     loggingIn: false,
     loggingOut: false,
+    loading: false,
     error: null,
     auth_info: null,
     success: null,
@@ -60,6 +61,7 @@ export const useAuthStore = defineStore("auth", {
             this.authenticated = true;
             this.currentEventSlug = eventSlug;
 
+            this.clearMessages();
             if(this.registered || this.responsible){
               router.push({ name: "event-detail" });
             }
@@ -83,11 +85,12 @@ export const useAuthStore = defineStore("auth", {
         }
       }
     },
-    async logout(eventSlug) {
+    async logout() {
       if (!this.loggingOut) {
         this.loggingOut = true;
         this.clearMessages();
         this.auth_info = "Cerrando sesión...";
+        const eventStore = useEventStore();
     
         try {
           await axiosApiInstance.post("logout");
@@ -100,7 +103,7 @@ export const useAuthStore = defineStore("auth", {
           this.registration = null;
           this.currentEventSlug = null;
 
-          router.push({ name: "event-detail" , params: { slug: eventSlug }});
+          router.push({ name: "event-detail" , params: { slug: eventStore.evento.slug }});
         } catch (error) {
           console.error("Logout error:", error);
         } finally {
@@ -110,6 +113,8 @@ export const useAuthStore = defineStore("auth", {
       }
     },
     async register(formData) {
+      this.loading = true;
+      const eventStore = useEventStore();
       if (!this.registering) {
         this.registering = true;
         this.clearMessages();
@@ -136,11 +141,13 @@ export const useAuthStore = defineStore("auth", {
           this.error = "Hubo un problema con el registro.";
         } finally {
           this.registering = false;
+          this.loading = false;
           this.clearMessages();
         }
       }
     },
     async updateProfile(data) {
+      this.loading = true;
       try {
         data.append('_method', 'PATCH');
         const response = await axiosApiInstance.post(`/user/profile/${this.registration.id}`, data);
@@ -156,6 +163,8 @@ export const useAuthStore = defineStore("auth", {
           this.error = "Ocurrió un error inesperado.";
           console.error("Error desconocido:", error);
         }
+      } finally {
+        this.loading = false;
       }
     }    
     

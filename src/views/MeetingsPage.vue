@@ -50,7 +50,7 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <div class="w-10 h-10 rounded-full mr-3 object-cover">
-                      <img v-if="participant.logo_url" :src="participant.logo_url" alt="Logo"/>
+                      <img v-if="participant.logo_url" :src="participant.logo_url" class="w-10 h-10 rounded-full" alt="Logo"/>
                       <i v-else class="fa-solid fa-circle-user text-gray-400 text-4xl"></i>
                     </div>
                     <div>

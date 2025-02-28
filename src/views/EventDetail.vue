@@ -18,8 +18,7 @@
         </div>
 
         <div>
-          <div v-if="evento.logo_url" @click="openImage()" class="hero-section"
-            :style="{ backgroundImage: `url(${evento.logo_url})` }">
+          <div v-if="evento.logo_url" class="hero-section" :style="{ backgroundImage: `url(${evento.logo_url})` }">
             <h1 class="hero-title"> {{ evento.title || "Bienvenidos al Evento" }} </h1>
             <p class="hero-description"> {{ evento.description || "" }} </p>
             <div class="hero-buttons">
@@ -87,7 +86,7 @@
             <ul>
               <div class="mt-4 grid grid-cols-2 gap-4">
                 <div v-for="file in evento.files" :key="file.id" class="file-card">
-                  <p class="file-text">{{ file.original_name }}</p>
+                  <p class="file-text truncate">{{ file.original_name }}</p>
                   <button>
                     <a :href="file.url" :download="file.name" target="_blank" class="btn-download">
                       Descargar
@@ -125,8 +124,6 @@
       </div>
     </div>
   </div>
-  <ImageModal v-if="evento && evento.logo_url" :imageUrl="evento.logo_url" :visible="showImage"
-    @update:visible="showImage = $event" />
 </template>
 
 
@@ -137,7 +134,6 @@ import { useEventStore } from "@/stores/event";
 import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import { useAuthStore } from "@/stores/auth";
-import ImageModal from "@/components/ImageModal.vue";
 import Loading from "@/components/Loading.vue";
 
 const eventStore = useEventStore();
@@ -146,8 +142,6 @@ const route = useRoute();
 const showModal = ref(false);
 const authStore = useAuthStore();
 const { auth_info } = storeToRefs(authStore);
-
-const showImage = ref(false);
 
 const fields = {
   date: { label: "Fecha", type: "date" },
@@ -180,10 +174,6 @@ onMounted(async () => {
     endedStatus.value = evento.value.status === "Terminado";
   }
 });
-
-const openImage = () => {
-  showImage.value = true;
-};
 
 const openModal = () => {
   showModal.value = true;

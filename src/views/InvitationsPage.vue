@@ -56,7 +56,7 @@
                         <span class="text-white font-semibold">Esperando respuesta</span>
                     </div>
                       <button @click="cancelMeeting(meeting)"
-                        class="bg-gray-400 text-white py-2 px-4 rounded-lg hover:bg-gray-500">
+                        class="btn-gray">
                         Cancelar
                       </button>
                     </div>
@@ -82,7 +82,7 @@
         <!-- Contenedor de los botones en la parte inferior derecha -->
         <div class="flex justify-end space-x-4">
           <RouterLink :to="{ name: 'event-meetings' }" class="btn">
-            Cancelar
+            Volver
           </RouterLink> 
           <div v-if="evento?.status == 'Terminado'">
             <!-- Botón activo si NO está en Inscripción -->

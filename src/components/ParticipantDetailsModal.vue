@@ -3,7 +3,7 @@
       <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div class="flex flex-col items-center">
           <div class="w-24 h-24 flex items-center justify-center shadow-lg border rounded-full">
-            <img v-if="participant.logo_url" :src="participant.logo_url" alt="Logo"/>
+            <img v-if="participant.logo_url" :src="participant.logo_url" class="w-24 h-24 rounded-full" alt="Logo"/>
             <i v-else class="fa-solid fa-circle-user text-gray-400 text-8xl"></i>
           </div>
           <h2 class="text-2xl font-bold text-gray-900 mt-3">{{ participant.name }}</h2>

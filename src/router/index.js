@@ -17,11 +17,11 @@ import ParticipantsMeetings from '@/views/ParticipantsMeetings.vue';
 import EventStatistics from '@/views/EventStatistics.vue';
 
 const routes = [
-  {
+  /*{
     path: '/',
     name: 'landing-page',
     component: LandingPage,
-  },
+  },*/
   {
     path: '/:slug',
     name: 'event-detail',

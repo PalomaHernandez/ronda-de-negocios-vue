@@ -2,7 +2,7 @@
   <LayoutPage>
     <template #default>
       <div v-if="auth_info" class="alert alert-info" @click="authStore.clearMessages()">{{ auth_info }}</div>
-      <p v-if="loading">Cargando...</p>
+      <Loading v-if="loading" />
       <div v-else-if="evento">
         <div class="text-center flex flex-col items-center space-y-6">
           <!-- Título del evento -->
@@ -76,8 +76,6 @@
           </button>
         </div>
       </div>
-      <p v-else-if="error" class="text-red-500 text-center">{{ error }}</p>
-
     </template>
   </LayoutPage>
 </template>
@@ -91,6 +89,7 @@ import { useRoute } from "vue-router";
 import LayoutPage from "@/Layout.vue";
 import ImageUploader from "@/components/ImageUploader.vue";
 import FileUploader from "@/components/FileUploader.vue";
+import Loading from "@/components/Loading.vue";
 
 // Estado y store
 const eventStore = useEventStore();
