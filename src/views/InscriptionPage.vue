@@ -92,7 +92,7 @@ const handleDeletedImages = (deleted) => {
 };
 
 const submitInscription = async () => {
-  if (!inscription.value.interests && !inscription.value.products) {
+  if (!inscription.value.interests && !inscription.value.products_services) {
     info.value = "Por favor, complete al menos un campo."
     return;
   }

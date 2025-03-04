@@ -126,7 +126,7 @@ export const useAuthStore = defineStore("auth", {
               this.authenticated = true;
               this.user = data.user;
               this.token = data.token; 
-              this.currentEventSlug = eventSlug;
+              this.currentEventSlug = eventStore.eventSlug;
   
               router.push({ name: "event-inscription" });
             } else {

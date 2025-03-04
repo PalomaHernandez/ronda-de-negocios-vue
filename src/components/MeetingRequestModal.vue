@@ -63,6 +63,7 @@
     };
   
     emit("submit", meetingData);
+    closeModal();
   };
   </script>
   

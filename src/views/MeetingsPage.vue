@@ -138,7 +138,7 @@ const filteredParticipants = computed(() => {
     )
     .filter(participant => {
       if (filterType.value === "offers") {
-        return participant.product_services;
+        return participant.products_services;
       } else if (filterType.value === "seeks") {
         return participant.interests;
       } 
@@ -169,8 +169,6 @@ onMounted(async () => {
 
 // Estado del modal
 const showModal = ref(false);
-const meetingObjective = ref("");
-const meetingReason = ref("");
 const selectedParticipant = ref(null);
 
 // Abrir modal
@@ -182,8 +180,6 @@ const openMeetingRequest = (participant) => {
 // Cerrar modal
 const closeMeetingRequest = () => {
   showModal.value = false;
-  meetingObjective.value = "";
-  meetingReason.value = "";
 };
 
 const showDetailsModal = ref(false);
@@ -223,7 +219,6 @@ const submitMeetingRequest = async (meetingData) => {
     sentRequests.value.push(selectedParticipant.value.id);
 
     // Cerrar el modal después de enviar la solicitud
-    closeMeetingRequest();
   } catch (error) {
     console.error('Error al enviar la solicitud de reunión:', error);
   }

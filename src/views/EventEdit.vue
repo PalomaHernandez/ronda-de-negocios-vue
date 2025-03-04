@@ -141,9 +141,24 @@ onMounted(async () => {
   originalEvento.value = { ...evento.value };
 });
 
+const formatTimeWithSeconds = (time) => {
+  if (time && time.length === 5) { // Si el formato es HH:MM
+    return time + ":00";
+  }
+  return time;
+};
+
 const update = async () => {
   const formData = new FormData();
 
+    // Asegurar que starts_at y ends_at tengan segundos :00
+    if (evento.value.starts_at) {
+    evento.value.starts_at = formatTimeWithSeconds(evento.value.starts_at);
+  }
+  if (evento.value.ends_at) {
+    evento.value.ends_at = formatTimeWithSeconds(evento.value.ends_at);
+  }
+  
   Object.keys(evento.value).forEach((key) => {
     if (evento.value[key] !== originalEvento.value[key]) {
       formData.append(key, evento.value[key]);
